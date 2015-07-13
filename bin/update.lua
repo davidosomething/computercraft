@@ -1,5 +1,5 @@
 --
--- update
+-- bin/update
 -- v1.0.3
 -- pastebin Q54ecuNa
 -- by @davidosomething
