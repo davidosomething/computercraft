@@ -1,6 +1,6 @@
 --
 -- startup
--- v2.0.4
+-- v2.0.5
 -- pastebin uVtX8Yx6
 -- by @davidosomething
 --
@@ -49,5 +49,10 @@ shell.run('update')
 local envfile = os.getComputerLabel() .. '-env'
 if fs.exists(envfile) then
   shell.run(envfile)
+end
+
+local mainfile = os.getComputerLabel() .. '/main'
+if fs.exists(mainfile) then
+  shell.run(mainfile)
 end
 
