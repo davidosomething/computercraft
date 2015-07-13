@@ -1,6 +1,6 @@
 --
 -- startup
--- v2.0.6
+-- v2.0.7
 -- pastebin uVtX8Yx6
 -- by @davidosomething
 --
@@ -17,7 +17,9 @@ end
 shell.setDir('/')
 
 -- system paths
+shell.run('mkdir', 'bin')
 shell.run('mkdir', 'tmp')
+shell.setPath(shell.path()..':/bin')
 
 -- set aliases
 shell.setAlias('ll', 'list')
