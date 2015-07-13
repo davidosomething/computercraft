@@ -1,6 +1,6 @@
 --
 -- startup
--- v2.0.5
+-- v2.0.6
 -- pastebin uVtX8Yx6
 -- by @davidosomething
 --
@@ -23,9 +23,9 @@ shell.run('mkdir', 'tmp')
 shell.setAlias('ll', 'list')
 shell.setAlias('e', 'edit')
 
--- system_update
+-- systemUpdate
 -- updates the updater
-function system_update()
+function systemUpdate()
   local tmpfile = 'tmp/update'
   local scriptfile = 'update'
 
@@ -42,7 +42,7 @@ function system_update()
   end
 end
 
-system_update()
+systemUpdate()
 
 shell.run('update')
 

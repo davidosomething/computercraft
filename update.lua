@@ -1,14 +1,14 @@
 --
 -- update
--- v1.0.2
+-- v1.0.3
 -- pastebin Q54ecuNa
 -- by @davidosomething
 --
 
--- get_script
+-- getScript
 -- string pastebin_id
 -- string script_name
-function get_script(pastebin_id, script_name)
+function getScript(pastebin_id, script_name)
   local tmpfile = 'tmp/' .. os.getComputerLabel() .. '-' .. script_name
   local scriptfile = os.getComputerLabel() .. '/' .. script_name
 
@@ -30,11 +30,11 @@ shell.setDir('/')
 
 -- reactor
 if os.getComputerLabel() == 'reactor' then
-  get_script('710inmxN', 'main')
+  getScript('710inmxN', 'main')
 end
 
 -- remote
 if os.getComputerLabel() == 'remote' then
-  get_script('SHyMGSSK', 'main')
+  getScript('SHyMGSSK', 'main')
 end
 

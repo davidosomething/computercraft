@@ -5,6 +5,11 @@
 -- by @davidosomething
 --
 
+-- -----------------------------------------------------------------------------
+-- Constants -------------------------------------------------------------------
+-- -----------------------------------------------------------------------------
+ENERGY_MAX = 10000000
+AUTOTOGGLE_ENERGY_THRESHOLD = 50
 
 -- -----------------------------------------------------------------------------
 -- Program state ---------------------------------------------------------------
@@ -41,6 +46,13 @@ rednet.open(modemSide)
 -- Functions -------------------------------------------------------------------
 -- -----------------------------------------------------------------------------
 
+-- getEnergyPercentage
+--
+-- return int
+local function getEnergyPercentage()
+  return math.floor(r.getEnergyStored() / ENERGY_MAX * 100)
+end
+
 -- autotoggle
 --
 local function autotoggle()
@@ -51,7 +63,7 @@ local function autotoggle()
   end
 
   -- turn on if empty buffer
-  if r.getEnergyStored() == 0 then
+  if getEnergyPercentage() < AUTOTOGGLE_ENERGY_THRESHOLD then
     r.setActive(true)
     return
   end
@@ -64,9 +76,9 @@ local function autotoggle()
 end
 
 
--- status_label
+-- statusLabel
 --
-local function status_label(text)
+local function statusLabel(text)
   m.setTextColor(colors.white)
   term.write(text)
 end
@@ -88,13 +100,13 @@ local function status()
   print('energy: ' .. r.getEnergyStored() .. '/10000000 RF')
   print('output: ' .. r.getEnergyProducedLastTick() .. ' RF/t')
 
-  status_label('fuel:   ')
+  statusLabel('fuel:   ')
   m.setTextColor(colors.yellow)
   term.write(r.getFuelAmount())
   m.setTextColor(colors.lightGray)
   term.write('/' .. r.getFuelAmountMax() .. 'mb\n')
 
-  status_label('waste:  ')
+  statusLabel('waste:  ')
   m.setTextColor(colors.lightBlue)
   term.write(r.getWasteAmount())
   m.setTextColor(colors.lightGray)
@@ -116,12 +128,12 @@ local function status()
 end
 
 
--- toggle_reactor
+-- toggleReactor
 --
 -- Switch reactor on/off
 --
 -- nil,boolean state - toggle if nil, on if true, off if false
-local function toggle_reactor(state)
+local function toggleReactor(state)
   -- toggle
   if state == nil then
     state = not r.getActive()
@@ -132,17 +144,17 @@ local function toggle_reactor(state)
 end
 
 
--- get_monitor_touch
+-- getMonitorTouch
 --
-local function get_monitor_touch()
+local function getMonitorTouch()
   local event, side, x, y = os.pullEvent('monitor_touch')
-  toggle_reactor()
+  toggleReactor()
 end
 
 
--- get_timeout
+-- getTimeout
 --
-local function get_timeout()
+local function getTimeout()
   local event, timerHandler = os.pullEvent('timer')
   if autotoggle then
     autotoggle()
@@ -150,18 +162,18 @@ local function get_timeout()
 end
 
 
--- get_modem_message
+-- getModemMessage
 --
-local function get_modem_message()
+local function getModemMessage()
   local senderId, message, protocol = rednet.receive('reactor')
   if message == 'autotoggle' then
-    toggle_reactor()
+    toggleReactor()
   elseif message == 'toggle' then
-    toggle_reactor()
+    toggleReactor()
   elseif message == 'on' then
-    toggle_reactor(true)
+    toggleReactor(true)
   elseif message == 'off' then
-    toggle_reactor(false)
+    toggleReactor(false)
   end
 
   local message = ''
@@ -185,14 +197,14 @@ local function get_modem_message()
 end
 
 
--- get_key
+-- getKey
 --
-local function get_key()
+local function getKey()
   local event, code = os.pullEvent('key')
   if code == key.a then
     autotoggle = not autotoggle
   elseif code == key.t then
-    toggle_reactor()
+    toggleReactor()
   elseif code == key.q then
     exit = true
   end
@@ -210,7 +222,7 @@ while not exit do
   m.setCursorPos(1,1)
   status()
 
-  parallel.waitForAny(get_key, get_monitor_touch, get_modem_message, get_timeout)
+  parallel.waitForAny(getKey, getMonitorTouch, getModemMessage, getTimeout)
   os.cancelTimer(myTimer)
 end
 

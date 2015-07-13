@@ -29,9 +29,9 @@ rednet.open(modemSide)
 -- Functions -------------------------------------------------------------------
 -- -----------------------------------------------------------------------------
 
--- do_action
+-- doAction
 --
-local function do_action(action)
+local function doAction(action)
   if action == 'autotoggle' then
     rednet.send(reactorPort, 'autotoggle', 'reactor')
   elseif action == 'toggle' then
@@ -39,34 +39,34 @@ local function do_action(action)
   end
 end
 
--- get_status
+-- getStatus
 --
 -- Request status messages from reactors over rednet and display
 --
-local function get_status()
+local function getStatus()
   rednet.send(reactorPort, 'status', 'reactor')
   local senderId, message, protocol = rednet.receive('remote')
   print(message)
 end
 
 
--- get_key
+-- getKey
 --
-local function get_key()
+local function getKey()
   local event, code = os.pullEvent('key')
   if code == keys.a then
-    do_action('autotoggle')
+    doAction('autotoggle')
   elseif code == keys.t then
-    do_action('toggle')
+    doAction('toggle')
   elseif code == keys.q then
     exit = true
   end
 end
 
 
--- get_timeout
+-- getTimeout
 --
-local function get_timeout()
+local function getTimeout()
   local event, timerHandler = os.pullEvent('timer')
 end
 
@@ -88,9 +88,9 @@ while not exit do
   m.clear()
   m.setCursorPos(1,1)
   usage()
-  get_status()
+  getStatus()
 
-  parallel.waitForAny(get_key, get_timeout)
+  parallel.waitForAny(getKey, getTimeout)
   os.cancelTimer(myTimer)
 end
 
