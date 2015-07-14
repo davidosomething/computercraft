@@ -1,6 +1,6 @@
 --
 -- reactor/main
--- v2.2.0
+-- v2.3.0
 -- pastebin 710inmxN
 -- by @davidosomething
 --
@@ -24,17 +24,11 @@ exit = false
 
 -- monitor
 local m = peripheral.find('monitor')
-if m then
-  term.redirect(m)
-end
+term.redirect(m)
 
 -- reactor
 local reactorSide = 'back'
-if peripheral.isPresent(reactorSide) then
-  local r = peripheral.wrap('back')
-else
-  exit = true
-end
+local r = peripheral.wrap('back')
 
 -- modem
 local modemSide = 'left'
@@ -53,9 +47,9 @@ local function getEnergyPercentage()
   return math.floor(r.getEnergyStored() / ENERGY_MAX * 100)
 end
 
--- autotoggle
+-- doAutotoggle
 --
-local function autotoggle()
+local function doAutotoggle()
   -- no fuel, leave off
   if r.getFuelAmount() == 0 then
     r.setActive(false)
@@ -87,41 +81,66 @@ end
 -- status
 --
 local function status()
+  m.clear()
+  m.setTextScale(0.5)
+  m.setCursorPos(1,1)
+
+  statusLabel('reactor: ')
   if r.getActive() then
     m.setTextColor(colors.lime)
-    print('reactor: ON')
+    term.write('ON')
   else
     m.setTextColor(colors.red)
-    print('reactor: OFF')
+    term.write('OFF')
   end
+  print()
 
-  m.setTextColor(colors.white)
+  statusLabel('energy: ')
+  m.setTextColor(colors.lightGray)
+  term.write(r.getEnergyStored() .. '/10000000 RF')
+  print()
 
-  print('energy: ' .. r.getEnergyStored() .. '/10000000 RF')
-  print('output: ' .. r.getEnergyProducedLastTick() .. ' RF/t')
+  statusLabel('output: ')
+  m.setTextColor(colors.lightGray)
+  term.write(r.getEnergyProducedLastTick() .. ' RF/t')
+  print()
 
   statusLabel('fuel:   ')
   m.setTextColor(colors.yellow)
   term.write(r.getFuelAmount())
   m.setTextColor(colors.lightGray)
-  term.write('/' .. r.getFuelAmountMax() .. 'mb\n')
-
-  statusLabel('waste:  ')
+  term.write('/')
   m.setTextColor(colors.lightBlue)
   term.write(r.getWasteAmount())
   m.setTextColor(colors.lightGray)
-  term.write('mb')
+  term.write('/' .. r.getFuelAmountMax() .. 'mb')
+  print()
 
-  print('usage:  ' .. r.getFuelConsumedLastTick() .. 'mb/t')
-  print('core:   ' .. r.getFuelTemperature() .. 'C')
-  print('case:   ' .. r.getCasingTemperature() .. 'C')
+  statusLabel('usage:  ')
+  m.setTextColor(colors.lightGray)
+  term.write(r.getFuelConsumedLastTick() .. 'mb/t')
+  print()
 
+  statusLabel('core:   ')
+  m.setTextColor(colors.lightGray)
+  term.write(r.getFuelTemperature() .. 'C')
+  print()
+
+  statusLabel('case:   ')
+  m.setTextColor(colors.lightGray)
+  term.write(r.getCasingTemperature() .. 'C')
+  print()
+
+  statusLabel('auto:   ')
   if autotoggle then
-    print('autotoggle: ON' )
+    m.setTextColor(colors.lime)
+    term.write('ON')
   else
-    print('autotoggle: OFF' )
+    m.setTextColor(colors.gray)
+    term.write('OFF')
   end
 
+  m.setTextColor(colors.lightGray)
   print()
   print("q)uit  t)oggle  a)utotoggle")
   print()
@@ -157,7 +176,7 @@ end
 local function getTimeout()
   local event, timerHandler = os.pullEvent('timer')
   if autotoggle then
-    autotoggle()
+    doAutotoggle()
   end
 end
 
@@ -167,7 +186,7 @@ end
 local function getModemMessage()
   local senderId, message, protocol = rednet.receive('reactor')
   if message == 'autotoggle' then
-    toggleReactor()
+    autotoggle = not autotoggle
   elseif message == 'toggle' then
     toggleReactor()
   elseif message == 'on' then
@@ -201,11 +220,11 @@ end
 --
 local function getKey()
   local event, code = os.pullEvent('key')
-  if code == key.a then
+  if code == keys.a then
     autotoggle = not autotoggle
-  elseif code == key.t then
+  elseif code == keys.t then
     toggleReactor()
-  elseif code == key.q then
+  elseif code == keys.q then
     exit = true
   end
 end
@@ -217,9 +236,6 @@ end
 
 while not exit do
   local myTimer = os.startTimer(1)
-  m.clear()
-  m.setTextScale(0.5)
-  m.setCursorPos(1,1)
   status()
 
   parallel.waitForAny(getKey, getMonitorTouch, getModemMessage, getTimeout)

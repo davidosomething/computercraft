@@ -1,6 +1,6 @@
 --
 -- remote/main
--- v2.2.0
+-- v2.2.1
 -- pastebin SHyMGSSK
 -- by @davidosomething
 --
@@ -85,8 +85,8 @@ end
 
 while not exit do
   local myTimer = os.startTimer(1)
-  m.clear()
-  m.setCursorPos(1,1)
+  term.clear()
+  term.setCursorPos(1,1)
   usage()
   getStatus()
 
