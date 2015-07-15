@@ -1,8 +1,7 @@
 ---
--- lib/meter
--- v1.0.0
---
 -- Meter exposed as API
+-- lib/meter v1.0.0
+--
 --
 -- pastebin LeGJ4Wkb
 --

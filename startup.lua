@@ -1,9 +1,7 @@
 ---
--- startup
--- v3.0.0
---
 -- Run on all computers; shows system meta data, updates system scripts, loads
 -- APIs, autoruns local system scripts
+-- startup v3.0.0
 --
 -- pastebin uVtX8Yx6
 --
