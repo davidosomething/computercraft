@@ -24,12 +24,16 @@
 
 <div id="navigation">
 <br/>
-<h1> docs</h1>
+<h1>docs</h1>
 
 <ul>
   <li><a href="../index.html">Index</a></li>
 </ul>
 
+<h2>Contents</h2>
+<ul>
+<li><a href="#Local_Functions">Local Functions</a></li>
+</ul>
 
 
 <h2>Modules</h2>
@@ -47,10 +51,8 @@
 <div id="content">
 
 <h1>Module <code>reactor.main</code></h1>
-<p>reactor/main
- v3.0.0</p>
-<p> Reactor autostart</p>
-
+<p>Reactor autostart
+ reactor/main v3.0.0</p>
 <p> pastebin 710inmxN</p>
     <h3>Info:</h3>
     <ul>
@@ -58,18 +60,259 @@
     </ul>
 
 
+<h2><a href="#Local_Functions">Local Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#getEnergyPercentage">getEnergyPercentage ()</a></td>
+	<td class="summary">
+
+</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#doAutotoggle">doAutotoggle ()</a></td>
+	<td class="summary">Rules for when to turn the reactor on/off automatically</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#sendStatus">sendStatus (remoteId)</a></td>
+	<td class="summary">Send reactor status as a table over rednet</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#statusLabel">statusLabel (text)</a></td>
+	<td class="summary">Output white text</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#status">status ()</a></td>
+	<td class="summary">Display reactor status on monitor</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#toggleAutotoggle">toggleAutotoggle ()</a></td>
+	<td class="summary">Switch autotoggle on/off state</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#toggleReactor">toggleReactor (state)</a></td>
+	<td class="summary">Switch reactor on/off</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#getMonitorTouch">getMonitorTouch ()</a></td>
+	<td class="summary">Read right clicks on monitor to toggle reactor on/off</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#getKey">getKey ()</a></td>
+	<td class="summary">Do some action based on user key input from terminal</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#getModemMessage">getModemMessage ()</a></td>
+	<td class="summary">Do some action if receiving redstone message from modem</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#getTimeout">getTimeout ()</a></td>
+	<td class="summary">Wait for system timer to trigger</td>
+	</tr>
+</table>
 
 <br/>
 <br/>
 
 
+    <h2 class="section-header "><a name="Local_Functions"></a>Local Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "getEnergyPercentage"></a>
+    <strong>getEnergyPercentage ()</strong>
+    </dt>
+    <dd>
+
+
+
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        int reactor's energy buffer filled as a percentage
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "doAutotoggle"></a>
+    <strong>doAutotoggle ()</strong>
+    </dt>
+    <dd>
+    Rules for when to turn the reactor on/off automatically
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "sendStatus"></a>
+    <strong>sendStatus (remoteId)</strong>
+    </dt>
+    <dd>
+    Send reactor status as a table over rednet
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">remoteId</span>
+            <span class="types"><span class="type">int</span></span>
+         computerId to send rednet message to
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "statusLabel"></a>
+    <strong>statusLabel (text)</strong>
+    </dt>
+    <dd>
+    Output white text
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">text</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "status"></a>
+    <strong>status ()</strong>
+    </dt>
+    <dd>
+    Display reactor status on monitor
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "toggleAutotoggle"></a>
+    <strong>toggleAutotoggle ()</strong>
+    </dt>
+    <dd>
+    Switch autotoggle on/off state
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "toggleReactor"></a>
+    <strong>toggleReactor (state)</strong>
+    </dt>
+    <dd>
+    Switch reactor on/off
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">state</span>
+            <span class="types"><span class="type">{nil,boolean}</span></span>
+
+<ul>
+    <li>toggle if nil, on if true, off if false</li>
+</ul>
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "getMonitorTouch"></a>
+    <strong>getMonitorTouch ()</strong>
+    </dt>
+    <dd>
+    Read right clicks on monitor to toggle reactor on/off
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "getKey"></a>
+    <strong>getKey ()</strong>
+    </dt>
+    <dd>
+    Do some action based on user key input from terminal
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "getModemMessage"></a>
+    <strong>getModemMessage ()</strong>
+    </dt>
+    <dd>
+    Do some action if receiving redstone message from modem
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "getTimeout"></a>
+    <strong>getTimeout ()</strong>
+    </dt>
+    <dd>
+    Wait for system timer to trigger
+
+
+
+
+
+
+
+</dd>
+</dl>
 
 
 </div> <!-- id="content" -->
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.3</a></i>
-<i style="float:right;">Last updated 2015-07-15 17:55:14 </i>
+<i style="float:right;">Last updated 2015-07-15 18:18:12 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>
