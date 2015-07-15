@@ -1,8 +1,7 @@
 ---
--- bin/update
--- v3.0.0
---
 -- Update scripts by computer label
+-- bin/update v3.0.0
+--
 --
 -- pastebin Q54ecuNa
 --

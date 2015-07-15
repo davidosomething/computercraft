@@ -1,8 +1,6 @@
 ---
--- remote/reactor
--- v3.0.0
---
 -- Remotely controls a reactor via Advanced Wireless Pocket Computer
+-- remote/reactor v3.0.0
 --
 -- pastebin SHyMGSSK
 --

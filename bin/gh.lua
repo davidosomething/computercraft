@@ -1,8 +1,7 @@
 ---
--- bin/gh
--- v1.0.0
---
 -- github repo client
+-- bin/gh v1.0.0
+--
 -- based on https://raw.githubusercontent.com/seriallos/computercraft/master/gist.lua
 --
 -- pastebin QwW6Xg6M

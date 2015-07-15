@@ -1,8 +1,6 @@
 ---
--- reactor/main
--- v3.0.0
---
 -- Reactor autostart
+-- reactor/main v3.0.0
 --
 -- pastebin 710inmxN
 --
