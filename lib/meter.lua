@@ -21,7 +21,7 @@ local EMPTY_COLOR = colors.gray
 
 --- Draw a horizontal meter
 --
--- @usage meter.draw(1, 1, 10, 2, 50, 100)
+-- @usage meter.horizontal(1, 1, 10, 2, 50, 100)
 --
 -- @tparam int startX term coord
 -- @tparam int startY term coord
