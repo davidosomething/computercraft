@@ -1,9 +1,11 @@
---
+---
 -- lib/meter
 -- v1.0.0
--- by @davidosomething
 --
 -- Meter exposed as API
+-- pastebin LeGJ4Wkb
+--
+-- @author David O'Trakoun <me@davidosomething.com>
 --
 
 -- -----------------------------------------------------------------------------
@@ -34,10 +36,9 @@ function horizontal(startX, startY, endX, endY, value, max)
   local filledRatio = value / max
   local filledWidth = math.floor(filledRatio * barWidth)
   local filledEndX = startX + filledWidth
-  local emptyStartX = filledEndX + 1
 
-  paintutils.drawFilledBox(x, startY, endX, endY, EMPTY_COLOR)
-  paintutils.drawFilledBox(x, startY, filledEndX, endY, FILLED_COLOR)
+  paintutils.drawFilledBox(startX, startY, endX, endY, EMPTY_COLOR)
+  paintutils.drawFilledBox(startX, startY, filledEndX, endY, FILLED_COLOR)
   term.setBackgroundColor(oldBgColor)
 end
 

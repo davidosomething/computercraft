@@ -1,12 +1,14 @@
---
+---
 -- reactor/main
 -- v3.0.0
--- by @davidosomething
--- pastebin 710inmxN
 --
 -- Reactor autostart
+-- pastebin 710inmxN
+--
+-- @author David O'Trakoun <me@davidosomething.com>
 --
 
+-- luacheck: globals meter
 os.loadAPI('lib/meter')
 
 -- -----------------------------------------------------------------------------
@@ -31,11 +33,12 @@ local is_exit = false
 
 -- monitor
 local m = peripheral.find('monitor')
+local termW, termH -- luacheck: ignore termH
 if m == nil then
   is_exit = true
 else
-  local termW, termH = m.getSize()
   term.redirect(m)
+  termW, termH = m.getSize()
 end
 
 -- reactor
@@ -135,7 +138,7 @@ local function status()
   end
   print()
 
-  meter.draw(1, 2, termW, 2, data['energyStored'], ENERGY_MAX)
+  meter.draw(1, 2, termW, 2, r.getEnergyStored(), ENERGY_MAX)
   print()
 
   statusLabel('energy: ')
@@ -218,6 +221,7 @@ end
 -- Read right clicks on monitor to toggle reactor on/off
 --
 local function getMonitorTouch()
+  -- luacheck: ignore event side x y
   local event, side, x, y = os.pullEvent('monitor_touch')
   toggleReactor()
 end
@@ -228,6 +232,7 @@ end
 -- Do some action based on user key input from terminal
 --
 local function getKey()
+  -- luacheck: ignore event
   local event, code = os.pullEvent('char')
   if      code == keys.a then toggleAutotoggle()
   elseif  code == keys.t then toggleReactor()
@@ -241,6 +246,7 @@ end
 -- Do some action if receiving redstone message from modem
 --
 local function getModemMessage()
+  -- luacheck: ignore protocol
   local senderId, message, protocol = rednet.receive('reactor')
   if     message == 'autotoggle'  then toggleAutotoggle()
   elseif message == 'toggle'      then toggleReactor()
@@ -256,6 +262,7 @@ end
 -- getTimeout
 --
 local function getTimeout()
+  -- luacheck: ignore event timerHandler
   local event, timerHandler = os.pullEvent('timer')
   if is_autotoggle then doAutotoggle() end
 end

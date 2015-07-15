@@ -1,11 +1,12 @@
---
+---
 -- startup
 -- v3.0.0
--- by @davidosomething
--- pastebin uVtX8Yx6
 --
 -- Run on all computers; shows system meta data, updates system scripts, loads
 -- APIs, autoruns local system scripts.
+-- pastebin uVtX8Yx6
+--
+-- @author David O'Trakoun <me@davidosomething.com>
 --
 
 -- -----------------------------------------------------------------------------
@@ -81,10 +82,10 @@ end
 -- Updates the updater
 --
 -- @param table scripts
-local function systemUpdate(scripts)
+local function systemUpdate(systemScripts)
   shell.setDir('/')
 
-  for dest,value in pairs(scripts) do
+  for dest,value in pairs(systemScripts) do
     (function()
       if value == nil then return end
 

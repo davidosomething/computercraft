@@ -1,12 +1,14 @@
---
+---
 -- remote/reactor
 -- v3.0.0
--- by @davidosomething
--- pastebin SHyMGSSK
 --
 -- Remotely controls a reactor via Advanced Wireless Pocket Computer
+-- pastebin SHyMGSSK
+--
+-- @author David O'Trakoun <me@davidosomething.com>
 --
 
+-- luacheck: globals meter
 os.loadAPI('lib/meter')
 
 -- -----------------------------------------------------------------------------
@@ -22,7 +24,7 @@ local is_exit = false
 local termW, termH = term.getSize()
 local statusY = 4             -- below usage
 local energyMeterY = statusY + 1
-local fuelMeterY = energyMeter + 3
+local fuelMeterY = energyMeterY + 3
 
 
 -- -----------------------------------------------------------------------------
@@ -50,21 +52,61 @@ local function doAction(action)
 end
 
 
+-- showStatus
+--
+-- Display formatted reactor status
+--
+-- @param table data from requestStatus()
+local function showStatus(data)
+  -- line 1
+  term.setCursorPos(1, statusY) -- below usage
+  if data['active'] then term.blit('ON ', '555', 'fff')
+  else                   term.blit('OFF', '777', 'fff')
+  end
+
+  term.setCursorPos(6, statusY) -- below usage
+  if data['is_autotoggle'] then term.blit('auto', '5555', 'ffff')
+  else                          term.blit('auto', '7777', 'ffff')
+  end
+
+  -- line 2
+  meter.draw(7, energyMeterY, termW, energyMeterY,
+             data['energyStored'], REACTOR_ENERGY_MAX)
+
+  -- line 3
+  term.setCursorPos(6, energyMeterY + 1)
+  write(data['energyStored'].. ' / 10m RF (' .. data['energyPercentage'] .. '%)')
+
+  -- line 4
+  term.setCursorPos(6, energyMeterY + 2)
+  write(data['energyProducedLastTick'] .. ' RF/t')
+
+  -- line 5
+  meter.draw(7, fuelMeterY, termW, fuelMeterY,
+             data['fuelAmount'], data['fuelAmountMax'])
+
+  -- line 6
+  term.setCursorPos(6, fuelMeterY + 1)
+  write(data['fuelConsumedLastTick'] .. ' mb/t')
+end
+
+
 -- requestStatus
 --
 -- Request status messages from reactors over rednet and display
 --
 local function requestStatus()
   rednet.send(reactorId, 'status', REACTOR_PROTOCOL)
+  -- luacheck: ignore protocol
   local senderId, data, protocol = rednet.receive(PROTOCOL, 1)
-  if senderId ~= nil and message ~= nil then showStatus(data) end
+  if senderId ~= nil and data ~= nil then showStatus(data) end
 end
 
 
 -- getKey
 --
 local function getKey()
-  local event, code = os.pullEvent('char')
+  local event, code = os.pullEvent('char') -- luacheck: ignore event
   if      code == keys.a then doAction('autotoggle')
   elseif  code == keys.t then doAction('toggle')
   elseif  code == keys.q then is_exit = true
@@ -75,7 +117,9 @@ end
 -- getTimeout
 --
 local function getTimeout()
+  -- luacheck: ignore event timerHandler
   local event, timerHandler = os.pullEvent('timer')
+  requestStatus()
 end
 
 
@@ -109,44 +153,6 @@ local function showStatusLabels()
 end
 
 
--- showStatus
---
--- Display formatted reactor status
---
--- @param table data from requestStatus()
-local function showStatus(data)
-  -- line 1
-  term.setCursorPos(1, statusY) -- below usage
-  if data['active'] then term.blit('ON ', '555', 'fff')
-  else                   term.blit('OFF', '777', 'fff')
-  end
-
-  term.setCursorPos(6, statusY) -- below usage
-  if data['is_autotoggle'] then term.blit('auto', '5555', 'ffff')
-  else                          term.blit('auto', '7777', 'ffff')
-  end
-
-  -- line 2
-  meter.draw(7, energyMeterY, termW, energyMeterY,
-             data['energyStored'], REACTOR_ENERGY_MAX)
-
-  -- line 3
-  term.setCursorPos(6, energyMeterY + 1)
-  write(data['energyStored'].. ' / 10m RF (' .. data['energyPercentage'] .. '%)')
-
-  -- line 4
-  term.setCursorPos(6, energyMeter + 2)
-  write(data['energyProducedLastTick'] .. ' RF/t')
-
-  -- line 5
-  meter.draw(7, fuelMeterY, termW, fuelMeterY,
-             data['fuelAmount'], data['fuelAmountMax'])
-
-  -- line 6
-  term.setCursorPos(6, fuelMeterY + 1)
-  write(data['fuelConsumedLastTick'] .. ' mb/t')
-end
-
 -- -----------------------------------------------------------------------------
 -- Main ------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------
@@ -160,8 +166,6 @@ end
 
   while not is_exit do
     local statusTimer = os.startTimer(1)
-    requestStatus()
-
     parallel.waitForAny(getKey, getTimeout)
     os.cancelTimer(statusTimer)
   end

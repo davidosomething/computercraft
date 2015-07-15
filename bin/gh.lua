@@ -1,11 +1,12 @@
---
+---
 -- bin/gh
 -- v1.0.0
--- pastebin QwW6Xg6M
--- by @davidosomething
 --
 -- github repo client
 -- based on https://raw.githubusercontent.com/seriallos/computercraft/master/gist.lua
+-- pastebin QwW6Xg6M
+--
+-- @author David O'Trakoun <me@davidosomething.com>
 --
 
 local USERNAME = "davidosomething"

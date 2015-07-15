@@ -1,8 +1,11 @@
---
+---
 -- bin/update
 -- v3.0.0
+--
+-- Update scripts by computer label
 -- pastebin Q54ecuNa
--- by @davidosomething
+--
+-- @author David O'Trakoun <me@davidosomething.com>
 --
 
 -- -----------------------------------------------------------------------------
@@ -11,6 +14,7 @@
 
 -- getScript
 --
+-- @global
 -- @param string pastebinId
 -- @param string scriptName
 function getScript(pastebinId, scriptName)
