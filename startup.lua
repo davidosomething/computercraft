@@ -40,6 +40,12 @@ local function bootstrap()
   shell.run('mkdir', 'tmp')
 
   -- machine path
+  if os.getComputerLabel() == nil then
+    term.setTextColor(colors.red)
+    print('Computer has no label! Please enter one now:')
+    term.setTextColor('white')
+    os.setComputerLabel(read())
+  end
   if os.getComputerLabel() ~= nil then fs.makeDir(os.getComputerLabel()) end
 
   -- set path
@@ -57,15 +63,7 @@ local function motd()
   print('Welcome!')
   print('CC v' .. os.version())
   print('ID ' .. os.getComputerID())
-
-  if os.getComputerLabel() == nil then
-    term.setTextColor(colors.red)
-    print('Computer has no label! Please set one.')
-    term.setTextColor('white')
-  else
-    print('Label ' .. os.getComputerLabel())
-  end
-
+  print('Label ' .. os.getComputerLabel())
   print('Booted from ' .. shell.getRunningProgram())
   print('       on ' .. os.clock())
   print()
