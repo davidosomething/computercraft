@@ -29,6 +29,13 @@ scripts['lib/meter']    = 'LeGJ4Wkb'
 local function bootstrap()
   shell.setDir('/')
 
+  -- booted from disk or pocket pc in disk drive -- copy to local so we can
+  -- boot without disk next time
+  if shell.getRunningProgram() == 'disk/startup' then
+    fs.delete('/startup')
+    fs.copy('disk/startup', 'startup')
+  end
+
   -- system paths
   shell.run('mkdir', 'bin')
   shell.run('mkdir', 'lib')
@@ -63,7 +70,8 @@ local function motd()
     print('Label ' .. os.getComputerLabel())
   end
 
-  print('Started ' .. os.clock())
+  print('Booted from ' .. shell.getRunningProgram())
+  print('       on ' .. os.clock())
   print()
 end
 
