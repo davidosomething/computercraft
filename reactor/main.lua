@@ -1,21 +1,28 @@
 --
 -- reactor/main
--- v2.3.0
--- pastebin 710inmxN
+-- v3.0.0
 -- by @davidosomething
+-- pastebin 710inmxN
+--
+-- Reactor autostart
 --
 
--- -----------------------------------------------------------------------------
--- Constants -------------------------------------------------------------------
--- -----------------------------------------------------------------------------
-ENERGY_MAX = 10000000
-AUTOTOGGLE_ENERGY_THRESHOLD = 50
+os.loadAPI('lib/meter')
 
 -- -----------------------------------------------------------------------------
--- Program state ---------------------------------------------------------------
+-- Meta ------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------
-autotoggle = true
-exit = false
+local PROTOCOL = 'reactor'
+local REMOTE_PROTOCOL = 'reactor_remote'
+local HOSTNAME = 'main'
+local MODEM_SIDE = 'left'
+local REACTOR_SIDE = 'back'
+
+local ENERGY_MAX = 10000000
+local AUTOTOGGLE_ENERGY_THRESHOLD = 50
+
+local is_autotoggle = true
+local is_exit = false
 
 
 -- -----------------------------------------------------------------------------
@@ -24,16 +31,20 @@ exit = false
 
 -- monitor
 local m = peripheral.find('monitor')
-term.redirect(m)
+if m == nil then
+  is_exit = true
+else
+  local termW, termH = m.getSize()
+  term.redirect(m)
+end
 
 -- reactor
-local reactorSide = 'back'
-local r = peripheral.wrap('back')
+local r = peripheral.wrap(REACTOR_SIDE)
+if r == nil then is_exit = true end
 
 -- modem
-local modemSide = 'left'
-local w = peripheral.wrap(modemSide)
-rednet.open(modemSide)
+rednet.open(MODEM_SIDE)
+rednet.host(PROTOCOL, HOSTNAME)
 
 
 -- -----------------------------------------------------------------------------
@@ -42,7 +53,7 @@ rednet.open(modemSide)
 
 -- getEnergyPercentage
 --
--- return int
+-- @return int
 local function getEnergyPercentage()
   return math.floor(r.getEnergyStored() / ENERGY_MAX * 100)
 end
@@ -70,8 +81,35 @@ local function doAutotoggle()
 end
 
 
+-- sendStatus
+--
+-- Send reactor status as a table over rednet
+--
+-- @param int remoteId computerId to send rednet message to
+local function sendStatus(remoteId)
+  local message = {}
+
+  message['active']                 = r.getActive()
+  message['energyStored']           = r.getEnergyStored()
+  message['fuelAmount']             = r.getFuelAmount()
+  message['wasteAmount']            = r.getWasteAmount()
+  message['fuelAmountMax']          = r.getFuelAmountMax()
+  message['energyProducedLastTick'] = r.getEnergyProducedLastTick()
+  message['fuelConsumedLastTick']   = r.getFuelConsumedLastTick()
+  message['fuelTemperature']        = r.getFuelTemperature()
+  message['casingTemperature']      = r.getCasingTemperature()
+  message['is_autotoggle']          = is_autotoggle
+  message['energyPercentage']       = getEnergyPercentage()
+
+  rednet.send(remoteId, message, REMOTE_PROTOCOL)
+end
+
+
 -- statusLabel
 --
+-- Output white text
+--
+-- @param string text
 local function statusLabel(text)
   m.setTextColor(colors.white)
   term.write(text)
@@ -79,6 +117,8 @@ end
 
 
 -- status
+--
+-- Display reactor status on monitor
 --
 local function status()
   m.clear()
@@ -93,6 +133,9 @@ local function status()
     m.setTextColor(colors.red)
     term.write('OFF')
   end
+  print()
+
+  meter.draw(1, 2, termW, 2, data['energyStored'], ENERGY_MAX)
   print()
 
   statusLabel('energy: ')
@@ -132,7 +175,7 @@ local function status()
   print()
 
   statusLabel('auto:   ')
-  if autotoggle then
+  if is_autotoggle then
     m.setTextColor(colors.lime)
     term.write('ON')
   else
@@ -142,8 +185,17 @@ local function status()
 
   m.setTextColor(colors.lightGray)
   print()
-  print("q)uit  t)oggle  a)utotoggle")
+  print("[q]uit  [t]oggle  [a]utotoggle")
   print()
+end
+
+
+-- toggleAutotoggle
+--
+-- Switch autotoggle on/off state
+--
+local function toggleAutotoggle()
+  is_autotoggle = not is_autotoggle
 end
 
 
@@ -151,12 +203,10 @@ end
 --
 -- Switch reactor on/off
 --
--- nil,boolean state - toggle if nil, on if true, off if false
+-- @param nil,boolean state - toggle if nil, on if true, off if false
 local function toggleReactor(state)
   -- toggle
-  if state == nil then
-    state = not r.getActive()
-  end
+  if state == nil then state = not r.getActive() end
 
   -- set to exact
   r.setActive(state)
@@ -165,9 +215,41 @@ end
 
 -- getMonitorTouch
 --
+-- Read right clicks on monitor to toggle reactor on/off
+--
 local function getMonitorTouch()
   local event, side, x, y = os.pullEvent('monitor_touch')
   toggleReactor()
+end
+
+
+-- getKey
+--
+-- Do some action based on user key input from terminal
+--
+local function getKey()
+  local event, code = os.pullEvent('char')
+  if      code == keys.a then toggleAutotoggle()
+  elseif  code == keys.t then toggleReactor()
+  elseif  code == keys.q then is_exit = true
+  end
+end
+
+
+-- getModemMessage
+--
+-- Do some action if receiving redstone message from modem
+--
+local function getModemMessage()
+  local senderId, message, protocol = rednet.receive('reactor')
+  if     message == 'autotoggle'  then toggleAutotoggle()
+  elseif message == 'toggle'      then toggleReactor()
+  elseif message == 'on'          then toggleReactor(true)
+  elseif message == 'off'         then toggleReactor(false)
+  end
+
+  -- always send reactor status back when a request is made
+  sendStatus(senderId)
 end
 
 
@@ -175,58 +257,7 @@ end
 --
 local function getTimeout()
   local event, timerHandler = os.pullEvent('timer')
-  if autotoggle then
-    doAutotoggle()
-  end
-end
-
-
--- getModemMessage
---
-local function getModemMessage()
-  local senderId, message, protocol = rednet.receive('reactor')
-  if message == 'autotoggle' then
-    autotoggle = not autotoggle
-  elseif message == 'toggle' then
-    toggleReactor()
-  elseif message == 'on' then
-    toggleReactor(true)
-  elseif message == 'off' then
-    toggleReactor(false)
-  end
-
-  local message = ''
-
-  if r.getActive() then
-    message = message .. 'ON'
-  else
-    message = message .. 'OFF'
-  end
-
-  message = message .. '\nrf: ' .. r.getEnergyStored()
-  message = message .. '\nfuel: ' .. r.getFuelAmount() .. '/' .. r.getFuelAmountMax()
-
-  if autotoggle then
-    message = message .. '\nauto: ON'
-  else
-    message = message .. '\nauto: OFF'
-  end
-
-  rednet.send(senderId, message, 'remote')
-end
-
-
--- getKey
---
-local function getKey()
-  local event, code = os.pullEvent('key')
-  if code == keys.a then
-    autotoggle = not autotoggle
-  elseif code == keys.t then
-    toggleReactor()
-  elseif code == keys.q then
-    exit = true
-  end
+  if is_autotoggle then doAutotoggle() end
 end
 
 
@@ -234,11 +265,14 @@ end
 -- Main ------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------
 
-while not exit do
-  local myTimer = os.startTimer(1)
-  status()
+(function ()
+  if is_exit then return end
 
-  parallel.waitForAny(getKey, getMonitorTouch, getModemMessage, getTimeout)
-  os.cancelTimer(myTimer)
-end
+  while not is_exit do
+    local statusTimer = os.startTimer(1)
+    status()
 
+    parallel.waitForAny(getKey, getMonitorTouch, getModemMessage, getTimeout)
+    os.cancelTimer(statusTimer)
+  end
+end)()

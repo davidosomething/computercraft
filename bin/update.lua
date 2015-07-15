@@ -1,40 +1,55 @@
 --
 -- bin/update
--- v1.0.3
+-- v3.0.0
 -- pastebin Q54ecuNa
 -- by @davidosomething
 --
 
+-- -----------------------------------------------------------------------------
+-- Functions -------------------------------------------------------------------
+-- -----------------------------------------------------------------------------
+
 -- getScript
--- string pastebin_id
--- string script_name
-function getScript(pastebin_id, script_name)
-  local tmpfile = 'tmp/' .. os.getComputerLabel() .. '-' .. script_name
-  local scriptfile = os.getComputerLabel() .. '/' .. script_name
+--
+-- @param string pastebinId
+-- @param string scriptName
+function getScript(pastebinId, scriptName)
+  local tmpfile = 'tmp/' .. pastebinId
+  local dest = os.getComputerLabel() .. '/' .. scriptName
+
+  print('Updating ' .. dest .. ' from ' .. pastebinId .. '... ')
+
+  shell.setDir('/')
+  fs.delete(tmpfile)
+  shell.run('pastebin', 'get', pastebinId, tmpfile)
 
   if fs.exists(tmpfile) then
-    fs.delete(tmpfile)
-  end
-  shell.run('pastebin', 'get', pastebin_id, tmpfile)
-
-  if fs.exists(tmpfile) then
-    fs.makeDir(os.getComputerLabel())
-    if fs.exists(scriptfile) then
-      fs.delete(scriptfile)
-    end
-    fs.move(tmpfile, scriptfile)
+    fs.delete(dest)
+    fs.move(tmpfile, dest)
   end
 end
 
-shell.setDir('/')
+-- -----------------------------------------------------------------------------
+-- Main ------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------
 
--- reactor
-if os.getComputerLabel() == 'reactor' then
-  getScript('710inmxN', 'main')
-end
+(function ()
+  if os.getComputerLabel() == nil then
+    term.setTextColor(colors.red)
+    print('Computer has no label! Please set one.')
+    term.setTextColor(colors.white)
+    return
+  end
 
--- remote
-if os.getComputerLabel() == 'remote' then
-  getScript('SHyMGSSK', 'main')
-end
+  term.setTextColor(colors.lightGray)
+  -- reactor
+  if os.getComputerLabel() == 'reactor' then
+    getScript('710inmxN', 'main')
+  end
 
+  -- remote
+  if os.getComputerLabel() == 'remote' then
+    getScript('SHyMGSSK', 'main')
+  end
+  term.setTextColor(colors.white)
+end)()
