@@ -67,7 +67,7 @@ local function showStatus(data)
   end
 
   -- line 2
-  meter.draw(7, energyMeterY, termW, energyMeterY,
+  meter.horizontal(7, energyMeterY, termW, energyMeterY,
              data['energyStored'], REACTOR_ENERGY_MAX)
 
   -- line 3
@@ -79,7 +79,7 @@ local function showStatus(data)
   write(data['energyProducedLastTick'] .. ' RF/t')
 
   -- line 5
-  meter.draw(7, fuelMeterY, termW, fuelMeterY,
+  meter.horizontal(7, fuelMeterY, termW, fuelMeterY,
              data['fuelAmount'], data['fuelAmountMax'])
 
   -- line 6

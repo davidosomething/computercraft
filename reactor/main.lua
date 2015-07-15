@@ -130,7 +130,7 @@ local function status()
   end
   print()
 
-  meter.draw(1, 2, termW, 2, r.getEnergyStored(), ENERGY_MAX)
+  meter.horizontal(1, 2, termW, 2, r.getEnergyStored(), ENERGY_MAX)
   print()
 
   statusLabel('energy: ')
