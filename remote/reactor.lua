@@ -3,6 +3,7 @@
 -- v3.0.0
 --
 -- Remotely controls a reactor via Advanced Wireless Pocket Computer
+--
 -- pastebin SHyMGSSK
 --
 -- @author David O'Trakoun <me@davidosomething.com>
@@ -40,10 +41,10 @@ if reactorId then rednet.open(MODEM_SIDE) else is_exit = true end
 -- Functions -------------------------------------------------------------------
 -- -----------------------------------------------------------------------------
 
--- doAction
+--- Request one of the reactor tasks
 --
--- @param {string} action
-local function doAction(action)
+-- @tparam {string} action
+local function requestAction(action)
   if action == 'autotoggle' then
     rednet.send(reactorId, 'autotoggle', REACTOR_PROTOCOL)
   elseif action == 'toggle' then
@@ -52,11 +53,9 @@ local function doAction(action)
 end
 
 
--- showStatus
+--- Display formatted reactor status
 --
--- Display formatted reactor status
---
--- @param table data from requestStatus()
+-- @tparam table data from requestStatus()
 local function showStatus(data)
   -- line 1
   term.setCursorPos(1, statusY) -- below usage
@@ -91,9 +90,7 @@ local function showStatus(data)
 end
 
 
--- requestStatus
---
--- Request status messages from reactors over rednet and display
+--- Request status messages from reactors over rednet and display
 --
 local function requestStatus()
   rednet.send(reactorId, 'status', REACTOR_PROTOCOL)
@@ -103,19 +100,17 @@ local function requestStatus()
 end
 
 
--- getKey
---
+--- Read keyboard single character input
 local function getKey()
   local event, code = os.pullEvent('char') -- luacheck: ignore event
-  if      code == keys.a then doAction('autotoggle')
-  elseif  code == keys.t then doAction('toggle')
+  if      code == keys.a then requestAction('autotoggle')
+  elseif  code == keys.t then requestAction('toggle')
   elseif  code == keys.q then is_exit = true
   end
 end
 
 
--- getTimeout
---
+--- Wait for system timer to go off
 local function getTimeout()
   -- luacheck: ignore event timerHandler
   local event, timerHandler = os.pullEvent('timer')
@@ -123,8 +118,7 @@ local function getTimeout()
 end
 
 
--- usage
---
+--- Display script usage
 local function usage()
   term.setCursorPos(1,1)
   print("Reactor remote control")
@@ -132,9 +126,7 @@ local function usage()
 end
 
 
--- showStatusLabels
---
--- Display field labels for reactor status
+--- Display field labels for reactor status
 --
 local function showStatusLabels()
   term.setBackgroundColor(colors.black)

@@ -3,6 +3,7 @@
 -- v3.0.0
 --
 -- Reactor autostart
+--
 -- pastebin 710inmxN
 --
 -- @author David O'Trakoun <me@davidosomething.com>
@@ -54,14 +55,13 @@ rednet.host(PROTOCOL, HOSTNAME)
 -- Functions -------------------------------------------------------------------
 -- -----------------------------------------------------------------------------
 
--- getEnergyPercentage
---
--- @return int
+---
+-- @return int reactor's energy buffer filled as a percentage
 local function getEnergyPercentage()
   return math.floor(r.getEnergyStored() / ENERGY_MAX * 100)
 end
 
--- doAutotoggle
+--- Rules for when to turn the reactor on/off automatically
 --
 local function doAutotoggle()
   -- no fuel, leave off
@@ -84,11 +84,9 @@ local function doAutotoggle()
 end
 
 
--- sendStatus
+--- Send reactor status as a table over rednet
 --
--- Send reactor status as a table over rednet
---
--- @param int remoteId computerId to send rednet message to
+-- @tparam int remoteId computerId to send rednet message to
 local function sendStatus(remoteId)
   local message = {}
 
@@ -108,20 +106,16 @@ local function sendStatus(remoteId)
 end
 
 
--- statusLabel
+--- Output white text
 --
--- Output white text
---
--- @param string text
+-- @tparam string text
 local function statusLabel(text)
   m.setTextColor(colors.white)
   term.write(text)
 end
 
 
--- status
---
--- Display reactor status on monitor
+--- Display reactor status on monitor
 --
 local function status()
   m.clear()
@@ -193,20 +187,16 @@ local function status()
 end
 
 
--- toggleAutotoggle
---
--- Switch autotoggle on/off state
+--- Switch autotoggle on/off state
 --
 local function toggleAutotoggle()
   is_autotoggle = not is_autotoggle
 end
 
 
--- toggleReactor
+--- Switch reactor on/off
 --
--- Switch reactor on/off
---
--- @param nil,boolean state - toggle if nil, on if true, off if false
+-- @tparam {nil,boolean} state - toggle if nil, on if true, off if false
 local function toggleReactor(state)
   -- toggle
   if state == nil then state = not r.getActive() end
@@ -216,9 +206,7 @@ local function toggleReactor(state)
 end
 
 
--- getMonitorTouch
---
--- Read right clicks on monitor to toggle reactor on/off
+--- Read right clicks on monitor to toggle reactor on/off
 --
 local function getMonitorTouch()
   -- luacheck: ignore event side x y
@@ -227,9 +215,7 @@ local function getMonitorTouch()
 end
 
 
--- getKey
---
--- Do some action based on user key input from terminal
+--- Do some action based on user key input from terminal
 --
 local function getKey()
   -- luacheck: ignore event
@@ -241,9 +227,7 @@ local function getKey()
 end
 
 
--- getModemMessage
---
--- Do some action if receiving redstone message from modem
+--- Do some action if receiving redstone message from modem
 --
 local function getModemMessage()
   -- luacheck: ignore protocol
@@ -259,7 +243,7 @@ local function getModemMessage()
 end
 
 
--- getTimeout
+--- Wait for system timer to trigger
 --
 local function getTimeout()
   -- luacheck: ignore event timerHandler

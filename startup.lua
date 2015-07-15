@@ -3,7 +3,8 @@
 -- v3.0.0
 --
 -- Run on all computers; shows system meta data, updates system scripts, loads
--- APIs, autoruns local system scripts.
+-- APIs, autoruns local system scripts
+--
 -- pastebin uVtX8Yx6
 --
 -- @author David O'Trakoun <me@davidosomething.com>
@@ -23,9 +24,7 @@ scripts['lib/meter']    = 'LeGJ4Wkb'
 -- Functions -------------------------------------------------------------------
 -- -----------------------------------------------------------------------------
 
--- bootstrap
---
--- Create system dirs and set aliases
+--- Create system dirs and set aliases
 --
 local function bootstrap()
   shell.setDir('/')
@@ -54,9 +53,7 @@ local function bootstrap()
 end
 
 
--- motd
---
--- Show startup message
+--- Show startup message
 --
 local function motd()
   print('Welcome!')
@@ -77,11 +74,9 @@ local function motd()
 end
 
 
--- systemUpdate
+--- Updates the updater
 --
--- Updates the updater
---
--- @param table scripts
+-- @tparam {table} systemScripts
 local function systemUpdate(systemScripts)
   shell.setDir('/')
 

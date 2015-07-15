@@ -3,6 +3,7 @@
 -- v3.0.0
 --
 -- Update scripts by computer label
+--
 -- pastebin Q54ecuNa
 --
 -- @author David O'Trakoun <me@davidosomething.com>
@@ -12,11 +13,10 @@
 -- Functions -------------------------------------------------------------------
 -- -----------------------------------------------------------------------------
 
--- getScript
+--- Replace a script with a new version from pastebin
 --
--- @global
--- @param string pastebinId
--- @param string scriptName
+-- @tparam string pastebinId
+-- @tparam string scriptName
 function getScript(pastebinId, scriptName)
   local tmpfile = 'tmp/' .. pastebinId
   local dest = os.getComputerLabel() .. '/' .. scriptName

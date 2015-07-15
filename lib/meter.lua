@@ -3,6 +3,7 @@
 -- v1.0.0
 --
 -- Meter exposed as API
+--
 -- pastebin LeGJ4Wkb
 --
 -- @author David O'Trakoun <me@davidosomething.com>
@@ -19,16 +20,14 @@ local EMPTY_COLOR = colors.gray
 -- Functions -------------------------------------------------------------------
 -- -----------------------------------------------------------------------------
 
--- horizontal
+--- Draw a horizontal meter
 --
--- Horizontal meter
---
--- @param int startX term coord
--- @param int startY term coord
--- @param int endX term coord
--- @param int endY term coord
--- @param int value
--- @param int max
+-- @tparam int startX term coord
+-- @tparam int startY term coord
+-- @tparam int endX term coord
+-- @tparam int endY term coord
+-- @tparam int value
+-- @tparam int max
 function horizontal(startX, startY, endX, endY, value, max)
   local oldBgColor = term.getBackgroundColor()
 
