@@ -1,3 +1,4 @@
+title = "ComputerCraft"
 project = "docs"
 all = true
 format = "markdown"
