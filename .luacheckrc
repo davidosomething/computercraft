@@ -8,6 +8,7 @@ globals = {
   'paintutils',
   'parallel',
   'peripheral',
+  'read',
   'rednet',
   'write',
   'shell',
