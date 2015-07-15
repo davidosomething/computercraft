@@ -36,14 +36,8 @@ function horizontal(startX, startY, endX, endY, value, max)
   local filledEndX = startX + filledWidth
   local emptyStartX = filledEndX + 1
 
-  -- filled
+  paintutils.drawFilledBox(x, startY, endX, endY, EMPTY_COLOR)
   paintutils.drawFilledBox(x, startY, filledEndX, endY, FILLED_COLOR)
-
-  -- has empty space to fill
-  if filledEndX < endX then
-    paintutils.drawFilledBox(emptyStartX, startY, endX, endY, EMPTY_COLOR)
-  end
-
   term.setBackgroundColor(oldBgColor)
 end
 
