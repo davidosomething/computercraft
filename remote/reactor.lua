@@ -32,15 +32,13 @@ local fuelMeterY = energyMeterY + 3
 
 -- find remote reactor
 local reactorId = rednet.lookup(REACTOR_PROTOCOL, REACTOR_HOSTNAME)
-if reactorId then
-  rednet.open(MODEM_SIDE)
-else
+if reactorId == nil then
   print("Couldn't find reactor on " .. REACTOR_PROTOCOL .. "." .. REACTOR_HOSTNAME)
   print("Falling back to ID 1")
   reactorId = 1
-  read()
 end
 
+rednet.open(MODEM_SIDE)
 
 -- -----------------------------------------------------------------------------
 -- Functions -------------------------------------------------------------------
