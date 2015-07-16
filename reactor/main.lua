@@ -1,6 +1,6 @@
 ---
 -- Reactor autostart
--- reactor/main v3.1.2
+-- reactor/main v3.2.2
 --
 -- pastebin 710inmxN
 --
@@ -151,7 +151,7 @@ local function status()
   print()
 
   -- line 4
-  meter.horizontal(2, 4, termW - 1, 4, r.getEnergyStored(), ENERGY_MAX)
+  meter.horizontal(2, 4, termW - 1, 4, r.getEnergyStored(), ENERGY_MAX, colors.red)
 
   -- line 5
   print()
@@ -162,6 +162,7 @@ local function status()
   write(r.getEnergyProducedLastTick() .. ' RF/t')
   print()
 
+  -- line 7
   statusLabel('fuel:   ')
   m.setTextColor(colors.yellow)
   write(r.getFuelAmount())
@@ -171,6 +172,12 @@ local function status()
   write(r.getWasteAmount())
   m.setTextColor(colors.lightGray)
   write('/' .. r.getFuelAmountMax() .. 'mb')
+  print()
+
+  -- line 8
+  meter.horizontal(2, 8, termW - 1, 8, r.getFuelAmount(), r.getFuelAmountMax(), colors.yellow)
+
+  -- line 9
   print()
 
   statusLabel('usage:  ')
