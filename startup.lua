@@ -15,7 +15,6 @@
 local scripts = {}
 scripts['bin/update']   = 'Q54ecuNa'
 scripts['bin/gh']       = 'QwW6Xg6M'
-scripts['lib/meter']    = 'LeGJ4Wkb'
 
 
 -- -----------------------------------------------------------------------------
@@ -60,12 +59,9 @@ end
 --- Show startup message
 --
 local function motd()
-  print('Welcome!')
-  print('CC v' .. os.version())
-  print('ID ' .. os.getComputerID())
-  print('Label ' .. os.getComputerLabel())
-  print('Booted from ' .. shell.getRunningProgram())
-  print('       on ' .. os.clock())
+  print('Welcome to ' .. os.version())
+  print(' You are ' .. os.getComputerLabel() .. ':' .. os.getComputerID())
+  print(' Booted from ' .. shell.getRunningProgram())
   print()
 end
 
@@ -112,9 +108,6 @@ end
   systemUpdate(scripts)
   term.setTextColor(colors.white)
   print()
-
-  -- load APIs
-  if fs.exists('lib/meter') then os.loadAPI('lib/meter') end
 
   -- update computer specific scripts
   shell.run('bin/update')

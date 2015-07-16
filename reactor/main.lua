@@ -1,6 +1,6 @@
 ---
 -- Reactor autostart
--- reactor/main v3.0.0
+-- reactor/main v3.3.1
 --
 -- pastebin 710inmxN
 --
@@ -109,7 +109,7 @@ end
 -- @tparam string text
 local function statusLabel(text)
   m.setTextColor(colors.white)
-  term.write(text)
+  write(text)
 end
 
 
@@ -120,65 +120,83 @@ local function status()
   m.setTextScale(0.5)
   m.setCursorPos(1,1)
 
+  -- line 1
   statusLabel('reactor: ')
   if r.getActive() then
     m.setTextColor(colors.lime)
-    term.write('ON')
+    write('ON')
   else
     m.setTextColor(colors.red)
-    term.write('OFF')
+    write('off')
+  end
+
+  m.setCursorPos(19,1)
+  statusLabel('auto: ')
+  if is_autotoggle then
+    m.setTextColor(colors.lime)
+    write('ON')
+  else
+    m.setTextColor(colors.gray)
+    write('off')
   end
   print()
 
-  meter.horizontal(1, 2, termW, 2, r.getEnergyStored(), ENERGY_MAX)
+  -- line 2
   print()
 
+  -- line 3
   statusLabel('energy: ')
   m.setTextColor(colors.lightGray)
-  term.write(r.getEnergyStored() .. '/10000000 RF')
+  write(r.getEnergyStored() .. '/10000000 RF')
   print()
 
+  -- line 4
+  meter.horizontal(2, 4, termW - 1, 4, r.getEnergyStored(), ENERGY_MAX, colors.red)
+
+  -- line 5
+  print()
+
+  -- line 6
   statusLabel('output: ')
   m.setTextColor(colors.lightGray)
-  term.write(r.getEnergyProducedLastTick() .. ' RF/t')
+  write(r.getEnergyProducedLastTick() .. ' RF/t')
   print()
 
+  -- line 7
   statusLabel('fuel:   ')
   m.setTextColor(colors.yellow)
-  term.write(r.getFuelAmount())
+  write(r.getFuelAmount())
   m.setTextColor(colors.lightGray)
-  term.write('/')
+  write('/')
   m.setTextColor(colors.lightBlue)
-  term.write(r.getWasteAmount())
+  write(r.getWasteAmount())
   m.setTextColor(colors.lightGray)
-  term.write('/' .. r.getFuelAmountMax() .. 'mb')
+  write('/' .. r.getFuelAmountMax() .. 'mb')
+  print()
+
+  -- line 8
+  meter.horizontal(2, 8, termW - 1, 8, r.getFuelAmount(), r.getFuelAmountMax(), colors.yellow)
+
+  -- line 9
   print()
 
   statusLabel('usage:  ')
   m.setTextColor(colors.lightGray)
-  term.write(r.getFuelConsumedLastTick() .. 'mb/t')
+  write(r.getFuelConsumedLastTick() .. 'mb/t')
   print()
 
   statusLabel('core:   ')
   m.setTextColor(colors.lightGray)
-  term.write(r.getFuelTemperature() .. 'C')
+  write(r.getFuelTemperature() .. 'C')
   print()
 
   statusLabel('case:   ')
   m.setTextColor(colors.lightGray)
-  term.write(r.getCasingTemperature() .. 'C')
+  write(r.getCasingTemperature() .. 'C')
   print()
 
-  statusLabel('auto:   ')
-  if is_autotoggle then
-    m.setTextColor(colors.lime)
-    term.write('ON')
-  else
-    m.setTextColor(colors.gray)
-    term.write('OFF')
-  end
-
   m.setTextColor(colors.lightGray)
+  print()
   print()
   print("[q]uit  [t]oggle  [a]utotoggle")
   print()
@@ -204,12 +222,13 @@ local function toggleReactor(state)
 end
 
 
---- Read right clicks on monitor to toggle reactor on/off
+--- Read right clicks on monitor to toggle reactor/autotoggle on/off
 --
 local function getMonitorTouch()
   -- luacheck: ignore event side x y
   local event, side, x, y = os.pullEvent('monitor_touch')
-  toggleReactor()
+  if x < 19 then toggleReactor() end
+  if x > 18 then toggleAutotoggle() end
 end
 
 
@@ -217,7 +236,7 @@ end
 --
 local function getKey()
   -- luacheck: ignore event
-  local event, code = os.pullEvent('char')
+  local event, code = os.pullEvent('key')
   if      code == keys.a then toggleAutotoggle()
   elseif  code == keys.t then toggleReactor()
   elseif  code == keys.q then is_exit = true
@@ -264,4 +283,6 @@ end
     parallel.waitForAny(getKey, getMonitorTouch, getModemMessage, getTimeout)
     os.cancelTimer(statusTimer)
   end
+
+  print()
 end)()

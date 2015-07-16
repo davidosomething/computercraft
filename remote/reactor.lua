@@ -1,6 +1,6 @@
 ---
 -- Remotely controls a reactor via Advanced Wireless Pocket Computer
--- remote/reactor v3.0.0
+-- remote/reactor v3.2.3
 --
 -- pastebin SHyMGSSK
 --
@@ -21,9 +21,13 @@ local REACTOR_ENERGY_MAX = 10000000
 
 local is_exit = false
 local termW, termH = term.getSize()
-local statusY = 4             -- below usage
-local energyMeterY = statusY + 1
-local fuelMeterY = energyMeterY + 3
+
+local statusY = 4 -- below usage
+local energyY = statusY + 2
+local energyMeterY = energyY + 1
+local energyTickY = energyMeterY + 1
+local fuelMeterY = energyTickY + 2
+local fuelConsumedY = fuelMeterY + 1
 
 
 -- -----------------------------------------------------------------------------
@@ -32,8 +36,14 @@ local fuelMeterY = energyMeterY + 3
 
 -- find remote reactor
 local reactorId = rednet.lookup(REACTOR_PROTOCOL, REACTOR_HOSTNAME)
-if reactorId then rednet.open(MODEM_SIDE) else is_exit = true end
+if reactorId == nil then
+  print("ERROR: No reactor @ " .. REACTOR_PROTOCOL .. "." .. REACTOR_HOSTNAME)
+  print("Falling back to ID 1")
+  read()
+  reactorId = 1
+end
 
+rednet.open(MODEM_SIDE)
 
 -- -----------------------------------------------------------------------------
 -- Functions -------------------------------------------------------------------
@@ -53,37 +63,55 @@ end
 
 --- Display formatted reactor status
 --
+-- output --------------
+-- status     autotoggle
+-- rf buffer
+-- rf meter
+-- rf/t
+--
+-- fuel meter
+-- fuel mb/t
+--
+--
+--
 -- @tparam table data from requestStatus()
 local function showStatus(data)
-  -- line 1
+  local x = 6
+
   term.setCursorPos(1, statusY) -- below usage
-  if data['active'] then term.blit('ON ', '555', 'fff')
-  else                   term.blit('OFF', '777', 'fff')
+  if data['active'] then
+    term.setTextColor(colors.red)
+    write('ON')
+  else
+    term.setTextColor(colors.lightGray)
+    write('off')
   end
 
-  term.setCursorPos(6, statusY) -- below usage
-  if data['is_autotoggle'] then term.blit('auto', '5555', 'ffff')
-  else                          term.blit('auto', '7777', 'ffff')
+  term.setCursorPos(12, statusY) -- below usage
+  if data['is_autotoggle'] then
+    term.setTextColor(colors.red)
+    write('AUTO')
+  else
+    term.setTextColor(colors.lightGray)
+    write('auto')
   end
 
-  -- line 2
-  meter.horizontal(7, energyMeterY, termW, energyMeterY,
-             data['energyStored'], REACTOR_ENERGY_MAX)
+  term.setTextColor(colors.lightGray)
+  term.setCursorPos(x, energyY)
+  write(data['energyStored'].. '/10m')
 
-  -- line 3
-  term.setCursorPos(6, energyMeterY + 1)
-  write(data['energyStored'].. ' / 10m RF (' .. data['energyPercentage'] .. '%)')
+  meter.horizontal(x, energyMeterY, termW - 1, energyMeterY,
+                   data['energyStored'], REACTOR_ENERGY_MAX,
+                   colors.red)
 
-  -- line 4
-  term.setCursorPos(6, energyMeterY + 2)
+  term.setCursorPos(x, energyTickY)
   write(data['energyProducedLastTick'] .. ' RF/t')
 
-  -- line 5
-  meter.horizontal(7, fuelMeterY, termW, fuelMeterY,
-             data['fuelAmount'], data['fuelAmountMax'])
+  meter.horizontal(x, fuelMeterY, termW - 1, fuelMeterY,
+                   data['fuelAmount'], data['fuelAmountMax'],
+                   colors.yellow)
 
-  -- line 6
-  term.setCursorPos(6, fuelMeterY + 1)
+  term.setCursorPos(x, fuelConsumedY)
   write(data['fuelConsumedLastTick'] .. ' mb/t')
 end
 
@@ -100,7 +128,7 @@ end
 
 --- Read keyboard single character input
 local function getKey()
-  local event, code = os.pullEvent('char') -- luacheck: ignore event
+  local event, code = os.pullEvent('key') -- luacheck: ignore event
   if      code == keys.a then requestAction('autotoggle')
   elseif  code == keys.t then requestAction('toggle')
   elseif  code == keys.q then is_exit = true
@@ -119,8 +147,8 @@ end
 --- Display script usage
 local function usage()
   term.setCursorPos(1,1)
-  print("Reactor remote control")
-  print("[q]uit  [t]oggle  [a]utotoggle")
+  print("Reactor ID " .. reactorId)
+  print("[q]uit [t]oggle [a]utotogg")
 end
 
 
@@ -135,11 +163,11 @@ local function showStatusLabels()
     term.clearLine()
   end
 
-  term.setCursorPos(1, energyMeterY)
-  print('RF   ')    -- energy meter
+  term.setCursorPos(1, energyY)
+  write('RF   ')    -- energy meter
 
   term.setCursorPos(1, fuelMeterY)
-  print('Fuel ')    -- fuel meter
+  write('Fuel ')    -- fuel meter
 end
 
 
@@ -148,9 +176,9 @@ end
 -- -----------------------------------------------------------------------------
 
 (function ()
+  term.clear()
   if is_exit then return end
 
-  term.clear()
   usage()
   showStatusLabels()
 
@@ -159,4 +187,6 @@ end
     parallel.waitForAny(getKey, getTimeout)
     os.cancelTimer(statusTimer)
   end
+
+  print()
 end)()
