@@ -23,10 +23,12 @@ local is_exit = false
 local termW, termH = term.getSize()
 
 local statusY = 4 -- below usage
-local energyY = statusY + 1
+local energyY = statusY + 2
 local energyMeterY = energyY + 1
-local fuelY = energyMeterY + 2
-local fuelMeterY = fuelY + 1
+local energyTickY = energyMeterY + 1
+local fuelMeterY = energyTickY + 2
+local fuelConsumedY = fuelMeterY + 1
+
 
 -- -----------------------------------------------------------------------------
 -- Peripheral config -----------------------------------------------------------
@@ -61,8 +63,21 @@ end
 
 --- Display formatted reactor status
 --
+-- output --------------
+-- status     autotoggle
+-- rf buffer
+-- rf meter
+-- rf/t
+--
+-- fuel meter
+-- fuel mb/t
+--
+--
+--
 -- @tparam table data from requestStatus()
 local function showStatus(data)
+  local x = 6
+
   term.setCursorPos(1, statusY) -- below usage
   if data['active'] then
     term.setTextColor(colors.red)
@@ -72,7 +87,7 @@ local function showStatus(data)
     write('off')
   end
 
-  term.setCursorPos(10, statusY) -- below usage
+  term.setCursorPos(12, statusY) -- below usage
   if data['is_autotoggle'] then
     term.setTextColor(colors.red)
     write('AUTO')
@@ -81,20 +96,19 @@ local function showStatus(data)
     write('auto')
   end
 
-  term.setCursorPos(5, statusY + 1)
-  write(data['energyStored'].. '/10m RF (' .. data['energyPercentage'] .. '%)')
-  print()
+  term.setCursorPos(x, energyY)
+  write(data['energyStored'].. '/10m')
 
-  meter.horizontal(5, energyMeterY, termW - 1, energyMeterY,
+  meter.horizontal(x, energyMeterY, termW - 1, energyMeterY,
                    data['energyStored'], REACTOR_ENERGY_MAX)
 
-  term.setCursorPos(5, energyMeterY + 2)
+  term.setCursorPos(x, energyTickY)
   write(data['energyProducedLastTick'] .. ' RF/t')
 
-  meter.horizontal(5, fuelMeterY, termW - 1, fuelMeterY,
+  meter.horizontal(x, fuelMeterY, termW - 1, fuelMeterY,
                    data['fuelAmount'], data['fuelAmountMax'])
 
-  term.setCursorPos(6, fuelMeterY + 1)
+  term.setCursorPos(x, fuelConsumedY + 2)
   write(data['fuelConsumedLastTick'] .. ' mb/t')
 end
 
@@ -149,7 +163,7 @@ local function showStatusLabels()
   term.setCursorPos(1, energyY)
   write('RF   ')    -- energy meter
 
-  term.setCursorPos(1, fuelY)
+  term.setCursorPos(1, fuelMeterY)
   write('Fuel ')    -- fuel meter
 end
 
