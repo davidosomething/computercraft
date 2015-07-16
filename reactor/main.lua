@@ -109,7 +109,7 @@ end
 -- @tparam string text
 local function statusLabel(text)
   m.setTextColor(colors.white)
-  term.write(text)
+  write(text)
 end
 
 
@@ -123,10 +123,10 @@ local function status()
   statusLabel('reactor: ')
   if r.getActive() then
     m.setTextColor(colors.lime)
-    term.write('ON')
+    write('ON')
   else
     m.setTextColor(colors.red)
-    term.write('OFF')
+    write('OFF')
   end
   print()
 
@@ -135,47 +135,47 @@ local function status()
 
   statusLabel('energy: ')
   m.setTextColor(colors.lightGray)
-  term.write(r.getEnergyStored() .. '/10000000 RF')
+  write(r.getEnergyStored() .. '/10000000 RF')
   print()
 
   statusLabel('output: ')
   m.setTextColor(colors.lightGray)
-  term.write(r.getEnergyProducedLastTick() .. ' RF/t')
+  write(r.getEnergyProducedLastTick() .. ' RF/t')
   print()
 
   statusLabel('fuel:   ')
   m.setTextColor(colors.yellow)
-  term.write(r.getFuelAmount())
+  write(r.getFuelAmount())
   m.setTextColor(colors.lightGray)
-  term.write('/')
+  write('/')
   m.setTextColor(colors.lightBlue)
-  term.write(r.getWasteAmount())
+  write(r.getWasteAmount())
   m.setTextColor(colors.lightGray)
-  term.write('/' .. r.getFuelAmountMax() .. 'mb')
+  write('/' .. r.getFuelAmountMax() .. 'mb')
   print()
 
   statusLabel('usage:  ')
   m.setTextColor(colors.lightGray)
-  term.write(r.getFuelConsumedLastTick() .. 'mb/t')
+  write(r.getFuelConsumedLastTick() .. 'mb/t')
   print()
 
   statusLabel('core:   ')
   m.setTextColor(colors.lightGray)
-  term.write(r.getFuelTemperature() .. 'C')
+  write(r.getFuelTemperature() .. 'C')
   print()
 
   statusLabel('case:   ')
   m.setTextColor(colors.lightGray)
-  term.write(r.getCasingTemperature() .. 'C')
+  write(r.getCasingTemperature() .. 'C')
   print()
 
   statusLabel('auto:   ')
   if is_autotoggle then
     m.setTextColor(colors.lime)
-    term.write('ON')
+    write('ON')
   else
     m.setTextColor(colors.gray)
-    term.write('OFF')
+    write('OFF')
   end
 
   m.setTextColor(colors.lightGray)
