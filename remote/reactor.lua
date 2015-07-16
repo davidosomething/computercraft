@@ -100,7 +100,7 @@ end
 
 --- Read keyboard single character input
 local function getKey()
-  local event, code = os.pullEvent('char') -- luacheck: ignore event
+  local event, code = os.pullEvent('key') -- luacheck: ignore event
   if      code == keys.a then requestAction('autotoggle')
   elseif  code == keys.t then requestAction('toggle')
   elseif  code == keys.q then is_exit = true

@@ -225,7 +225,7 @@ end
 --
 local function getKey()
   -- luacheck: ignore event
-  local event, code = os.pullEvent('char')
+  local event, code = os.pullEvent('key')
   if      code == keys.a then toggleAutotoggle()
   elseif  code == keys.t then toggleReactor()
   elseif  code == keys.q then is_exit = true
