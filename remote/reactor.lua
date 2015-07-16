@@ -1,6 +1,6 @@
 ---
 -- Remotely controls a reactor via Advanced Wireless Pocket Computer
--- remote/reactor v3.2.3
+-- remote/reactor v3.2.4
 --
 -- pastebin SHyMGSSK
 --
@@ -81,7 +81,7 @@ local function showStatus(data)
   term.setCursorPos(1, statusY) -- below usage
   if data['active'] then
     term.setTextColor(colors.red)
-    write('ON')
+    write('ON ')
   else
     term.setTextColor(colors.lightGray)
     write('off')
