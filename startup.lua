@@ -72,16 +72,18 @@ end
 local function systemUpdate(systemScripts)
   shell.setDir('/')
 
-  for dest,value in pairs(systemScripts) do
+  for dest,pastebinId in pairs(systemScripts) do
     (function()
-      if value == nil then return end
+      if pastebinId == nil then return end
 
-      local tmpfile = 'tmp/' .. value
-
-      print('Updating ' .. dest .. ' from ' .. value .. '... ')
-
+      local tmpfile = 'tmp/' .. pastebinId
       fs.delete(tmpfile)
-      shell.run('pastebin', 'get', value, tmpfile)
+
+      if http and fs.exists('bin/gh') then
+        shell.run('gh', 'get', dest .. '.lua', tmpfile)
+      else
+        shell.run('pastebin', 'get', pastebinId, tmpfile)
+      end
 
       if fs.exists(tmpfile) then
         fs.delete(dest)

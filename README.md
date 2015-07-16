@@ -27,6 +27,9 @@ label set COMPUTER_LABEL
 where `COMPUTER_LABEL` is one of `reactor` or `remote`. Then restart to have
 CraftOS autorun the startup script.
 
+After startup runs once and gets files via pastebin, future requests will be
+made directly to GitHub via the HTTP API if you have that enabled.
+
 ## Docs
 
 See [ldoc generated docs](http://davidosomething.github.io/computercraft/) for
