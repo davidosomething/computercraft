@@ -1,6 +1,6 @@
 ---
 -- Remotely controls a reactor via Advanced Wireless Pocket Computer
--- remote/reactor v3.2.1
+-- remote/reactor v3.2.2
 --
 -- pastebin SHyMGSSK
 --
@@ -100,15 +100,17 @@ local function showStatus(data)
   write(data['energyStored'].. '/10m')
 
   meter.horizontal(x, energyMeterY, termW - 1, energyMeterY,
-                   data['energyStored'], REACTOR_ENERGY_MAX)
+                   data['energyStored'], REACTOR_ENERGY_MAX,
+                   colors.red)
 
   term.setCursorPos(x, energyTickY)
   write(data['energyProducedLastTick'] .. ' RF/t')
 
   meter.horizontal(x, fuelMeterY, termW - 1, fuelMeterY,
-                   data['fuelAmount'], data['fuelAmountMax'])
+                   data['fuelAmount'], data['fuelAmountMax'],
+                   colors.yellow)
 
-  term.setCursorPos(x, fuelConsumedY + 2)
+  term.setCursorPos(x, fuelConsumedY)
   write(data['fuelConsumedLastTick'] .. ' mb/t')
 end
 
