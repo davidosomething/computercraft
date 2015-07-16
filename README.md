@@ -5,6 +5,16 @@ Most of these are mirrored on
 [my pastebin account](http://pastebin.com/u/davidosomething)
 so you can grab them individually there.
 
+## Screenshots
+
+Reactor: right clicking left/right will toggle reactor or autotoggle state.
+
+![Reactor](https://raw.githubusercontent.com/davidosomething/computercraft/master/docs/reactor-main.png)
+
+Remote:
+
+![Remote](https://raw.githubusercontent.com/davidosomething/computercraft/master/docs/remote-reactor.png)
+
 ## Installation
 
 From a new ComputerCraft computer run
