@@ -120,6 +120,7 @@ local function status()
   m.setTextScale(0.5)
   m.setCursorPos(1,1)
 
+  -- line 1
   statusLabel('reactor: ')
   if r.getActive() then
     m.setTextColor(colors.lime)
@@ -128,16 +129,31 @@ local function status()
     m.setTextColor(colors.red)
     write('OFF')
   end
+
+  m.setCursorPos(16,1)
+  statusLabel('auto:   ')
+  if is_autotoggle then
+    m.setTextColor(colors.lime)
+    write('ON')
+  else
+    m.setTextColor(colors.gray)
+    write('OFF')
+  end
   print()
 
-  meter.horizontal(2, 3, termW - 1, 3, r.getEnergyStored(), ENERGY_MAX)
-  print()
-
+  -- line 2
   statusLabel('energy: ')
   m.setTextColor(colors.lightGray)
   write(r.getEnergyStored() .. '/10000000 RF')
   print()
 
+  -- line 3
+  meter.horizontal(2, 3, termW - 1, 3, r.getEnergyStored(), ENERGY_MAX)
+
+  -- line 4
+  print()
+
+  -- line 5
   statusLabel('output: ')
   m.setTextColor(colors.lightGray)
   write(r.getEnergyProducedLastTick() .. ' RF/t')
@@ -169,16 +185,8 @@ local function status()
   write(r.getCasingTemperature() .. 'C')
   print()
 
-  statusLabel('auto:   ')
-  if is_autotoggle then
-    m.setTextColor(colors.lime)
-    write('ON')
-  else
-    m.setTextColor(colors.gray)
-    write('OFF')
-  end
-
   m.setTextColor(colors.lightGray)
+  print()
   print()
   print("[q]uit  [t]oggle  [a]utotoggle")
   print()
