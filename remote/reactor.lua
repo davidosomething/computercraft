@@ -63,13 +63,21 @@ end
 local function showStatus(data)
   -- line 1
   term.setCursorPos(1, statusY) -- below usage
-  if data['active'] then term.blit('ON ', '555', 'fff')
-  else                   term.blit('OFF', '777', 'fff')
+  if data['active'] then
+    term.setTextColor(colors.red)
+    write('ON')
+  else
+    term.setTextColor(colors.lightGray)
+    write('off')
   end
 
   term.setCursorPos(6, statusY) -- below usage
-  if data['is_autotoggle'] then term.blit('auto', '5555', 'ffff')
-  else                          term.blit('auto', '7777', 'ffff')
+  if data['is_autotoggle'] then
+    term.setTextColor(colors.red)
+    write('AUTO')
+  else
+    term.setTextColor(colors.lightGray)
+    write('auto')
   end
 
   -- line 2
