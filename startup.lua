@@ -59,12 +59,9 @@ end
 --- Show startup message
 --
 local function motd()
-  print('Welcome!')
-  print('CC v' .. os.version())
-  print('ID ' .. os.getComputerID())
-  print('Label ' .. os.getComputerLabel())
-  print('Booted from ' .. shell.getRunningProgram())
-  print('       on ' .. os.clock())
+  print('Welcome to ' .. os.version())
+  print(' You are ' .. os.getComputerLabel() .. ':' .. os.getComputerID())
+  print(' Booted from ' .. shell.getRunningProgram())
   print()
 end
 
