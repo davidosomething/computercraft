@@ -1,7 +1,7 @@
 ---
 -- Run on all computers; shows system meta data, updates system scripts, loads
 -- APIs, autoruns local system scripts
--- startup v3.1.0
+-- startup v3.1.1
 --
 -- pastebin uVtX8Yx6
 --
@@ -43,7 +43,8 @@ local function bootstrap()
     term.setTextColor(colors.red)
     print('Computer has no label! Please enter one now:')
     term.setTextColor('white')
-    os.setComputerLabel(read())
+    local getLabel = read()
+    os.setComputerLabel(getLabel)
   end
   if os.getComputerLabel() ~= nil then fs.makeDir(os.getComputerLabel()) end
 
