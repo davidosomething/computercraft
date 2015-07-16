@@ -1,6 +1,6 @@
 ---
 -- Reactor autostart
--- reactor/main v3.1.0
+-- reactor/main v3.1.2
 --
 -- pastebin 710inmxN
 --
@@ -130,8 +130,8 @@ local function status()
     write('OFF')
   end
 
-  m.setCursorPos(16,1)
-  statusLabel('auto:   ')
+  m.setCursorPos(19,1)
+  statusLabel('auto: ')
   if is_autotoggle then
     m.setTextColor(colors.lime)
     write('ON')
@@ -142,18 +142,21 @@ local function status()
   print()
 
   -- line 2
+  print()
+
+  -- line 3
   statusLabel('energy: ')
   m.setTextColor(colors.lightGray)
   write(r.getEnergyStored() .. '/10000000 RF')
   print()
 
-  -- line 3
-  meter.horizontal(2, 3, termW - 1, 3, r.getEnergyStored(), ENERGY_MAX)
-
   -- line 4
-  print()
+  meter.horizontal(2, 4, termW - 1, 4, r.getEnergyStored(), ENERGY_MAX)
 
   -- line 5
+  print()
+
+  -- line 6
   statusLabel('output: ')
   m.setTextColor(colors.lightGray)
   write(r.getEnergyProducedLastTick() .. ' RF/t')
