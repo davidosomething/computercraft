@@ -1,6 +1,6 @@
 ---
 -- Meter exposed as API
--- lib/meter v1.0.0
+-- lib/meter v1.1.0
 --
 --
 -- pastebin LeGJ4Wkb
@@ -43,5 +43,6 @@ function horizontal(startX, startY, endX, endY, value, max)
   paintutils.drawFilledBox(startX, startY, endX, endY, EMPTY_COLOR)
   paintutils.drawFilledBox(startX, startY, filledEndX, endY, FILLED_COLOR)
   term.setBackgroundColor(oldBgColor)
+  print()
 end
 

@@ -1,6 +1,6 @@
 ---
 -- Reactor autostart
--- reactor/main v3.0.0
+-- reactor/main v3.1.0
 --
 -- pastebin 710inmxN
 --
@@ -130,7 +130,7 @@ local function status()
   end
   print()
 
-  meter.horizontal(1, 2, termW, 2, r.getEnergyStored(), ENERGY_MAX)
+  meter.horizontal(2, 3, termW - 1, 3, r.getEnergyStored(), ENERGY_MAX)
   print()
 
   statusLabel('energy: ')
