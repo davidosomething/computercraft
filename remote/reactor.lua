@@ -1,6 +1,6 @@
 ---
 -- Remotely controls a reactor via Advanced Wireless Pocket Computer
--- remote/reactor v3.1.0
+-- remote/reactor v3.1.1
 --
 -- pastebin SHyMGSSK
 --
@@ -33,8 +33,9 @@ local fuelMeterY = energyMeterY + 3
 -- find remote reactor
 local reactorId = rednet.lookup(REACTOR_PROTOCOL, REACTOR_HOSTNAME)
 if reactorId == nil then
-  print("Couldn't find reactor on " .. REACTOR_PROTOCOL .. "." .. REACTOR_HOSTNAME)
+  print("ERROR: No reactor @ " .. REACTOR_PROTOCOL .. "." .. REACTOR_HOSTNAME)
   print("Falling back to ID 1")
+  read()
   reactorId = 1
 end
 
@@ -153,9 +154,9 @@ end
 -- -----------------------------------------------------------------------------
 
 (function ()
+  term.clear()
   if is_exit then return end
 
-  term.clear()
   usage()
   showStatusLabels()
 
