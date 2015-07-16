@@ -283,4 +283,6 @@ end
     parallel.waitForAny(getKey, getMonitorTouch, getModemMessage, getTimeout)
     os.cancelTimer(statusTimer)
   end
+
+  print()
 end)()
