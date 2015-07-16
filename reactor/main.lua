@@ -222,12 +222,13 @@ local function toggleReactor(state)
 end
 
 
---- Read right clicks on monitor to toggle reactor on/off
+--- Read right clicks on monitor to toggle reactor/autotoggle on/off
 --
 local function getMonitorTouch()
   -- luacheck: ignore event side x y
   local event, side, x, y = os.pullEvent('monitor_touch')
-  toggleReactor()
+  if x < 19 then toggleReactor() end
+  if x > 18 then toggleAutotoggle() end
 end
 
 
