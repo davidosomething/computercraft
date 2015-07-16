@@ -1,6 +1,6 @@
 ---
 -- Remotely controls a reactor via Advanced Wireless Pocket Computer
--- remote/reactor v3.2.2
+-- remote/reactor v3.2.3
 --
 -- pastebin SHyMGSSK
 --
@@ -96,6 +96,7 @@ local function showStatus(data)
     write('auto')
   end
 
+  term.setTextColor(colors.lightGray)
   term.setCursorPos(x, energyY)
   write(data['energyStored'].. '/10m')
 

@@ -1,6 +1,6 @@
 ---
 -- Reactor autostart
--- reactor/main v3.3.0
+-- reactor/main v3.3.1
 --
 -- pastebin 710inmxN
 --
@@ -127,7 +127,7 @@ local function status()
     write('ON')
   else
     m.setTextColor(colors.red)
-    write('OFF')
+    write('off')
   end
 
   m.setCursorPos(19,1)
@@ -137,7 +137,7 @@ local function status()
     write('ON')
   else
     m.setTextColor(colors.gray)
-    write('OFF')
+    write('off')
   end
   print()
 
