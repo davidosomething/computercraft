@@ -30,7 +30,10 @@ local EMPTY_COLOR = colors.gray
 -- @tparam int value
 -- @tparam int max
 function horizontal(startX, startY, endX, endY, value, max)
-  local oldBgColor = term.getBackgroundColor()
+  local oldBgColor = colors.black
+  if term.getBackgroundColor ~= nil then -- compatibility with CC <1.7.4
+    oldBgColor = term.getBackgroundColor()
+  end
 
   local barWidth = endX - startX
   local filledRatio = value / max
