@@ -38,6 +38,7 @@ else
   print("Couldn't find reactor on " .. REACTOR_PROTOCOL .. "." .. REACTOR_HOSTNAME)
   print("Falling back to ID 1")
   reactorId = 1
+  read()
 end
 
 
