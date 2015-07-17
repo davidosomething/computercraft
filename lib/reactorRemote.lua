@@ -1,26 +1,45 @@
 ---
 -- Remotely controls a reactor via Advanced Wireless Pocket Computer
--- remote/reactor v3.2.5
+-- Exposed as reactorRemote api
+-- lib/reactorRemote v1.0.0
 --
--- pastebin SHyMGSSK
+-- pastebin Y4UsBfP7
 --
 -- @author David O'Trakoun <me@davidosomething.com>
 --
 
--- luacheck: globals meter
-os.loadAPI('lib/meter')
+os.unloadAPI('/lib/console')
+os.loadAPI('/lib/console')
+
+os.unloadAPI('/lib/meter')
+os.loadAPI('/lib/meter')
+
+os.unloadAPI('/lib/wireless')
+os.loadAPI('/lib/wireless')
 
 -- -----------------------------------------------------------------------------
 -- Meta ------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------
+
 local PROTOCOL = 'reactor_remote'
 local MODEM_SIDE = 'back'
+
+-- search for a reactor dynamically, or just use fallback id?
+local IS_FIND_REACTOR = true
+
 local REACTOR_PROTOCOL = 'reactor'
 local REACTOR_HOSTNAME = 'main'
+
+-- if no reactor can be found dynamically in rednet range or via craft-a-cloud
+-- this will be used. Change this to your known reactor ID
+local REACTOR_FALLBACK_ID = 1
+
 local REACTOR_ENERGY_MAX = 10000000
 
-local is_exit = false
 local termW, termH = term.getSize()
+
+local is_exit = false
+local reactorId
 
 local statusY = 4 -- below usage
 local energyY = statusY + 2
@@ -34,30 +53,63 @@ local fuelConsumedY = fuelMeterY + 1
 -- Peripheral config -----------------------------------------------------------
 -- -----------------------------------------------------------------------------
 
--- find remote reactor
-local reactorId = rednet.lookup(REACTOR_PROTOCOL, REACTOR_HOSTNAME)
-if reactorId == nil then
-  print("ERROR: No reactor @ " .. REACTOR_PROTOCOL .. "." .. REACTOR_HOSTNAME)
-  print("Falling back to ID 1")
-  read()
-  reactorId = 1
-end
-
 rednet.open(MODEM_SIDE)
 
 -- -----------------------------------------------------------------------------
 -- Functions -------------------------------------------------------------------
 -- -----------------------------------------------------------------------------
 
+--- Find a reactor via rednet.lookup, fall back to cloud.lookup, fall back to
+-- REACTOR_FALLBACK_ID
+--
+-- @return {int} reactorId
+function findReactor()
+  if IS_FIND_REACTOR then
+    local lookupId = wireless.lookup(REACTOR_PROTOCOL, REACTOR_HOSTNAME)
+    if lookupId then return lookupId end
+    console.error('No reactors found! Falling back to ID ' .. REACTOR_FALLBACK_ID)
+  end
+
+  return REACTOR_FALLBACK_ID
+end
+
+
 --- Request one of the reactor tasks
 --
 -- @tparam {string} action
-local function requestAction(action)
+function requestAction(action)
   if action == 'autotoggle' then
     rednet.send(reactorId, 'autotoggle', REACTOR_PROTOCOL)
   elseif action == 'toggle' then
     rednet.send(reactorId, 'toggle', REACTOR_PROTOCOL)
   end
+end
+
+
+--- Display script usage
+function usage()
+  term.setCursorPos(1,1)
+  print("Reactor ID: " .. reactorId)
+  print("[q]uit [t]oggle [a]utotogg")
+end
+
+
+--- Display field labels for reactor status
+--
+function showStatusLabels()
+  term.setBackgroundColor(colors.black)
+  term.setTextColor(colors.lightGray)
+
+  for lineNumber = statusY, termH do
+    term.setCursorPos(1, lineNumber)
+    term.clearLine()
+  end
+
+  term.setCursorPos(1, energyY)
+  write('RF   ')    -- energy meter
+
+  term.setCursorPos(1, fuelMeterY)
+  write('Fuel ')    -- fuel meter
 end
 
 
@@ -71,11 +123,10 @@ end
 --
 -- fuel meter
 -- fuel mb/t
---
---
+-- ---------------------
 --
 -- @tparam table data from requestStatus()
-local function showStatus(data)
+function showStatus(data)
   local x = 6
 
   term.setCursorPos(1, statusY) -- below usage
@@ -122,7 +173,7 @@ end
 
 --- Request status messages from reactors over rednet and display
 --
-local function requestStatus()
+function requestStatus()
   rednet.send(reactorId, 'status', REACTOR_PROTOCOL)
   -- luacheck: ignore protocol
   local senderId, data, protocol = rednet.receive(PROTOCOL, 1)
@@ -131,7 +182,7 @@ end
 
 
 --- Read keyboard single character input
-local function getKey()
+function getKey()
   local event, code = os.pullEvent('key') -- luacheck: ignore event
   if      code == keys.a then requestAction('autotoggle')
   elseif  code == keys.t then requestAction('toggle')
@@ -141,56 +192,9 @@ end
 
 
 --- Wait for system timer to go off
-local function getTimeout()
+function getTimeout()
   -- luacheck: ignore event timerHandler
   local event, timerHandler = os.pullEvent('timer')
   requestStatus()
 end
 
-
---- Display script usage
-local function usage()
-  term.setCursorPos(1,1)
-  print("Reactor ID " .. reactorId)
-  print("[q]uit [t]oggle [a]utotogg")
-end
-
-
---- Display field labels for reactor status
---
-local function showStatusLabels()
-  term.setBackgroundColor(colors.black)
-  term.setTextColor(colors.lightGray)
-
-  for lineNumber = statusY, termH do
-    term.setCursorPos(1, lineNumber)
-    term.clearLine()
-  end
-
-  term.setCursorPos(1, energyY)
-  write('RF   ')    -- energy meter
-
-  term.setCursorPos(1, fuelMeterY)
-  write('Fuel ')    -- fuel meter
-end
-
-
--- -----------------------------------------------------------------------------
--- Main ------------------------------------------------------------------------
--- -----------------------------------------------------------------------------
-
-(function ()
-  term.clear()
-  if is_exit then return end
-
-  usage()
-  showStatusLabels()
-
-  while not is_exit do
-    local statusTimer = os.startTimer(1)
-    parallel.waitForAny(getKey, getTimeout)
-    os.cancelTimer(statusTimer)
-  end
-
-  print()
-end)()
