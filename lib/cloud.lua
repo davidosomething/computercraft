@@ -73,7 +73,7 @@ end
 
 --- For clients to push a message to cloud
 --
--- @param {string,table} message
+-- @param message
 -- @tparam {string} protocol
 -- @tparam {string} hostname
 -- @treturn {boolean} success
