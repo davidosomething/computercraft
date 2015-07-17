@@ -8,6 +8,7 @@
 --
 
 -- luacheck: globals meter
+os.loadAPI('lib/console')
 os.loadAPI('lib/meter')
 
 -- -----------------------------------------------------------------------------
@@ -35,14 +36,7 @@ local fuelConsumedY = fuelMeterY + 1
 -- -----------------------------------------------------------------------------
 
 -- find remote reactor
-local reactorId = rednet.lookup(REACTOR_PROTOCOL, REACTOR_HOSTNAME)
-if reactorId == nil then
-  print("ERROR: No reactor @ " .. REACTOR_PROTOCOL .. "." .. REACTOR_HOSTNAME)
-  print("Falling back to ID 1")
-  read()
-  reactorId = 1
-end
-
+local reactorId
 rednet.open(MODEM_SIDE)
 
 -- -----------------------------------------------------------------------------
@@ -181,10 +175,29 @@ end
 
 (function ()
   term.clear()
-  if is_exit then return end
+
+  reactorId = findReactor()
+  if reactorId == nil then
+    log.error('No reactors in range.')
+    return
+  end
 
   usage()
+
+  if reactorId == nil then
+    reactorId = rednet.lookup(REACTOR_PROTOCOL, REACTOR_HOSTNAME)
+    reactorId = findReactor()
+    rednet.broadcast('find', PROTOCOL)
+    print("ERROR: No reactor @ " .. REACTOR_PROTOCOL .. "." .. REACTOR_HOSTNAME)
+    print("Falling back to ID 1")
+    read()
+    reactorId = 1
+  end
+
   showStatusLabels()
+
+
+  requestStatus()
 
   while not is_exit do
     local statusTimer = os.startTimer(1)

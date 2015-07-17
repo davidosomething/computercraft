@@ -56,7 +56,7 @@ rednet.host(PROTOCOL, HOSTNAME)
 ---
 -- @return int reactor's energy buffer filled as a percentage
 local function getEnergyPercentage()
-  return math.floor(r.getEnergyStored() / ENERGY_MAX * 100)
+  return meter.percent(r.getEnergyStored(), ENERGY_MAX)
 end
 
 --- Rules for when to turn the reactor on/off automatically

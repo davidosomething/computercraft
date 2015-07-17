@@ -1,7 +1,6 @@
 ---
 -- Meter exposed as API
--- lib/meter v2.0.0
---
+-- lib/meter v2.1.0
 --
 -- pastebin LeGJ4Wkb
 --
@@ -17,6 +16,12 @@ local EMPTY_COLOR = colors.gray
 -- -----------------------------------------------------------------------------
 -- Functions -------------------------------------------------------------------
 -- -----------------------------------------------------------------------------
+
+function percent(value, max)
+  if value <= 0 then return 0 end
+  if max <= 0 then return 0 end
+  return math.floor(value / max * 100)
+end
 
 --- Draw a horizontal meter
 --
