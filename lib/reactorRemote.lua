@@ -89,7 +89,6 @@ end
 --- Display script usage
 function usage()
   term.setCursorPos(1,1)
-  print("Reactor ID: " .. reactorId)
   print("[q]uit [t]oggle [a]utotogg")
 end
 
@@ -97,6 +96,9 @@ end
 --- Display field labels for reactor status
 --
 function showStatusLabels()
+  term.setCursorPos(1,2)
+  print("Reactor ID: " .. reactorId)
+
   term.setBackgroundColor(colors.black)
   term.setTextColor(colors.lightGray)
 

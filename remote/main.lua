@@ -10,9 +10,13 @@ local function reactorContext()
   os.unloadAPI('/lib/reactorRemote')
   os.loadAPI('/lib/reactorRemote')
   reactorId = reactorRemote.findReactor()
-  reactorRemote.usage()
-  reactorRemote.showStatusLabels()
-  reactorRemote.requestStatus()
+  if reactorId then
+    reactorRemote.usage()
+    reactorRemote.showStatusLabels()
+    reactorRemote.requestStatus()
+  else
+    is_exit = true
+  end
 
   while not is_exit do
     local statusTimer = os.startTimer(1)
