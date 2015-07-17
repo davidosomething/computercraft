@@ -33,6 +33,7 @@ end
 -- @tparam int endY term coord
 -- @tparam int value
 -- @tparam int max
+-- @tparam int fillColor from colors API
 function horizontal(startX, startY, endX, endY, value, max, fillColor)
   -- default for args
   if fillColor == nil then fillColor = colors.red end
