@@ -7,7 +7,8 @@
 --
 -- @author David O'Trakoun <me@davidosomething.com>
 -- @usage
--- shell.run('script', 'get', { pastebinId = '710inmxN'; dest = 'reactor/main'; })
+-- shell.run('script', 'get', stringpastebinId; stringdest; })
+-- shell.run('script', 'get', '710inmxN', 'reactor/main'; })
 --
 
 -- -----------------------------------------------------------------------------
@@ -23,27 +24,28 @@ if http then fromSource = 'github' end
 
 --- Replace a script with a new version from pastebin
 --
--- @tparam table scriptData
-local function get(scriptData)
-  local tmpfile = 'tmp/' .. scriptData['pastebinId']
+-- @tparam string pastebinId
+-- @tparam string dest
+local function get(pastebinId, dest)
+  local tmpfile = 'tmp/' .. pastebinId
 
-  print('Updating ' .. scriptData['dest'] .. ' from ' .. fromSource .. '... ')
+  print('Updating ' .. dest .. ' from ' .. fromSource .. '... ')
 
   shell.setDir('/')
   fs.delete(tmpfile)
   if http then
-    shell.run('gh', 'get', scriptData['dest'] .. '.lua', tmpfile)
+    shell.run('gh', 'get', dest .. '.lua', tmpfile)
   else
-    shell.run('pastebin', 'get', scriptData['pastebinId'], tmpfile)
+    shell.run('pastebin', 'get', pastebinId, tmpfile)
   end
 
   if fs.exists(tmpfile) then
-    fs.delete(scriptData['dest'])
-    fs.move(tmpfile, scriptData['dest'])
+    fs.delete(dest)
+    fs.move(tmpfile, dest)
   end
 end
 
 local args = {...}
 fn = args[1]
-if fn == 'get' then get(args[2]) end
+if fn == 'get' then get(args[2], args[3]) end
 
