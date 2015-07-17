@@ -45,7 +45,7 @@ local function reactorGetKey()
 end
 
 --- Wait for system timer to go off
-function reactorGetTimeout()
+local function reactorGetTimeout()
   -- luacheck: ignore event timerHandler
   local event, timerHandler = os.pullEvent('timer')
   reactorRemote.requestStatus()
