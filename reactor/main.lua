@@ -1,6 +1,6 @@
 ---
 -- Reactor autostart
--- reactor/main v3.3.1
+-- reactor/main v3.3.2
 --
 -- pastebin 710inmxN
 --
@@ -8,7 +8,7 @@
 --
 
 -- luacheck: globals meter
-os.loadAPI('lib/meter')
+os.loadAPI('/lib/meter')
 
 -- -----------------------------------------------------------------------------
 -- Meta ------------------------------------------------------------------------

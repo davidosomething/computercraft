@@ -1,13 +1,13 @@
 ---
 -- Get a script from GitHub if available, otherwise pastebin. Exposed as script
 -- api.
--- lib/script v1.0.0
+-- lib/script v1.0.1
 --
 -- pastebin 0khvYUyX
 --
 -- @author David O'Trakoun <me@davidosomething.com>
 -- @usage
--- os.loadAPI('lib/script')
+-- os.loadAPI('/lib/script')
 -- script.get({ pastebinId = '710inmxN'; dest = 'reactor/main'; })
 --
 

@@ -1,6 +1,6 @@
 ---
 -- Remotely controls a reactor via Advanced Wireless Pocket Computer
--- remote/reactor v3.2.5
+-- remote/reactor v3.2.6
 --
 -- pastebin SHyMGSSK
 --
@@ -8,8 +8,8 @@
 --
 
 -- luacheck: globals meter
-os.loadAPI('lib/console')
-os.loadAPI('lib/meter')
+os.loadAPI('/lib/console')
+os.loadAPI('/lib/meter')
 
 -- -----------------------------------------------------------------------------
 -- Meta ------------------------------------------------------------------------
