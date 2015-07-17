@@ -39,7 +39,6 @@ local REACTOR_ENERGY_MAX = 10000000
 
 local termW, termH = term.getSize()
 
-local is_exit = false
 local reactorId
 
 local statusY = 4 -- below usage
@@ -67,11 +66,15 @@ rednet.open(MODEM_SIDE)
 function findReactor()
   if IS_FIND_REACTOR then
     local lookupId = wireless.lookup(REACTOR_PROTOCOL, REACTOR_HOSTNAME)
-    if lookupId then return lookupId end
+    if lookupId then
+      reactorId = lookupId
+      return reactorId
+    end
     console.error('No reactors found! Falling back to ID ' .. REACTOR_FALLBACK_ID)
   end
 
-  return REACTOR_FALLBACK_ID
+  reactorId = REACTOR_FALLBACK_ID
+  return reactorId
 end
 
 
@@ -181,16 +184,6 @@ function requestStatus()
   -- luacheck: ignore protocol
   local senderId, data, protocol = rednet.receive(PROTOCOL, 1)
   if senderId ~= nil and data ~= nil then showStatus(data) end
-end
-
-
---- Read keyboard single character input
-function getKey()
-  local event, code = os.pullEvent('key') -- luacheck: ignore event
-  if      code == keys.a then requestAction('autotoggle')
-  elseif  code == keys.t then requestAction('toggle')
-  elseif  code == keys.q then is_exit = true
-  end
 end
 
 
