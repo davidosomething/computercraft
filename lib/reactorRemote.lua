@@ -81,7 +81,7 @@ end
 --- Request one of the reactor tasks
 --
 -- @tparam {string} action
-function requestAction(action)
+function requestAction(reactorId, action)
   if action == 'autotoggle' then
     rednet.send(reactorId, 'autotoggle', REACTOR_PROTOCOL)
   elseif action == 'toggle' then
@@ -99,7 +99,7 @@ end
 
 --- Display field labels for reactor status
 --
-function showStatusLabels()
+function showStatusLabels(reactorId)
   term.setCursorPos(1,2)
   print("Reactor ID: " .. reactorId)
 
@@ -179,7 +179,7 @@ end
 
 --- Request status messages from reactors over rednet and display
 --
-function requestStatus()
+function requestStatus(reactorId)
   rednet.send(reactorId, 'status', REACTOR_PROTOCOL)
   -- luacheck: ignore protocol
   local senderId, data, protocol = rednet.receive(PROTOCOL, 1)

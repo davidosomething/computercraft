@@ -19,8 +19,8 @@ local function reactorContext()
   reactorId = reactorRemote.findReactor()
   if reactorId ~= nil then
     reactorRemote.usage()
-    reactorRemote.showStatusLabels()
-    reactorRemote.requestStatus()
+    reactorRemote.showStatusLabels(reactorId)
+    reactorRemote.requestStatus(reactorId)
   else
     console.error('Reactor not found.')
     is_exit = true
@@ -38,8 +38,8 @@ end
 --- Read keyboard single character input
 local function reactorGetKey()
   local event, code = os.pullEvent('key') -- luacheck: ignore event
-  if      code == keys.a then reactorRemote.requestAction('autotoggle')
-  elseif  code == keys.t then reactorRemote.requestAction('toggle')
+  if      code == keys.a then reactorRemote.requestAction(reactorId, 'autotoggle')
+  elseif  code == keys.t then reactorRemote.requestAction(reactorId, 'toggle')
   elseif  code == keys.q then is_exit = true
   end
 end
@@ -48,7 +48,7 @@ end
 local function reactorGetTimeout()
   -- luacheck: ignore event timerHandler
   local event, timerHandler = os.pullEvent('timer')
-  reactorRemote.requestStatus()
+  reactorRemote.requestStatus(reactorId)
 end
 
 
