@@ -30,15 +30,19 @@
   <li><a href="../index.html">Index</a></li>
 </ul>
 
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
 
 
 <h2>Modules</h2>
 <ul class="$(kind=='Topics' and '' or 'nowrap'">
   <li><a href="../modules/bin.gh.html">bin.gh</a></li>
   <li><a href="../modules/bin.motd.html">bin.motd</a></li>
-  <li><strong>bin.update</strong></li>
+  <li><a href="../modules/bin.update.html">bin.update</a></li>
   <li><a href="../modules/lib.cloud.html">lib.cloud</a></li>
-  <li><a href="../modules/lib.console.html">lib.console</a></li>
+  <li><strong>lib.console</strong></li>
   <li><a href="../modules/lib.meter.html">lib.meter</a></li>
   <li><a href="../modules/lib.reactorRemote.html">lib.reactorRemote</a></li>
   <li><a href="../modules/lib.script.html">lib.script</a></li>
@@ -56,21 +60,69 @@
 
 <div id="content">
 
-<h1>Module <code>bin.update</code></h1>
-<p>Update scripts by computer label
- bin/update v4.0.1</p>
-<p> pastebin Q54ecuNa</p>
+<h1>Module <code>lib.console</code></h1>
+<p>logging library exposed as API
+ lib/console v1.0.0</p>
+<p> pastebin aq8ci7Fc</p>
     <h3>Info:</h3>
     <ul>
         <li><strong>Author</strong>: David O'Trakoun <a href="&#x6d;&#97;&#x69;&#108;&#x74;&#111;&#x3a;m&#101;&#x40;&#100;&#x61;&#118;&#x69;&#100;&#x6f;s&#111;&#x6d;&#101;&#x74;&#104;&#x69;&#110;&#x67;&#46;&#x63;o&#109;">&#x6d;&#101;&#x40;&#100;&#x61;&#118;&#x69;d&#111;&#x73;&#111;&#x6d;&#101;&#x74;&#104;&#x69;n&#103;&#x2e;&#99;&#x6f;&#109;</a></li>
     </ul>
 
 
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#echo">echo (message, level, fg, bg)</a></td>
+	<td class="summary">Output with color options</td>
+	</tr>
+</table>
 
 <br/>
 <br/>
 
 
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "echo"></a>
+    <strong>echo (message, level, fg, bg)</strong>
+    </dt>
+    <dd>
+    Output with color options
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">message</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+
+
+
+        </li>
+        <li><span class="parameter">level</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+
+
+
+        </li>
+        <li><span class="parameter">fg</span>
+            <span class="types"><span class="type">int</span></span>
+         color value
+        </li>
+        <li><span class="parameter">bg</span>
+            <span class="types"><span class="type">int</span></span>
+         color value
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
 
 
 </div> <!-- id="content" -->

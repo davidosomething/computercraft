@@ -1,0 +1,273 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>ComputerCraft</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>docs</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="$(kind=='Topics' and '' or 'nowrap'">
+  <li><a href="../modules/bin.gh.html">bin.gh</a></li>
+  <li><a href="../modules/bin.motd.html">bin.motd</a></li>
+  <li><a href="../modules/bin.update.html">bin.update</a></li>
+  <li><a href="../modules/lib.cloud.html">lib.cloud</a></li>
+  <li><a href="../modules/lib.console.html">lib.console</a></li>
+  <li><a href="../modules/lib.meter.html">lib.meter</a></li>
+  <li><strong>lib.reactorRemote</strong></li>
+  <li><a href="../modules/lib.script.html">lib.script</a></li>
+  <li><a href="../modules/lib.wireless.html">lib.wireless</a></li>
+  <li><a href="../modules/reactor.main.html">reactor.main</a></li>
+  <li><a href="../modules/remote.main.html">remote.main</a></li>
+  <li><a href="../modules/startup.html">startup</a></li>
+</ul>
+<h2>Topics</h2>
+<ul class="$(kind=='Topics' and '' or 'nowrap'">
+  <li><a href="../topics/README.md.html">README</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>lib.reactorRemote</code></h1>
+<p>Remotely controls a reactor via Advanced Wireless Pocket Computer
+ Exposed as reactorRemote api
+ lib/reactorRemote v1.0.0</p>
+<p> pastebin Y4UsBfP7</p>
+    <h3>Info:</h3>
+    <ul>
+        <li><strong>Author</strong>: David O'Trakoun <a href="&#x6d;&#97;&#x69;&#108;&#x74;&#111;&#x3a;m&#101;&#x40;&#100;&#x61;&#118;&#x69;&#100;&#x6f;s&#111;&#x6d;&#101;&#x74;&#104;&#x69;&#110;&#x67;&#46;&#x63;o&#109;">&#x6d;&#101;&#x40;&#100;&#x61;&#118;&#x69;d&#111;&#x73;&#111;&#x6d;&#101;&#x74;&#104;&#x69;n&#103;&#x2e;&#99;&#x6f;&#109;</a></li>
+    </ul>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#findReactor">findReactor ()</a></td>
+	<td class="summary">Find a reactor via rednet.lookup, fall back to cloud.lookup, fall back to
+ REACTOR<em>FALLBACK</em>ID</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#requestAction">requestAction (action)</a></td>
+	<td class="summary">Request one of the reactor tasks</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#usage">usage ()</a></td>
+	<td class="summary">Display script usage</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#showStatusLabels">showStatusLabels ()</a></td>
+	<td class="summary">Display field labels for reactor status</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#showStatus">showStatus (data)</a></td>
+	<td class="summary">Display formatted reactor status</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#requestStatus">requestStatus ()</a></td>
+	<td class="summary">Request status messages from reactors over rednet and display</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#getKey">getKey ()</a></td>
+	<td class="summary">Read keyboard single character input</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#getTimeout">getTimeout ()</a></td>
+	<td class="summary">Wait for system timer to go off</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "findReactor"></a>
+    <strong>findReactor ()</strong>
+    </dt>
+    <dd>
+    Find a reactor via rednet.lookup, fall back to cloud.lookup, fall back to
+ REACTOR<em>FALLBACK</em>ID
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        {int} reactorId
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "requestAction"></a>
+    <strong>requestAction (action)</strong>
+    </dt>
+    <dd>
+    Request one of the reactor tasks
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">action</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">{string}</a></span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "usage"></a>
+    <strong>usage ()</strong>
+    </dt>
+    <dd>
+    Display script usage
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "showStatusLabels"></a>
+    <strong>showStatusLabels ()</strong>
+    </dt>
+    <dd>
+    Display field labels for reactor status
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "showStatus"></a>
+    <strong>showStatus (data)</strong>
+    </dt>
+    <dd>
+
+<p>Display formatted reactor status  output --------------
+ status     autotoggle
+ rf buffer
+ rf meter
+ rf/t</p>
+
+<p> fuel meter</p>
+<h2> fuel mb/t</h2>
+
+
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">data</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         from requestStatus()
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "requestStatus"></a>
+    <strong>requestStatus ()</strong>
+    </dt>
+    <dd>
+    Request status messages from reactors over rednet and display
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "getKey"></a>
+    <strong>getKey ()</strong>
+    </dt>
+    <dd>
+    Read keyboard single character input
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "getTimeout"></a>
+    <strong>getTimeout ()</strong>
+    </dt>
+    <dd>
+    Wait for system timer to go off
+
+
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.3</a></i>
+<i style="float:right;">Last updated 2015-07-17 16:24:58 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

@@ -30,18 +30,22 @@
   <li><a href="../index.html">Index</a></li>
 </ul>
 
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
 
 
 <h2>Modules</h2>
 <ul class="$(kind=='Topics' and '' or 'nowrap'">
   <li><a href="../modules/bin.gh.html">bin.gh</a></li>
   <li><a href="../modules/bin.motd.html">bin.motd</a></li>
-  <li><strong>bin.update</strong></li>
+  <li><a href="../modules/bin.update.html">bin.update</a></li>
   <li><a href="../modules/lib.cloud.html">lib.cloud</a></li>
   <li><a href="../modules/lib.console.html">lib.console</a></li>
   <li><a href="../modules/lib.meter.html">lib.meter</a></li>
   <li><a href="../modules/lib.reactorRemote.html">lib.reactorRemote</a></li>
-  <li><a href="../modules/lib.script.html">lib.script</a></li>
+  <li><strong>lib.script</strong></li>
   <li><a href="../modules/lib.wireless.html">lib.wireless</a></li>
   <li><a href="../modules/reactor.main.html">reactor.main</a></li>
   <li><a href="../modules/remote.main.html">remote.main</a></li>
@@ -56,21 +60,65 @@
 
 <div id="content">
 
-<h1>Module <code>bin.update</code></h1>
-<p>Update scripts by computer label
- bin/update v4.0.1</p>
-<p> pastebin Q54ecuNa</p>
+<h1>Module <code>lib.script</code></h1>
+<p>Get a script from GitHub if available, otherwise pastebin.</p>
+<p> Exposed as script
+ api.
+ lib/script v1.0.1</p>
+
+<p> pastebin 0khvYUyX</p>
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">
+ os.loadAPI(&apos;/lib/script&apos;)
+ script.get({ pastebinId = &apos;710inmxN&apos;; dest = &apos;reactor/main&apos;; })
+</pre>
+    </ul>
     <h3>Info:</h3>
     <ul>
         <li><strong>Author</strong>: David O'Trakoun <a href="&#x6d;&#97;&#x69;&#108;&#x74;&#111;&#x3a;m&#101;&#x40;&#100;&#x61;&#118;&#x69;&#100;&#x6f;s&#111;&#x6d;&#101;&#x74;&#104;&#x69;&#110;&#x67;&#46;&#x63;o&#109;">&#x6d;&#101;&#x40;&#100;&#x61;&#118;&#x69;d&#111;&#x73;&#111;&#x6d;&#101;&#x74;&#104;&#x69;n&#103;&#x2e;&#99;&#x6f;&#109;</a></li>
     </ul>
 
 
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#get">get (scriptData)</a></td>
+	<td class="summary">Replace a script with a new version from pastebin</td>
+	</tr>
+</table>
 
 <br/>
 <br/>
 
 
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "get"></a>
+    <strong>get (scriptData)</strong>
+    </dt>
+    <dd>
+    Replace a script with a new version from pastebin
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">scriptData</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
 
 
 </div> <!-- id="content" -->
