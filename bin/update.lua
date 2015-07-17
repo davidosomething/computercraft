@@ -20,6 +20,12 @@ shell.run('script', 'get', 'LeGJ4Wkb', 'lib/meter')
 shell.run('script', 'get', 'rTCUgtUz', 'lib/wireless')
 
 term.setTextColor(colors.lightGray)
+
+-- capacitor
+if os.getComputerLabel() == 'capacitor' then
+  shell.run('script', 'get', 'NyY5gUJA', 'capacitor/main')
+end
+
 -- reactor
 if os.getComputerLabel() == 'reactor' then
   shell.run('script', 'get', '710inmxN', 'reactor/main')
@@ -30,4 +36,8 @@ if os.getComputerLabel() == 'remote' then
   shell.run('script', 'get', 'Y4UsBfP7', 'lib/reactorRemote')
   shell.run('script', 'get', 'SHyMGSSK', 'remote/main')
 end
+
+
+
 term.setTextColor(colors.white)
+
