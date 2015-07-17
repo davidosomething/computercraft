@@ -5,6 +5,9 @@
 -- @author David O'Trakoun <me@davidosomething.com>
 --
 
+os.unloadAPI('/lib/console')
+os.loadAPI('/lib/console')
+
 --- Context for remotely controlling a reactor
 local function reactorContext()
   os.unloadAPI('/lib/reactorRemote')
@@ -15,6 +18,7 @@ local function reactorContext()
     reactorRemote.showStatusLabels()
     reactorRemote.requestStatus()
   else
+    console.error('Reactor not found.')
     is_exit = true
   end
 

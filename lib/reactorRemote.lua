@@ -25,7 +25,8 @@ local PROTOCOL = 'reactor_remote'
 local MODEM_SIDE = 'back'
 
 -- search for a reactor dynamically, or just use fallback id?
-local IS_FIND_REACTOR = true
+-- feature flag
+local IS_FIND_REACTOR = false
 
 local REACTOR_PROTOCOL = 'reactor'
 local REACTOR_HOSTNAME = 'main'
