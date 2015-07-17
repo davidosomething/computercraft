@@ -1,6 +1,6 @@
 ---
 -- github repo client
--- bin/gh v1.0.0
+-- bin/gh v1.0.1
 --
 -- based on https://raw.githubusercontent.com/seriallos/computercraft/master/gist.lua
 --
@@ -19,7 +19,7 @@ end
 local tArgs = { ... }
 
 if (#tArgs ~= 3) then
-  print( "USAGE: dko get FILEPATH DEST" )
+  print( "USAGE: gh get FILEPATH DEST" )
   return
 end
 
