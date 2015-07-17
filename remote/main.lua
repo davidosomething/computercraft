@@ -9,11 +9,9 @@ os.unloadAPI('/lib/console')
 os.loadAPI('/lib/console')
 
 --- Context for remotely controlling a reactor
-local is_exit = false
+local isExitReactorContext = false
 
 local function reactorContext()
-  local is_exit
-
   os.unloadAPI('/lib/reactorRemote')
   os.loadAPI('/lib/reactorRemote')
   reactorId = reactorRemote.findReactor()
@@ -23,10 +21,10 @@ local function reactorContext()
     reactorRemote.requestStatus(reactorId)
   else
     console.error('Reactor not found.')
-    is_exit = true
+    isExitReactorContext = true
   end
 
-  while not is_exit do
+  while not isExitReactorContext do
     local statusTimer = os.startTimer(1)
     parallel.waitForAny(reactorGetKey, reactorGetTimeout)
     os.cancelTimer(statusTimer)
@@ -40,7 +38,7 @@ local function reactorGetKey()
   local event, code = os.pullEvent('key') -- luacheck: ignore event
   if      code == keys.a then reactorRemote.requestAction(reactorId, 'autotoggle')
   elseif  code == keys.t then reactorRemote.requestAction(reactorId, 'toggle')
-  elseif  code == keys.q then is_exit = true
+  elseif  code == keys.q then isExitReactorContext = true
   end
 end
 
