@@ -187,10 +187,3 @@ function requestStatus()
 end
 
 
---- Wait for system timer to go off
-function getTimeout()
-  -- luacheck: ignore event timerHandler
-  local event, timerHandler = os.pullEvent('timer')
-  requestStatus()
-end
-

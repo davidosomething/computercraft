@@ -28,7 +28,7 @@ local function reactorContext()
 
   while not is_exit do
     local statusTimer = os.startTimer(1)
-    parallel.waitForAny(reactorGetKey, reactorRemote.getTimeout)
+    parallel.waitForAny(reactorGetKey, reactorGetTimeout)
     os.cancelTimer(statusTimer)
   end
 
@@ -43,6 +43,14 @@ local function reactorGetKey()
   elseif  code == keys.q then is_exit = true
   end
 end
+
+--- Wait for system timer to go off
+function reactorGetTimeout()
+  -- luacheck: ignore event timerHandler
+  local event, timerHandler = os.pullEvent('timer')
+  reactorRemote.requestStatus()
+end
+
 
 
 
