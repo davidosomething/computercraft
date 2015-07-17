@@ -1,7 +1,7 @@
 ---
 -- Run on all computers; shows system meta data, updates system scripts, loads
 -- APIs, autoruns local system scripts
--- startup v3.0.0
+-- startup v4.0.0
 --
 -- pastebin uVtX8Yx6
 --
@@ -13,8 +13,10 @@
 -- -----------------------------------------------------------------------------
 
 local scripts = {}
+scripts['lib/console']  = 'aq8ci7Fc'
+scripts['lib/script']   = '0khvYUyX'
+scripts['bin/motd']     = 'zs7pMz89'
 scripts['bin/update']   = 'Q54ecuNa'
-scripts['bin/gh']       = 'QwW6Xg6M'
 
 
 -- -----------------------------------------------------------------------------
@@ -24,6 +26,12 @@ scripts['bin/gh']       = 'QwW6Xg6M'
 --- Create system dirs and set aliases
 --
 local function bootstrap()
+  term.setBackgroundColor(colors.black)
+  term.setTextColor(colors.magenta)
+  print('Bootstrapping...')
+
+  term.setTextColor(colors.lightGray)
+
   shell.setDir('/')
 
   -- booted from disk or pocket pc in disk drive -- copy to local so we can
@@ -41,9 +49,8 @@ local function bootstrap()
   -- machine path
   if os.getComputerLabel() == nil then
     term.setTextColor(colors.red)
-    print('Computer has no label! Please enter one now:')
-    term.setTextColor('white')
-    os.setComputerLabel(read())
+    print('Computer has no label! Please set one and reboot.')
+    term.setTextColor(colors.lightGray)
   end
   if os.getComputerLabel() ~= nil then fs.makeDir(os.getComputerLabel()) end
 
@@ -53,16 +60,8 @@ local function bootstrap()
   -- set aliases
   shell.setAlias('ll', 'list')
   shell.setAlias('e', 'edit')
-end
 
-
---- Show startup message
---
-local function motd()
-  print('Welcome to ' .. os.version())
-  print(' You are ' .. os.getComputerLabel() .. ':' .. os.getComputerID())
-  print(' Booted from ' .. shell.getRunningProgram())
-  print()
+  term.setTextColor(colors.white)
 end
 
 
@@ -70,18 +69,26 @@ end
 --
 -- @tparam {table} systemScripts
 local function systemUpdate(systemScripts)
+  term.setBackgroundColor(colors.black)
+  term.setTextColor(colors.magenta)
+  print('System update...')
+
+  term.setTextColor(colors.lightGray)
+
   shell.setDir('/')
 
-  for dest,value in pairs(systemScripts) do
+  for dest,pastebinId in pairs(systemScripts) do
     (function()
-      if value == nil then return end
+      if pastebinId == nil then return end
 
-      local tmpfile = 'tmp/' .. value
-
-      print('Updating ' .. dest .. ' from ' .. value .. '... ')
-
+      local tmpfile = 'tmp/' .. pastebinId
       fs.delete(tmpfile)
-      shell.run('pastebin', 'get', value, tmpfile)
+
+      if http and fs.exists('bin/gh') then
+        shell.run('gh', 'get', dest .. '.lua', tmpfile)
+      else
+        shell.run('pastebin', 'get', pastebinId, tmpfile)
+      end
 
       if fs.exists(tmpfile) then
         fs.delete(dest)
@@ -90,7 +97,7 @@ local function systemUpdate(systemScripts)
     end)()
   end
 
-  print()
+  term.setTextColor(colors.white)
 end
 
 
@@ -99,18 +106,17 @@ end
 -- -----------------------------------------------------------------------------
 
 (function ()
-  print('Bootstrapping...')
   bootstrap()
   print()
 
-  print('System update...')
-  term.setTextColor(colors.lightGray)
   systemUpdate(scripts)
-  term.setTextColor(colors.white)
   print()
 
   -- update computer specific scripts
-  shell.run('bin/update')
+  if fs.exists('bin/update') then shell.run('bin/update') end
+
+  -- output message of the day
+  if fs.exists('bin/motd') then shell.run('bin/motd') end
 
   -- load computer specific APIs
   local envfile = os.getComputerLabel() .. '-env'
@@ -122,6 +128,4 @@ end
     print("Starting " .. mainfile .. " in another tab")
     shell.openTab(mainfile)
   end
-
-  motd()
 end)()

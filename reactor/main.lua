@@ -1,18 +1,19 @@
 ---
 -- Reactor autostart
--- reactor/main v3.3.1
+-- reactor/main v3.3.2
 --
 -- pastebin 710inmxN
 --
 -- @author David O'Trakoun <me@davidosomething.com>
 --
 
--- luacheck: globals meter
-os.loadAPI('lib/meter')
+os.unloadAPI('/lib/meter')
+os.loadAPI('/lib/meter')
 
 -- -----------------------------------------------------------------------------
 -- Meta ------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------
+
 local PROTOCOL = 'reactor'
 local REMOTE_PROTOCOL = 'reactor_remote'
 local HOSTNAME = 'main'
@@ -56,7 +57,7 @@ rednet.host(PROTOCOL, HOSTNAME)
 ---
 -- @return int reactor's energy buffer filled as a percentage
 local function getEnergyPercentage()
-  return math.floor(r.getEnergyStored() / ENERGY_MAX * 100)
+  return meter.percent(r.getEnergyStored(), ENERGY_MAX)
 end
 
 --- Rules for when to turn the reactor on/off automatically
