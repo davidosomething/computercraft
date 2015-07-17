@@ -13,7 +13,7 @@ local function reactorContext()
   os.unloadAPI('/lib/reactorRemote')
   os.loadAPI('/lib/reactorRemote')
   reactorId = reactorRemote.findReactor()
-  if reactorId then
+  if reactorId ~= nil then
     reactorRemote.usage()
     reactorRemote.showStatusLabels()
     reactorRemote.requestStatus()
