@@ -1,14 +1,13 @@
 ---
 -- Get a script from GitHub if available, otherwise pastebin. Exposed as script
--- api.
--- lib/script v1.0.1
+-- bin.
+-- bin/script v2.0.0
 --
 -- pastebin 0khvYUyX
 --
 -- @author David O'Trakoun <me@davidosomething.com>
 -- @usage
--- os.loadAPI('/lib/script')
--- script.get({ pastebinId = '710inmxN'; dest = 'reactor/main'; })
+-- shell.run('script', 'get', { pastebinId = '710inmxN'; dest = 'reactor/main'; })
 --
 
 -- -----------------------------------------------------------------------------
@@ -25,7 +24,7 @@ if http then fromSource = 'github' end
 --- Replace a script with a new version from pastebin
 --
 -- @tparam table scriptData
-function get(scriptData)
+local function get(scriptData)
   local tmpfile = 'tmp/' .. scriptData['pastebinId']
 
   print('Updating ' .. scriptData['dest'] .. ' from ' .. fromSource .. '... ')
@@ -43,4 +42,8 @@ function get(scriptData)
     fs.move(tmpfile, scriptData['dest'])
   end
 end
+
+local args = {...}
+fn = args[1]
+if fn == 'get' then get(args[2]) end
 

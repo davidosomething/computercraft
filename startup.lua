@@ -14,7 +14,7 @@
 
 local scripts = {}
 scripts['lib/console']  = 'aq8ci7Fc'
-scripts['lib/script']   = '0khvYUyX'
+scripts['bin/script']   = '0khvYUyX'
 scripts['bin/motd']     = 'zs7pMz89'
 scripts['bin/update']   = 'Q54ecuNa'
 
