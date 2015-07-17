@@ -7,12 +7,13 @@
 -- @author David O'Trakoun <me@davidosomething.com>
 --
 
--- luacheck: globals meter
+os.unloadAPI('/lib/meter')
 os.loadAPI('/lib/meter')
 
 -- -----------------------------------------------------------------------------
 -- Meta ------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------
+
 local PROTOCOL = 'reactor'
 local REMOTE_PROTOCOL = 'reactor_remote'
 local HOSTNAME = 'main'

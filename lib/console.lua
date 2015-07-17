@@ -52,7 +52,7 @@ end
 -- Log a warning message
 --
 -- @tparam string message
-function warn()
+function warn(message)
   -- show a lightblue # before the msg
   term.setTextColor(colors.lightBlue)
   term.setBackgroundColor(defaultColors['warn']['bg'])
@@ -65,7 +65,7 @@ end
 -- Log an error message
 --
 -- @tparam string message
-function error()
+function error(message)
   -- show a white ! on red bg before the msg
   term.setTextColor(colors.white)
   term.setBackgroundColor(colors.red)

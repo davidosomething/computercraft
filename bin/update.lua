@@ -11,8 +11,10 @@
 -- Main ------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------
 
-shell.setDir('/')
+os.unloadAPI('/lib/script')
 os.loadAPI('/lib/script')
+
+shell.setDir('/')
 
 term.setTextColor(colors.lightGray)
 script.get({ pastebinId = 'QwW6Xg6M'; dest = 'bin/gh'; })
@@ -27,6 +29,7 @@ end
 
 -- remote
 if os.getComputerLabel() == 'remote' then
-  script.get({ pastebinId = 'SHyMGSSK'; dest = 'remote/reactor'; })
+  script.get({ pastebinId = 'Y4UsBfP7'; dest = 'lib/reactorRemote'; })
+  script.get({ pastebinId = 'SHyMGSSK'; dest = 'remote/main'; })
 end
 term.setTextColor(colors.white)
