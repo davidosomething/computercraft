@@ -21,12 +21,11 @@ resetColors()
 print()
 rule()
 resetColors()
-
 print()
 print(' Welcome to ' .. os.version())
 print(' You are on ' .. os.getComputerLabel() .. ':' .. os.getComputerID())
 print()
-
 rule()
 resetColors()
 print()
+
