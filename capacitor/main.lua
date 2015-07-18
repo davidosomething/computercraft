@@ -2,7 +2,7 @@
 -- Capacitor monitoring
 -- capacitor/main v0.0.2-alpha
 --
--- pastebin NyY5gUJA
+-- pastebin SQsnn6aE
 --
 -- @author David O'Trakoun <me@davidosomething.com>
 --
@@ -22,7 +22,7 @@ os.loadAPI('/lib/wireless')
 -- Meta ------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------
 
-local CAPACITOR_SIDE = 'left'
+local CAPACITOR_SIDE = 'back'
 local REDSTONE_SIDE = 'right'
 
 -- below this percentage, turn on redstone signal

@@ -24,7 +24,7 @@ shell.run('script', 'get', 'grsCHK53', 'lib/cx4', 'pastebin')
 
 -- capacitor
 if os.getComputerLabel() == 'capacitor' then
-  shell.run('script', 'get', 'NyY5gUJA', 'capacitor/main')
+  shell.run('script', 'get', 'SQsnn6aE', 'capacitor/main')
 end
 
 -- reactor
