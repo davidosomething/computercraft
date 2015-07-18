@@ -1,6 +1,6 @@
 ---
 -- Update scripts by computer label
--- bin/update v4.0.1
+-- bin/update v4.0.2
 --
 -- pastebin Q54ecuNa
 --
