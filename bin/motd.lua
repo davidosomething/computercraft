@@ -1,6 +1,6 @@
 ---
 -- Message of the day
--- motd v1.0.0
+-- motd v1.0.1
 --
 -- pastebin zs7pMz89
 --
@@ -13,19 +13,16 @@ local function rule()
   print()
 end
 
---- Show startup message
---
-(function ()
-  rule()
-
+local function resetColors()
   term.setTextColor(colors.white)
   term.setBackgroundColor(colors.black)
-  print('Welcome to ' .. os.version())
-  print(' You are ' .. os.getComputerLabel() .. ':' .. os.getComputerID())
-  print(' Booted from ' .. shell.getRunningProgram())
-  print()
+end
 
-  rule()
+rule()
+resetColors()
 
-  term.setBackgroundColor(colors.black)
-end)()
+print('Welcome to ' .. os.version())
+print(' You are ' .. os.getComputerLabel() .. ':' .. os.getComputerID())
+
+rule()
+resetColors()
