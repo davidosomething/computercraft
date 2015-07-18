@@ -11,12 +11,7 @@
 -- shell.run('script', 'get', '710inmxN', 'reactor/main'; })
 --
 
--- -----------------------------------------------------------------------------
--- Meta ------------------------------------------------------------------------
--- -----------------------------------------------------------------------------
-
-local fromSource = 'pastebin'
-if http then fromSource = 'github' end
+local tArgs = { ... }
 
 -- -----------------------------------------------------------------------------
 -- Functions -------------------------------------------------------------------
@@ -28,11 +23,14 @@ if http then fromSource = 'github' end
 -- @tparam string dest
 -- @tparam string protocol force using github or pastebin
 local function get(pastebinId, dest, protocol)
-  if protocol == nil and http ~= nil then protocol = 'gh' end
+  if protocol == nil then
+    protocol = 'pastebin'
+    if http ~= nil then protocol = 'gh' end
+  end
 
   local tmpfile = 'tmp/' .. pastebinId
 
-  print('Updating ' .. dest .. ' from ' .. fromSource .. '... ')
+  print('Updating ' .. dest .. ' from ' .. protocol .. '... ')
 
   shell.setDir('/')
   fs.delete(tmpfile)
@@ -48,7 +46,6 @@ local function get(pastebinId, dest, protocol)
   end
 end
 
-local args = {...}
-fn = args[1]
-if fn == 'get' then get(args[2], args[3], args[4]) end
+local fn = tArgs[1]
+if fn == 'get' then get(tArgs[2], tArgs[3], tArgs[4]) end
 
