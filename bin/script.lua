@@ -50,5 +50,5 @@ end
 
 local args = {...}
 fn = args[1]
-if fn == 'get' then get(args[2], args[3]) end
+if fn == 'get' then get(args[2], args[3], args[4]) end
 
