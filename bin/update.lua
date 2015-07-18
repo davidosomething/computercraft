@@ -14,13 +14,13 @@
 shell.setDir('/')
 
 term.setTextColor(colors.lightGray)
+
 shell.run('script', 'get', 'QwW6Xg6M', 'bin/gh')
+shell.run('script', 'get', 'zs7pMz89', 'bin/motd')
 shell.run('script', 'get', 'aq8ci7Fc', 'lib/console')
 shell.run('script', 'get', 'LeGJ4Wkb', 'lib/meter')
 shell.run('script', 'get', 'rTCUgtUz', 'lib/wireless')
 shell.run('script', 'get', 'grsCHK53', 'lib/cx4', 'pastebin')
-
-term.setTextColor(colors.lightGray)
 
 -- capacitor
 if os.getComputerLabel() == 'capacitor' then
@@ -37,8 +37,6 @@ if os.getComputerLabel() == 'remote' then
   shell.run('script', 'get', 'Y4UsBfP7', 'lib/reactorRemote')
   shell.run('script', 'get', 'SHyMGSSK', 'remote/main')
 end
-
-
 
 term.setTextColor(colors.white)
 
