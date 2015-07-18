@@ -1,6 +1,6 @@
 ---
 -- Message of the day
--- motd v1.0.1
+-- motd v1.0.2
 --
 -- pastebin zs7pMz89
 --
@@ -18,11 +18,16 @@ local function resetColors()
   term.setBackgroundColor(colors.black)
 end
 
+resetColors()
+print()
 rule()
 resetColors()
 
-print('Welcome to ' .. os.version())
-print(' You are ' .. os.getComputerLabel() .. ':' .. os.getComputerID())
+print()
+print(' Welcome to ' .. os.version())
+print(' You are on ' .. os.getComputerLabel() .. ':' .. os.getComputerID())
+print()
 
 rule()
 resetColors()
+print()
