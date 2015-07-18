@@ -82,6 +82,9 @@ end
 --- Display script usage
 function usage()
   term.setCursorPos(1,1)
+  term.setBackgroundColor(colors.black)
+  term.setTextColor(colors.lightGray)
+  term.clearLine()
   print("[q]uit [t]oggle [a]utotogg")
 end
 

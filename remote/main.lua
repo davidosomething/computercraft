@@ -71,7 +71,7 @@ local function reactorContext()
   end
 
   while not isExitReactorContext do
-    local statusTimer = os.startTimer(1)
+    local statusTimer = os.startTimer(0.5)
     parallel.waitForAny(reactorGetKey, reactorGetTimeout)
     os.cancelTimer(statusTimer)
   end

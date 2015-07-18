@@ -280,7 +280,7 @@ end
   if is_exit then return end
 
   while not is_exit do
-    local statusTimer = os.startTimer(1)
+    local statusTimer = os.startTimer(0.5)
     status()
 
     parallel.waitForAny(getKey, getMonitorTouch, getModemMessage, getTimeout)
