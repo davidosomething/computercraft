@@ -18,7 +18,13 @@
 --
 -- How to use:
 --
--- 1. In the cloud host's waitForAny loop, you should wait for cloud messages
+-- 1. Register a host in the cloud for a protocol:
+--    ```
+--    -- cloud.register(PROTOCOL, HOSTNAME)
+--    cloud.register('reactor', 'main')
+--    ```
+--
+-- 2. In the cloud host's waitForAny loop, you should wait for cloud messages
 --    e.g. for a reactor hosted in the cloud:
 --
 --    ```
@@ -30,24 +36,46 @@
 --    parallel.waitForAny(getKey, getTimeout, getCloudMessage)
 --    ```
 --
--- 2. In the remote device, lookup the host:
+-- 3. In the remote device, lookup the host:
 --
 --    ```
 --    reactorId = wireless.lookup('reactor', 'main') -- returns id or nil
 --    print('Found reactor at ' .. reactorId)
 --    ```
 --
--- 3. Then you can send messages to the host from client:
+-- 4. Then you can send messages to the host from client:
 --
 --    ```
 --    wireless.push({ action: 'toggle' }, 'reactor')
 --    ```
 --
 
+-- luacheck: globals console cloud cx4
+
+os.unloadAPI('/lib/cx4')
+os.loadAPI('/lib/cx4')
+
+-- -----------------------------------------------------------------------------
+-- Meta ------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------
+
+protocols = {}
 
 -- -----------------------------------------------------------------------------
 -- Functions -------------------------------------------------------------------
 -- -----------------------------------------------------------------------------
+
+--- Register a host in the cloud for a protocol
+--
+-- @tparam {string} protocol
+-- @tparam {string} hostname
+function register(protocol, hostname)
+  local rawHosts = cx4.Get(0)
+  local hostsData = textutils.unserialize(rawHosts)
+
+  hostsData[protocol][hostname] = os.getComputerID()
+  cx4.Set(0, textutils.serialize(hostsData))
+end
 
 --- For hosts to receive messages from cloud
 --
@@ -82,6 +110,8 @@ function push(message, protocol, hostname)
     message = message;
     from = os.getComputerID();
   }
+
+  local serializedData = textutils.serialize(data)
 
   -- http POST to cloud: data.from requests data.action on protocol.hostname
 

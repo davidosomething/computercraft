@@ -1,7 +1,7 @@
 ---
 -- Get a script from GitHub if available, otherwise pastebin. Exposed as script
 -- bin.
--- bin/script v2.0.0
+-- bin/script v3.0.0
 --
 -- pastebin 0khvYUyX
 --
@@ -26,14 +26,17 @@ if http then fromSource = 'github' end
 --
 -- @tparam string pastebinId
 -- @tparam string dest
-local function get(pastebinId, dest)
+-- @tparam string protocol force using github or pastebin
+local function get(pastebinId, dest, protocol)
+  if protocol == nil and http ~= nil then protocol = 'gh' end
+
   local tmpfile = 'tmp/' .. pastebinId
 
   print('Updating ' .. dest .. ' from ' .. fromSource .. '... ')
 
   shell.setDir('/')
   fs.delete(tmpfile)
-  if http then
+  if protocol == 'gh' then
     shell.run('gh', 'get', dest .. '.lua', tmpfile)
   else
     shell.run('pastebin', 'get', pastebinId, tmpfile)

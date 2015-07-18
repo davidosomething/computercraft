@@ -18,6 +18,7 @@ shell.run('script', 'get', 'QwW6Xg6M', 'bin/gh')
 shell.run('script', 'get', 'aq8ci7Fc', 'lib/console')
 shell.run('script', 'get', 'LeGJ4Wkb', 'lib/meter')
 shell.run('script', 'get', 'rTCUgtUz', 'lib/wireless')
+shell.run('script', 'get', 'grsCHK53', 'lib/cx4', 'pastebin')
 
 term.setTextColor(colors.lightGray)
 

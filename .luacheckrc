@@ -13,7 +13,8 @@ globals = {
   'redstone',
   'write',
   'shell',
-  'term'
+  'term',
+  'textutils'
 }
 
 unused_args = false
