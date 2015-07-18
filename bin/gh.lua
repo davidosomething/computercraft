@@ -41,10 +41,14 @@ end
 local url = "https://raw.githubusercontent.com/" .. USERNAME .. "/computercraft/master/" .. filepath
 
 local request = http.get( url )
-local response = request.readAll()
-request.close()
+if request then
+  local response = request.readAll()
+  request.close()
 
-local file = fs.open( program, "w" )
-file.write( response )
-file.close()
+  local file = fs.open( program, "w" )
+  file.write( response )
+  file.close()
+else
+  print('Error retrieving ' .. program)
+end
 
