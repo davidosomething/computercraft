@@ -10,7 +10,6 @@
 local function rule()
   term.setBackgroundColor(colors.lightGray)
   term.clearLine()
-  print()
 end
 
 local function resetColors()
