@@ -1,12 +1,14 @@
 ---
 -- wireless communication library exposed as API (WIP)
 -- uses rednet and falls back to cloud
--- lib/wireless v0.0.1-alpha
+-- lib/wireless v0.0.2-alpha
 --
 -- pastebin rTCUgtUz
 --
 -- @author David O'Trakoun <me@davidosomething.com>
 --
+
+-- luacheck: globals console cloud
 
 os.unloadAPI('/lib/console')
 os.loadAPI('/lib/console')
@@ -22,6 +24,7 @@ if IS_CLOUD_ENABLED then
   os.unloadAPI('/lib/cloud')
   os.loadAPI('/lib/cloud')
 end
+
 
 -- -----------------------------------------------------------------------------
 -- Functions -------------------------------------------------------------------

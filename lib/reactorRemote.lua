@@ -8,6 +8,8 @@
 -- @author David O'Trakoun <me@davidosomething.com>
 --
 
+-- luacheck: globals console meter wireless
+
 os.unloadAPI('/lib/console')
 os.loadAPI('/lib/console')
 
@@ -22,7 +24,6 @@ os.loadAPI('/lib/wireless')
 -- -----------------------------------------------------------------------------
 
 local PROTOCOL = 'reactor_remote'
-local MODEM_SIDE = 'back'
 
 -- search for a reactor dynamically, or just use fallback id?
 -- feature flag
@@ -39,8 +40,6 @@ local REACTOR_ENERGY_MAX = 10000000
 
 local termW, termH = term.getSize()
 
-local reactorId
-
 local statusY = 4 -- below usage
 local energyY = statusY + 2
 local energyMeterY = energyY + 1
@@ -48,12 +47,6 @@ local energyTickY = energyMeterY + 1
 local fuelMeterY = energyTickY + 2
 local fuelConsumedY = fuelMeterY + 1
 
-
--- -----------------------------------------------------------------------------
--- Peripheral config -----------------------------------------------------------
--- -----------------------------------------------------------------------------
-
-rednet.open(MODEM_SIDE)
 
 -- -----------------------------------------------------------------------------
 -- Functions -------------------------------------------------------------------
@@ -66,15 +59,11 @@ rednet.open(MODEM_SIDE)
 function findReactor()
   if IS_FIND_REACTOR then
     local lookupId = wireless.lookup(REACTOR_PROTOCOL, REACTOR_HOSTNAME)
-    if lookupId then
-      reactorId = lookupId
-      return reactorId
-    end
+    if lookupId then return lookupId end
     console.error('No reactors found! Falling back to ID ' .. REACTOR_FALLBACK_ID)
   end
 
-  reactorId = REACTOR_FALLBACK_ID
-  return reactorId
+  return REACTOR_FALLBACK_ID
 end
 
 

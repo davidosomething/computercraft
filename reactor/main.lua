@@ -7,6 +7,8 @@
 -- @author David O'Trakoun <me@davidosomething.com>
 --
 
+-- luacheck: globals meter
+
 os.unloadAPI('/lib/meter')
 os.loadAPI('/lib/meter')
 
