@@ -1,7 +1,7 @@
 ---
 -- Run on all computers; shows system meta data, updates system scripts, loads
 -- APIs, autoruns local system scripts
--- startup v4.0.0
+-- startup v4.0.1
 --
 -- pastebin uVtX8Yx6
 --
@@ -46,11 +46,6 @@ local function bootstrap()
   shell.run('mkdir', 'tmp')
 
   -- machine path
-  if os.getComputerLabel() == nil then
-    term.setTextColor(colors.red)
-    print('Computer has no label! Please set one and reboot.')
-    term.setTextColor(colors.lightGray)
-  end
   if os.getComputerLabel() ~= nil then fs.makeDir(os.getComputerLabel()) end
 
   -- set path
@@ -105,6 +100,13 @@ end
 -- -----------------------------------------------------------------------------
 
 (function ()
+  if os.getComputerLabel() == nil then
+    term.setTextColor(colors.red)
+    print('Computer has no label! Please set one and reboot.')
+    term.setTextColor(colors.lightGray)
+    return
+  end
+
   bootstrap()
   print()
 
