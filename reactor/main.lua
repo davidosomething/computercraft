@@ -1,6 +1,6 @@
 ---
 -- Reactor autostart
--- reactor/main v4.0.0
+-- reactor/main v5.0.0
 --
 -- pastebin 710inmxN
 --
@@ -14,6 +14,9 @@ os.loadAPI('/lib/meter')
 
 os.unloadAPI('/lib/json')
 os.loadAPI('/lib/json')
+
+os.unloadAPI('/lib/wireless')
+os.loadAPI('/lib/wireless')
 
 local ENERGY_MAX = 10000000
 local is_exit = false

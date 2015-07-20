@@ -1,0 +1,9 @@
+{
+  "protocol": "capacitor",
+  "remote_protocol": "capacitor_remote",
+  "hostname": "main",
+  "modem_side": "left",
+  "capacitor_side": "back",
+  "redstone_side": "right",
+  "redstone_toggle_threshold": 90
+}
