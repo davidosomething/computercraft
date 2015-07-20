@@ -1,34 +1,57 @@
 ---
 -- Run on all computers; shows system meta data, updates system scripts, loads
 -- APIs, autoruns local system scripts
--- startup v4.0.1
+-- startup v5.0.0
 --
 -- pastebin uVtX8Yx6
 --
 -- @author David O'Trakoun <me@davidosomething.com>
 --
 
--- -----------------------------------------------------------------------------
--- Meta ------------------------------------------------------------------------
--- -----------------------------------------------------------------------------
+local tArgs = { ... }
 
-local scripts = {}
-scripts['lib/console']  = 'aq8ci7Fc'
-scripts['bin/script']   = '0khvYUyX'
-scripts['bin/update']   = 'Q54ecuNa'
+local systemScripts = {}
+systemScripts['bin/gh']     = 'QwW6Xg6M'
+systemScripts['bin/script'] = '0khvYUyX'
 
 
 -- -----------------------------------------------------------------------------
 -- Functions -------------------------------------------------------------------
 -- -----------------------------------------------------------------------------
 
+--- Output fancy system message
+--
+-- @tparam {string} text
+local function message(text)
+  -- square
+  term.setBackgroundColor(colors.magenta)
+  write(' ')
+
+  -- text
+  term.setBackgroundColor(colors.black)
+  term.setTextColor(colors.magenta)
+  write(' ' .. text .. '\n')
+end
+
+
+--- Output fancy error message
+--
+-- @tparam {string} text
+local function errorMessage(text)
+  -- square
+  term.setBackgroundColor(colors.red)
+  write(' ')
+
+  -- text
+  term.setBackgroundColor(colors.pink)
+  term.setTextColor(colors.red)
+  write(' ' .. text .. '\n')
+end
+
+
 --- Create system dirs and set aliases
 --
 local function bootstrap()
-  term.setBackgroundColor(colors.black)
-  term.setTextColor(colors.magenta)
-  print('Bootstrapping...')
-
   term.setTextColor(colors.lightGray)
 
   shell.setDir('/')
@@ -45,28 +68,22 @@ local function bootstrap()
   shell.run('mkdir', 'lib')
   shell.run('mkdir', 'tmp')
 
-  -- machine path
-  if os.getComputerLabel() ~= nil then fs.makeDir(os.getComputerLabel()) end
-
   -- set path
   shell.setPath(shell.path()..':/bin')
 
   -- set aliases
+  shell.setAlias('l', 'list')
   shell.setAlias('ll', 'list')
   shell.setAlias('e', 'edit')
-
-  term.setTextColor(colors.white)
+  shell.setAlias('up', 'startup update')
+  shell.setAlias('update', 'startup update')
 end
 
 
 --- Updates the updater
 --
 -- @tparam {table} systemScripts
-local function systemUpdate(systemScripts)
-  term.setBackgroundColor(colors.black)
-  term.setTextColor(colors.magenta)
-  print('System update...')
-
+local function systemUpdate()
   term.setTextColor(colors.lightGray)
 
   shell.setDir('/')
@@ -90,8 +107,70 @@ local function systemUpdate(systemScripts)
       end
     end)()
   end
+end
 
-  term.setTextColor(colors.white)
+
+--- Update startup and other system scripts
+--
+local function update()
+  if not fs.exists('bin/script') then
+    return errorMessage('Missing bin/script')
+  end
+
+  shell.run('script', 'get', 'uVtX8Yx6', 'startup')
+  shell.run('script', 'get', 'zs7pMz89', 'bin/motd')
+  shell.run('script', 'get', 'aq8ci7Fc', 'lib/console')
+  shell.run('script', 'get', '4nRg9CHU', 'lib/json')
+  shell.run('script', 'get', 'LeGJ4Wkb', 'lib/meter')
+  shell.run('script', 'get', 'rTCUgtUz', 'lib/wireless')
+  shell.run('script', 'get', 'grsCHK53', 'lib/cx4', 'pastebin')
+end
+
+
+--- Update scripts specific to a computer with label
+--
+local function localUpdate()
+  if os.getComputerLabel() == nil then return end
+
+  -- machine path
+  fs.makeDir(os.getComputerLabel())
+
+  -- capacitor
+  if os.getComputerLabel() == 'capacitor' then
+    shell.run('script', 'get', 'SQsnn6aE', 'capacitor/main')
+  end
+
+  -- reactor
+  if os.getComputerLabel() == 'reactor' then
+    shell.run('script', 'get', '710inmxN', 'reactor/main')
+  end
+
+  -- remote
+  if os.getComputerLabel() == 'remote' then
+    shell.run('script', 'get', 'Y4UsBfP7', 'lib/reactorRemote')
+    shell.run('script', 'get', 'SHyMGSSK', 'remote/main')
+  end
+end
+
+
+--- Do full update only
+--
+local function doUpdate()
+  systemUpdate()
+  update()
+  localUpdate()
+end
+
+
+--- Run this computer's autostart program in a background tab
+local function doAutostart()
+  if os.getComputerLabel() == nil then return end
+  local mainfile = os.getComputerLabel() .. '/main'
+  if fs.exists(mainfile) then
+    message("Starting " .. mainfile .. " in bg...")
+    print()
+    shell.openTab(mainfile)
+  end
 end
 
 
@@ -101,32 +180,26 @@ end
 
 (function ()
   if os.getComputerLabel() == nil then
-    term.setTextColor(colors.red)
-    print('Computer has no label! Please set one and reboot.')
-    term.setTextColor(colors.lightGray)
-    return
+    return errorMessage('Computer has no label! Please set one and reboot.')
   end
 
+  local fn = tArgs[1]
+  if fn == 'update' then
+    message('Updating...')
+    return doUpdate()
+  end
+
+  message('Bootstrapping...')
   bootstrap()
   print()
 
-  systemUpdate(scripts)
+  message('System update...')
+  doUpdate()
   print()
 
-  -- update computer specific scripts
-  if fs.exists('bin/update') then shell.run('bin/update') end
+  doAutostart()
 
   -- output message of the day
   if fs.exists('bin/motd') then shell.run('bin/motd') end
-
-  -- load computer specific APIs
-  local envfile = os.getComputerLabel() .. '-env'
-  if fs.exists(envfile) then shell.run(envfile) end
-
-  -- run this computer's autostart program in a background tab
-  local mainfile = os.getComputerLabel() .. '/main'
-  if fs.exists(mainfile) then
-    print("Starting " .. mainfile .. " in another tab")
-    shell.openTab(mainfile)
-  end
 end)()
+

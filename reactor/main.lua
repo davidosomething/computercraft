@@ -1,32 +1,23 @@
 ---
 -- Reactor autostart
--- reactor/main v3.3.2
+-- reactor/main v4.0.0
 --
 -- pastebin 710inmxN
 --
 -- @author David O'Trakoun <me@davidosomething.com>
 --
 
--- luacheck: globals meter
+-- luacheck: globals json meter
 
 os.unloadAPI('/lib/meter')
 os.loadAPI('/lib/meter')
 
--- -----------------------------------------------------------------------------
--- Meta ------------------------------------------------------------------------
--- -----------------------------------------------------------------------------
-
-local PROTOCOL = 'reactor'
-local REMOTE_PROTOCOL = 'reactor_remote'
-local HOSTNAME = 'main'
-local MODEM_SIDE = 'left'
-local REACTOR_SIDE = 'back'
+os.unloadAPI('/lib/json')
+os.loadAPI('/lib/json')
 
 local ENERGY_MAX = 10000000
-local AUTOTOGGLE_ENERGY_THRESHOLD = 50
-
-local is_autotoggle = true
 local is_exit = false
+local config = json.decodeFromFile('/reactor/config.json')
 
 
 -- -----------------------------------------------------------------------------
@@ -44,20 +35,20 @@ else
 end
 
 -- reactor
-local r = peripheral.wrap(REACTOR_SIDE)
+local r = peripheral.wrap(config['reactor_side'])
 if r == nil then is_exit = true end
 
 -- modem
-rednet.open(MODEM_SIDE)
-rednet.host(PROTOCOL, HOSTNAME)
+rednet.open(config['modem_side'])
+rednet.host(config['protocol'], config['hostname'])
 
 
 -- -----------------------------------------------------------------------------
 -- Functions -------------------------------------------------------------------
 -- -----------------------------------------------------------------------------
 
----
--- @return int reactor's energy buffer filled as a percentage
+--- Get the energy stored in the reactor's buffer as a percentage
+-- @return int buffer percent full
 local function getEnergyPercentage()
   return meter.percent(r.getEnergyStored(), ENERGY_MAX)
 end
@@ -72,7 +63,7 @@ local function doAutotoggle()
   end
 
   -- turn on if empty buffer
-  if getEnergyPercentage() < AUTOTOGGLE_ENERGY_THRESHOLD then
+  if getEnergyPercentage() < config['autotoggle_threshold'] then
     r.setActive(true)
     return
   end
@@ -100,10 +91,10 @@ local function sendStatus(remoteId)
   message['fuelConsumedLastTick']   = r.getFuelConsumedLastTick()
   message['fuelTemperature']        = r.getFuelTemperature()
   message['casingTemperature']      = r.getCasingTemperature()
-  message['is_autotoggle']          = is_autotoggle
+  message['is_autotoggle']          = config['is_autotoggle']
   message['energyPercentage']       = getEnergyPercentage()
 
-  rednet.send(remoteId, message, REMOTE_PROTOCOL)
+  rednet.send(remoteId, message, config['remote_protocol'])
 end
 
 
@@ -135,7 +126,7 @@ local function status()
 
   m.setCursorPos(19,1)
   statusLabel('auto: ')
-  if is_autotoggle then
+  if config['is_autotoggle'] then
     m.setTextColor(colors.lime)
     write('ON')
   else
@@ -206,10 +197,13 @@ local function status()
 end
 
 
---- Switch autotoggle on/off state
+--- Switch autotoggle on/off state, persist to configFile
 --
 local function toggleAutotoggle()
-  is_autotoggle = not is_autotoggle
+  config['is_autotoggle'] = not config['is_autotoggle']
+  local configFile = fs.open('/reactor/config.json', 'w')
+  configFile.write(textutils.serializeJSON(config))
+  configFile.close()
 end
 
 
@@ -268,7 +262,7 @@ end
 local function getTimeout()
   -- luacheck: ignore event timerHandler
   local event, timerHandler = os.pullEvent('timer')
-  if is_autotoggle then doAutotoggle() end
+  if config['is_autotoggle'] then doAutotoggle() end
 end
 
 
