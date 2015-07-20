@@ -8,6 +8,8 @@
 -- @author David O'Trakoun <me@davidosomething.com>
 --
 
+-- luacheck: globals console meter wireless
+
 os.unloadAPI('/lib/console')
 os.loadAPI('/lib/console')
 
@@ -22,10 +24,10 @@ os.loadAPI('/lib/wireless')
 -- -----------------------------------------------------------------------------
 
 local PROTOCOL = 'reactor_remote'
-local MODEM_SIDE = 'back'
 
 -- search for a reactor dynamically, or just use fallback id?
-local IS_FIND_REACTOR = true
+-- feature flag
+local IS_FIND_REACTOR = false
 
 local REACTOR_PROTOCOL = 'reactor'
 local REACTOR_HOSTNAME = 'main'
@@ -38,9 +40,6 @@ local REACTOR_ENERGY_MAX = 10000000
 
 local termW, termH = term.getSize()
 
-local is_exit = false
-local reactorId
-
 local statusY = 4 -- below usage
 local energyY = statusY + 2
 local energyMeterY = energyY + 1
@@ -48,12 +47,6 @@ local energyTickY = energyMeterY + 1
 local fuelMeterY = energyTickY + 2
 local fuelConsumedY = fuelMeterY + 1
 
-
--- -----------------------------------------------------------------------------
--- Peripheral config -----------------------------------------------------------
--- -----------------------------------------------------------------------------
-
-rednet.open(MODEM_SIDE)
 
 -- -----------------------------------------------------------------------------
 -- Functions -------------------------------------------------------------------
@@ -77,7 +70,7 @@ end
 --- Request one of the reactor tasks
 --
 -- @tparam {string} action
-function requestAction(action)
+function requestAction(reactorId, action)
   if action == 'autotoggle' then
     rednet.send(reactorId, 'autotoggle', REACTOR_PROTOCOL)
   elseif action == 'toggle' then
@@ -89,14 +82,19 @@ end
 --- Display script usage
 function usage()
   term.setCursorPos(1,1)
-  print("Reactor ID: " .. reactorId)
+  term.setBackgroundColor(colors.black)
+  term.setTextColor(colors.lightGray)
+  term.clearLine()
   print("[q]uit [t]oggle [a]utotogg")
 end
 
 
 --- Display field labels for reactor status
 --
-function showStatusLabels()
+function showStatusLabels(reactorId)
+  term.setCursorPos(1,2)
+  print("Reactor ID: " .. reactorId)
+
   term.setBackgroundColor(colors.black)
   term.setTextColor(colors.lightGray)
 
@@ -173,28 +171,11 @@ end
 
 --- Request status messages from reactors over rednet and display
 --
-function requestStatus()
+function requestStatus(reactorId)
   rednet.send(reactorId, 'status', REACTOR_PROTOCOL)
   -- luacheck: ignore protocol
   local senderId, data, protocol = rednet.receive(PROTOCOL, 1)
   if senderId ~= nil and data ~= nil then showStatus(data) end
 end
 
-
---- Read keyboard single character input
-function getKey()
-  local event, code = os.pullEvent('key') -- luacheck: ignore event
-  if      code == keys.a then requestAction('autotoggle')
-  elseif  code == keys.t then requestAction('toggle')
-  elseif  code == keys.q then is_exit = true
-  end
-end
-
-
---- Wait for system timer to go off
-function getTimeout()
-  -- luacheck: ignore event timerHandler
-  local event, timerHandler = os.pullEvent('timer')
-  requestStatus()
-end
 

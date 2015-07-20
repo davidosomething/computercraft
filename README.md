@@ -1,5 +1,7 @@
 # davidosomething's computercraft scripts
 
+MASTER IS UNSTABLE -- use the code at the [v1.0.0 release](https://github.com/davidosomething/computercraft/releases/tag/v1.0.0)
+
 Lua scripts for [ComputerCraft](http://www.computercraft.info/) v1.7+.
 Most of these are mirrored on
 [my pastebin account](http://pastebin.com/u/davidosomething)

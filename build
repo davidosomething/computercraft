@@ -1,0 +1,51 @@
+#!/usr/bin/env node
+
+/*eslint-env node*/
+/**
+ * build script
+ */
+
+var path = require("path");
+var fs = require("fs");
+
+var filterLua = function (file) {
+  "use strict";
+  return file.substr(-4) === ".lua";
+};
+
+var mapObject = function (file) {
+  "use strict";
+  var result = {};
+
+  var data = fs.readFileSync(file);
+  var pastebinSearch = /pastebin ([0-9A-Za-z]+)/.exec(data);
+  var pathParts = path.parse(file);
+
+  var filepath = path.join(pathParts.dir.substr(2), pathParts.name);
+  result[filepath] = (pastebinSearch ? pastebinSearch[1] : "");
+
+  return result;
+};
+
+// http://stackoverflow.com/a/16684530
+var walk = function (dir) {
+  "use strict";
+  var results = [];
+  var list = fs.readdirSync(dir);
+  list.forEach(function(file) {
+    file = dir + "/" + file;
+    var stat = fs.statSync(file);
+    if (stat && stat.isDirectory()) {
+      results = results.concat(walk(file));
+    }
+    else {
+      results.push(file);
+    }
+  });
+  return results;
+};
+
+var luaFiles = walk(".").filter(filterLua);
+var ccFiles = luaFiles.map(mapObject);
+
+console.log(ccFiles);

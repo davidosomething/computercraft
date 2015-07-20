@@ -10,9 +10,11 @@ globals = {
   'peripheral',
   'read',
   'rednet',
+  'redstone',
   'write',
   'shell',
-  'term'
+  'term',
+  'textutils'
 }
 
 unused_args = false
