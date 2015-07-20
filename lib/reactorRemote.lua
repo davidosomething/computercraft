@@ -69,6 +69,7 @@ end
 
 --- Request one of the reactor tasks
 --
+-- @tparam {int} reactorId
 -- @tparam {string} action
 function requestAction(reactorId, action)
   if action == 'autotoggle' then
