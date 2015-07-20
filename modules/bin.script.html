@@ -40,7 +40,7 @@
 <ul class="$(kind=='Topics' and '' or 'nowrap'">
   <li><a href="../modules/bin.gh.html">bin.gh</a></li>
   <li><a href="../modules/bin.motd.html">bin.motd</a></li>
-  <li><a href="../modules/bin.script.html">bin.script</a></li>
+  <li><strong>bin.script</strong></li>
   <li><a href="../modules/capacitor.main.html">capacitor.main</a></li>
   <li><a href="../modules/lib.cloud.html">lib.cloud</a></li>
   <li><a href="../modules/lib.console.html">lib.console</a></li>
@@ -50,7 +50,7 @@
   <li><a href="../modules/lib.reactorRemote.html">lib.reactorRemote</a></li>
   <li><a href="../modules/lib.wireless.html">lib.wireless</a></li>
   <li><a href="../modules/reactor.main.html">reactor.main</a></li>
-  <li><strong>remote.main</strong></li>
+  <li><a href="../modules/remote.main.html">remote.main</a></li>
   <li><a href="../modules/startup.html">startup</a></li>
 </ul>
 <h2>Topics</h2>
@@ -62,10 +62,11 @@
 
 <div id="content">
 
-<h1>Module <code>remote.main</code></h1>
-<p>Main remote control program
- remote/main v2.1.0</p>
-<p> pastebin SHyMGSSK</p>
+<h1>Module <code>bin.script</code></h1>
+<p>Get a script from GitHub if available, otherwise pastebin.</p>
+<p> bin/script v4.0.0</p>
+
+<p> pastebin 0khvYUyX</p>
     <h3>Info:</h3>
     <ul>
         <li><strong>Author</strong>: David O'Trakoun <a href="&#x6d;&#97;&#x69;&#108;&#x74;&#111;&#x3a;m&#101;&#x40;&#100;&#x61;&#118;&#x69;&#100;&#x6f;s&#111;&#x6d;&#101;&#x74;&#104;&#x69;&#110;&#x67;&#46;&#x63;o&#109;">&#x6d;&#101;&#x40;&#100;&#x61;&#118;&#x69;d&#111;&#x73;&#111;&#x6d;&#101;&#x74;&#104;&#x69;n&#103;&#x2e;&#99;&#x6f;&#109;</a></li>
@@ -75,17 +76,12 @@
 <h2><a href="#Local_Functions">Local Functions</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#reactorGetKey">reactorGetKey ()</a></td>
-	<td class="summary">Read keyboard single character input</td>
+	<td class="name" nowrap><a href="#validateProtocol">validateProtocol (protocol)</a></td>
+	<td class="summary">Get a valid protocol</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#reactorGetTimeout">reactorGetTimeout ()</a></td>
-	<td class="summary">Wait for system timer to go off</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#reactorContext">reactorContext ()</a></td>
-	<td class="summary">Context for remotely controlling a reactor
- Reactor remote control event loop</td>
+	<td class="name" nowrap><a href="#get">get (pastebinId, dest, protocol, ref)</a></td>
+	<td class="summary">Replace a script with a new version from pastebin</td>
 	</tr>
 </table>
 
@@ -97,42 +93,65 @@
 
     <dl class="function">
     <dt>
-    <a name = "reactorGetKey"></a>
-    <strong>reactorGetKey ()</strong>
+    <a name = "validateProtocol"></a>
+    <strong>validateProtocol (protocol)</strong>
     </dt>
     <dd>
-    Read keyboard single character input
+    Get a valid protocol
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">protocol</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
 
 
 
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+        protocol
+    </ol>
 
 
 
 
 </dd>
     <dt>
-    <a name = "reactorGetTimeout"></a>
-    <strong>reactorGetTimeout ()</strong>
+    <a name = "get"></a>
+    <strong>get (pastebinId, dest, protocol, ref)</strong>
     </dt>
     <dd>
-    Wait for system timer to go off
+    Replace a script with a new version from pastebin
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">pastebinId</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
 
 
 
+        </li>
+        <li><span class="parameter">dest</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
 
 
 
-
-</dd>
-    <dt>
-    <a name = "reactorContext"></a>
-    <strong>reactorContext ()</strong>
-    </dt>
-    <dd>
-    Context for remotely controlling a reactor
- Reactor remote control event loop
-
-
+        </li>
+        <li><span class="parameter">protocol</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+         force using github or pastebin
+        </li>
+        <li><span class="parameter">ref</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+         if using gh protocol then can specify a branch or tag
+        </li>
+    </ul>
 
 
 
