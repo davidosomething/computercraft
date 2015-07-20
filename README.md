@@ -1,11 +1,12 @@
 # davidosomething's computercraft scripts
 
-MASTER IS UNSTABLE -- use the code at the [v1.0.0 release](https://github.com/davidosomething/computercraft/releases/tag/v1.0.0)
+MASTER IS UNSTABLE -- use the code at the [v2.0.0 release](https://github.com/davidosomething/computercraft/releases/tag/v2.0.0)
 
 Lua scripts for [ComputerCraft](http://www.computercraft.info/) v1.7+.
-Most of these are mirrored on
+Most of these are on
 [my pastebin account](http://pastebin.com/u/davidosomething)
-so you can grab them individually there.
+so you can grab them individually there, but they may not be as up to date as
+the github versions.
 
 ## Screenshots
 
