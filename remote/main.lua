@@ -2,7 +2,7 @@
 -- Main remote control program
 -- remote/main v2.1.0
 --
--- pastebin
+-- pastebin SHyMGSSK
 --
 -- @author David O'Trakoun <me@davidosomething.com>
 --

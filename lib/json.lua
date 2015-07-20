@@ -1,5 +1,7 @@
 --- JSON for ComputerCraft
 --
+-- pastebin 4nRg9CHU
+--
 -- http://www.computercraft.info/forums2/index.php?/topic/5854-json-api-v201-for-computercraft/
 -- http://pastebin.com/4nRg9CHU
 --
