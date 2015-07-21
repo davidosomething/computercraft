@@ -1,6 +1,6 @@
 ---
 -- github repo client
--- bin/gh v2.0.0
+-- bin/gh v2.0.1
 --
 -- based on https://raw.githubusercontent.com/seriallos/computercraft/master/gist.lua
 --
@@ -15,6 +15,10 @@ local GH_URL   = "https://raw.githubusercontent.com"
 local USERNAME = "davidosomething"
 local REPO     = "computercraft"
 
+
+-- -----------------------------------------------------------------------------
+-- Functions -------------------------------------------------------------------
+-- -----------------------------------------------------------------------------
 
 --- Wait for keypress
 --
