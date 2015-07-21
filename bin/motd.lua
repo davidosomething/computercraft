@@ -37,14 +37,12 @@ end
 
 (function ()
   resetColors()
-  print()
   rule() -- --------------------------------------------------------------------
   print()
   write(' Welcome to ' .. os.version())
   if _CC_VERSION ~= nil then write(' (' .. _CC_VERSION .. ')\n') end
   print(' You are on ' .. os.getComputerLabel() .. ':' .. os.getComputerID())
   print(' Day ' .. os.day() .. ' ' .. textutils.formatTime(os.time(), false))
-  print()
   rule() -- --------------------------------------------------------------------
   print()
 end)()
