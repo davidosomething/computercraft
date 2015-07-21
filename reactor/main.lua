@@ -31,12 +31,7 @@ local config = json.decodeFromFile('/reactor/config.json')
 -- monitor
 local m = peripheral.find('monitor')
 local termW, termH -- luacheck: ignore termH
-if m == nil then
-  is_exit = true
-else
-  term.redirect(m)
-  termW, termH = m.getSize()
-end
+if m == nil then is_exit = true end
 
 -- reactor
 local r = peripheral.wrap(config['reactor_side'])
@@ -276,6 +271,9 @@ end
 
 (function ()
   if is_exit then return end
+
+  term.redirect(m)
+  termW, termH = m.getSize()
 
   while not is_exit do
     local statusTimer = os.startTimer(0.5)
