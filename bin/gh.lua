@@ -1,6 +1,6 @@
 ---
 -- github repo client
--- bin/gh v2.0.1
+-- bin/gh v2.0.2
 --
 -- based on https://raw.githubusercontent.com/seriallos/computercraft/master/gist.lua
 --
@@ -51,30 +51,31 @@ end
 
 (function ()
   if not http then
-    print("GitHub requires HTTP API")
+    errorMessage("GitHub requires HTTP API")
     return
   end
 
   if (#tArgs < 3) then
-    print( "USAGE: gh get FILEPATH DEST" )
+    print("USAGE: gh get FILEPATH DEST")
     return
   end
 
   local action = tArgs[1]
   if "get" ~= action then
-    print( "Only 'get' is supported right now" )
+    errorMessage("Only 'get' is supported right now")
     return
   end
 
   local filepath = tArgs[2]
 
   local program = tArgs[3]
-  if fs.exists( program ) then
-    print( "File " .. program .. " already exists.  No action taken" )
+  if fs.exists(program) then
+    errorMessage("File " .. program .. " exists. No action taken.")
     return
   end
 
-  local ref = tArgs[4]
+  local ref
+  if #tArgs > 3 then ref = tArgs[4] end
   if ref == nil then ref = "master" end
 
   local url = GH_URL .. "/" .. USERNAME .. "/" .. REPO .. "/" .. ref .. "/" .. filepath
