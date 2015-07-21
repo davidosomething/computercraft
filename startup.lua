@@ -1,10 +1,11 @@
 ---
 -- Run on all computers; shows system meta data, updates system scripts, loads
 -- APIs, autoruns local system scripts
--- startup v5.0.0
+-- startup
 --
 -- pastebin uVtX8Yx6
 --
+-- @release 5.0.1
 -- @author David O'Trakoun <me@davidosomething.com>
 --
 
@@ -14,10 +15,20 @@ local systemScripts = {}
 systemScripts['bin/gh']     = 'QwW6Xg6M'
 systemScripts['bin/script'] = '0khvYUyX'
 
-
 -- -----------------------------------------------------------------------------
 -- Functions -------------------------------------------------------------------
 -- -----------------------------------------------------------------------------
+
+
+--- Wait for keypress
+--
+local function pause()
+  term.setBackgroundColor(colors.black)
+  term.setTextColor(colors.lightGray)
+  print('Press any key to continue')
+  os.pullEvent("key")
+end
+
 
 --- Output fancy system message
 --
@@ -55,13 +66,6 @@ local function bootstrap()
   term.setTextColor(colors.lightGray)
 
   shell.setDir('/')
-
-  -- booted from disk or pocket pc in disk drive -- copy to local so we can
-  -- boot without disk next time
-  if shell.getRunningProgram() == 'disk/startup' then
-    fs.delete('/startup')
-    fs.copy('disk/startup', 'startup')
-  end
 
   -- system paths
   shell.run('mkdir', 'bin')
@@ -114,7 +118,9 @@ end
 --
 local function update()
   if not fs.exists('bin/script') then
-    return errorMessage('Missing bin/script')
+    errorMessage('Missing bin/script')
+    pause()
+    return
   end
 
   shell.run('script', 'get', 'uVtX8Yx6', 'startup')

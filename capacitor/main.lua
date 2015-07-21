@@ -1,9 +1,10 @@
 ---
 -- Capacitor autostart
--- capacitor/main v0.0.3-alpha
+-- capacitor/main
 --
 -- pastebin SQsnn6aE
 --
+-- @release 0.0.4-alpha
 -- @author David O'Trakoun <me@davidosomething.com>
 --
 

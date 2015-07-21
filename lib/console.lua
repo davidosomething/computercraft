@@ -1,15 +1,12 @@
 ---
 -- logging library exposed as API
--- lib/console v1.0.0
+-- lib/console
 --
 -- pastebin aq8ci7Fc
 --
+-- @release 1.0.0
 -- @author David O'Trakoun <me@davidosomething.com>
 --
-
--- -----------------------------------------------------------------------------
--- Meta ------------------------------------------------------------------------
--- -----------------------------------------------------------------------------
 
 local defaultColors = {}
 defaultColors['log'] = {}
@@ -41,6 +38,7 @@ function echo(message, level, fg, bg)
   write(message)
 end
 
+
 -- Log a plain white on black message
 --
 -- @tparam string message
@@ -48,6 +46,7 @@ function log(message)
   echo(message, 'log')
   print()
 end
+
 
 -- Log a warning message
 --
@@ -61,6 +60,7 @@ function warn(message)
   echo(message, 'warn')
   print()
 end
+
 
 -- Log an error message
 --

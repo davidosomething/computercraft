@@ -1,10 +1,12 @@
 ---
 -- Get a script from GitHub if available, otherwise pastebin.
--- bin/script v4.0.0
+-- bin/script
 --
 -- pastebin 0khvYUyX
 --
+-- @release 4.1.0
 -- @author David O'Trakoun <me@davidosomething.com>
+-- @script script
 --
 
 local tArgs = { ... }

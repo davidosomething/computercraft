@@ -1,9 +1,10 @@
 ---
 -- Main remote control program
--- remote/main v2.1.0
+-- remote/main
 --
 -- pastebin SHyMGSSK
 --
+-- @release 2.1.1
 -- @author David O'Trakoun <me@davidosomething.com>
 --
 

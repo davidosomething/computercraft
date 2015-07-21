@@ -1,9 +1,10 @@
 ---
 -- Reactor autostart
--- reactor/main v5.0.0
+-- reactor/main
 --
 -- pastebin 710inmxN
 --
+-- @release 5.0.1
 -- @author David O'Trakoun <me@davidosomething.com>
 --
 
