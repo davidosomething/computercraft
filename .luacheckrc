@@ -17,6 +17,10 @@ globals = {
   'textutils'
 }
 
+ignore = {
+  'VERSION'
+}
+
 unused_args = false
 
 unused_secondaries = false

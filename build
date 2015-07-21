@@ -8,21 +8,38 @@
 var path = require("path");
 var fs = require("fs");
 
+/**
+ * filter a filename by lua extension
+ *
+ * @param {string} file
+ * @return {boolean} whether file ends in lua extension
+ */
 var filterLua = function (file) {
   "use strict";
   return file.substr(-4) === ".lua";
 };
 
+/**
+ * map filepath in array of filepaths to object {path:{version,pastebinid}}
+ *
+ * @param {string} file filepath
+ * @return {object}
+ */
 var mapObject = function (file) {
   "use strict";
   var result = {};
 
   var data = fs.readFileSync(file);
   var pastebinSearch = /pastebin ([0-9A-Za-z]+)/.exec(data);
+  var versionSearch = /@release ([0-9\.]+([-a-z]+)?)/.exec(data);
   var pathParts = path.parse(file);
 
   var filepath = path.join(pathParts.dir.substr(2), pathParts.name);
-  result[filepath] = (pastebinSearch ? pastebinSearch[1] : "");
+  result[filepath] = {
+    version: (versionSearch ? versionSearch[1] : "0.0.0"),
+    pastebin: (pastebinSearch ? pastebinSearch[1] : "")
+  };
+
 
   return result;
 };

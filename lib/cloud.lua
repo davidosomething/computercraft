@@ -1,10 +1,11 @@
 ---
 -- cloud API (WIP)
 -- push/pull queued messages from cloud, exposed as API
--- lib/cloud v0.0.1-alpha
+-- lib/cloud
 --
 -- pastebin QBfDbcaQ
 --
+-- @release 0.0.2-alpha
 -- @author David O'Trakoun <me@davidosomething.com>
 --
 
@@ -50,7 +51,10 @@
 --    ```
 --
 
--- luacheck: globals console cloud cx4
+-- luacheck: globals console cx4
+
+os.unloadAPI('/lib/console')
+os.loadAPI('/lib/console')
 
 os.unloadAPI('/lib/cx4')
 os.loadAPI('/lib/cx4')

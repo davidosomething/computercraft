@@ -1,10 +1,11 @@
 ---
 -- Run on all computers; shows system meta data, updates system scripts, loads
 -- APIs, autoruns local system scripts
--- startup v5.0.1
+-- startup
 --
 -- pastebin uVtX8Yx6
 --
+-- @release 5.0.1
 -- @author David O'Trakoun <me@davidosomething.com>
 --
 
@@ -13,7 +14,6 @@ local tArgs = { ... }
 local systemScripts = {}
 systemScripts['bin/gh']     = 'QwW6Xg6M'
 systemScripts['bin/script'] = '0khvYUyX'
-
 
 -- -----------------------------------------------------------------------------
 -- Functions -------------------------------------------------------------------
@@ -66,13 +66,6 @@ local function bootstrap()
   term.setTextColor(colors.lightGray)
 
   shell.setDir('/')
-
-  -- booted from disk or pocket pc in disk drive -- copy to local so we can
-  -- boot without disk next time
-  if shell.getRunningProgram() == 'disk/startup' then
-    fs.delete('/startup')
-    fs.copy('disk/startup', 'startup')
-  end
 
   -- system paths
   shell.run('mkdir', 'bin')

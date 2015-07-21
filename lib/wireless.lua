@@ -1,10 +1,11 @@
 ---
 -- wireless communication library exposed as API (WIP)
 -- uses rednet and falls back to cloud
--- lib/wireless v0.0.2-alpha
+-- lib/wireless
 --
 -- pastebin rTCUgtUz
 --
+-- @release 0.0.3-alpha
 -- @author David O'Trakoun <me@davidosomething.com>
 --
 
@@ -12,10 +13,6 @@
 
 os.unloadAPI('/lib/console')
 os.loadAPI('/lib/console')
-
--- -----------------------------------------------------------------------------
--- Meta ------------------------------------------------------------------------
--- -----------------------------------------------------------------------------
 
 -- feature flag
 local IS_CLOUD_ENABLED = false

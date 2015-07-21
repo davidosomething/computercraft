@@ -5,7 +5,10 @@
 -- http://www.computercraft.info/forums2/index.php?/topic/5854-json-api-v201-for-computercraft/
 -- http://pastebin.com/4nRg9CHU
 --
+-- @release 2.0.1
 -- not by me
+--
+
 --
 ------------------------------------------------------------------ utils
 local controls = {["\n"]="\\n", ["\r"]="\\r", ["\t"]="\\t", ["\b"]="\\b", ["\f"]="\\f", ["\""]="\\\"", ["\\"]="\\\\"}

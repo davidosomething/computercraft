@@ -1,10 +1,11 @@
 ---
 -- Remotely controls a reactor via Advanced Wireless Pocket Computer
 -- Exposed as reactorRemote api
--- lib/reactorRemote v1.0.0
+-- lib/reactorRemote
 --
 -- pastebin Y4UsBfP7
 --
+-- @release 1.0.1
 -- @author David O'Trakoun <me@davidosomething.com>
 --
 

@@ -1,12 +1,14 @@
 ---
 -- github repo client
--- bin/gh v2.0.2
+-- bin/gh
 --
 -- based on https://raw.githubusercontent.com/seriallos/computercraft/master/gist.lua
 --
 -- pastebin QwW6Xg6M
 --
+-- @release 2.0.2
 -- @author David O'Trakoun <me@davidosomething.com>
+-- @script gh
 --
 
 local tArgs = { ... }
