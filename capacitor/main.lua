@@ -13,6 +13,9 @@
 os.unloadAPI('/lib/console')
 os.loadAPI('/lib/console')
 
+os.unloadAPI('/lib/json')
+os.loadAPI('/lib/json')
+
 os.unloadAPI('/lib/meter')
 os.loadAPI('/lib/meter')
 
