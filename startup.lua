@@ -29,6 +29,7 @@ local function pause()
   os.pullEvent("key")
 end
 
+
 --- Output fancy system message
 --
 -- @tparam {string} text
@@ -56,8 +57,6 @@ local function errorMessage(text)
   term.setBackgroundColor(colors.pink)
   term.setTextColor(colors.red)
   write(' ' .. text .. '\n')
-
-  pause()
 end
 
 
@@ -126,7 +125,9 @@ end
 --
 local function update()
   if not fs.exists('bin/script') then
-    return errorMessage('Missing bin/script')
+    errorMessage('Missing bin/script')
+    pause()
+    return
   end
 
   shell.run('script', 'get', 'uVtX8Yx6', 'startup')

@@ -16,6 +16,31 @@ local USERNAME = "davidosomething"
 local REPO     = "computercraft"
 
 
+--- Wait for keypress
+--
+local function pause()
+  term.setBackgroundColor(colors.black)
+  term.setTextColor(colors.lightGray)
+  print('Press any key to continue')
+  os.pullEvent("key")
+end
+
+
+--- Output fancy error message
+--
+-- @tparam {string} text
+local function errorMessage(text)
+  -- square
+  term.setBackgroundColor(colors.red)
+  write(' ')
+
+  -- text
+  term.setBackgroundColor(colors.pink)
+  term.setTextColor(colors.red)
+  write(' ' .. text .. '\n')
+end
+
+
 -- -----------------------------------------------------------------------------
 -- Main ------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------
@@ -41,7 +66,7 @@ local REPO     = "computercraft"
 
   local program = tArgs[3]
   if fs.exists( program ) then
-    print( "File "..program.." already exists.  No action taken" )
+    print( "File " .. program .. " already exists.  No action taken" )
     return
   end
 
@@ -58,7 +83,9 @@ local REPO     = "computercraft"
     file.write( response )
     file.close()
   else
-    print('Error retrieving ' .. program)
+    errorMessage('Error retrieving ' .. filepath .. ' from ' .. program)
+    errorMessage(url)
+    pause()
   end
 
 end)()
