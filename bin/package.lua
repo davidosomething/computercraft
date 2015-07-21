@@ -107,11 +107,11 @@ end
 
 --- Check installed programs against the manifest
 --
--- @example output:
+-- example output
 -- i 3.0.0 bin/something
 -- m 1.2.3 lib/somethingelse
 --
-local function list()
+local function listPrograms()
   remoteManifest = getRemoteManifest()
 
   for filepath,data in pairs(remoteManifest) do
@@ -151,7 +151,7 @@ end
 
   local command = tArgs[1]
   if (command == 'help') then return help() end
-  if (command == 'list') then return list() end
+  if (command == 'list') then return listPrograms() end
   if (command == 'update') then return update() end
 
   return help()
