@@ -20,7 +20,7 @@ os.unloadAPI('/lib/meter')
 os.loadAPI('/lib/meter')
 
 local is_exit = false
-local config = json.decodeFromFile('/reactor/config.json')
+local config = json.decodeFromFile('/capacitor/config.json')
 
 
 -- -----------------------------------------------------------------------------
