@@ -2,7 +2,7 @@
   "protocol": "reactor",
   "remote_protocol": "reactor_remote",
   "hostname": "main",
-  "modem_side": "left",
+  "modem_side": "bottom",
   "reactor_side": "back",
   "is_autotoggle": true,
   "autotoggle_threshold": 50

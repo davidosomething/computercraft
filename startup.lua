@@ -1,7 +1,7 @@
 ---
 -- Run on all computers; shows system meta data, updates system scripts, loads
 -- APIs, autoruns local system scripts
--- startup v5.0.0
+-- startup v5.0.1
 --
 -- pastebin uVtX8Yx6
 --
@@ -18,6 +18,16 @@ systemScripts['bin/script'] = '0khvYUyX'
 -- -----------------------------------------------------------------------------
 -- Functions -------------------------------------------------------------------
 -- -----------------------------------------------------------------------------
+
+
+--- Wait for keypress
+--
+local function pause()
+  term.setBackgroundColor(colors.black)
+  term.setTextColor(colors.lightGray)
+  print('Press any key to continue')
+  os.pullEvent("key")
+end
 
 --- Output fancy system message
 --
@@ -46,6 +56,8 @@ local function errorMessage(text)
   term.setBackgroundColor(colors.pink)
   term.setTextColor(colors.red)
   write(' ' .. text .. '\n')
+
+  pause()
 end
 
 
