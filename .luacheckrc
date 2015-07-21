@@ -1,8 +1,11 @@
 allow_defined = true
 
 globals = {
+  '_CC_VERSION',
+  '_MC_VERSION',
   'colors',
   'fs',
+  'help',
   'http',
   'keys',
   'paintutils',

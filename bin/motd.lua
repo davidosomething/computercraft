@@ -4,7 +4,7 @@
 --
 -- pastebin zs7pMz89
 --
--- @release 2.0.0
+-- @release 2.0.1
 -- @author David O'Trakoun <me@davidosomething.com>
 -- @script motd
 --
@@ -40,7 +40,8 @@ end
   print()
   rule() -- --------------------------------------------------------------------
   print()
-  print(' Welcome to ' .. os.version())
+  write(' Welcome to ' .. os.version())
+  if _CC_VERSION ~= nil then write(' (' .. _CC_VERSION .. ')\n') end
   print(' You are on ' .. os.getComputerLabel() .. ':' .. os.getComputerID())
   print(' ' .. os.day() .. ' ' .. textutils.formatTime(os.time(), false))
   print()
