@@ -1,6 +1,6 @@
 # davidosomething's computercraft scripts
 
-MASTER IS UNSTABLE -- use the code at the [v2.0.0 release](https://github.com/davidosomething/computercraft/releases/tag/v2.0.0)
+MASTER IS UNSTABLE -- use the code at the [v2.0.0 release]
 
 Lua scripts for [ComputerCraft](http://www.computercraft.info/) v1.7+.
 Most of these are on
@@ -22,7 +22,7 @@ Remote:
 
 From a new ComputerCraft computer run
 
-```
+```lua
 pastebin get uVtX8Yx6 startup
 label set COMPUTER_LABEL
 ```
@@ -38,3 +38,4 @@ made directly to GitHub via the HTTP API if you have that enabled.
 See [ldoc generated docs](http://davidosomething.github.io/computercraft/) for
 more details.
 
+[v2.0.0 release]: https://github.com/davidosomething/computercraft/releases/tag/v2.0.0
