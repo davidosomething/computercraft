@@ -19,17 +19,8 @@ os.loadAPI('/lib/console')
 -- ---------------------------------------------------------------------------
 
 local reactorId
-
 local isExitReactorContext = false
 local MODEM_SIDE = 'back'
-
-
--- ---------------------------------------------------------------------------
--- Peripheral config
--- ---------------------------------------------------------------------------
-
-rednet.open(MODEM_SIDE)
-
 
 -- ---------------------------------------------------------------------------
 -- Functions
@@ -87,7 +78,8 @@ end
 (function ()
   term.clear()
 
+  rednet.open(MODEM_SIDE)
+
   -- @TODO main menu to select context
   reactorContext()
-
 end)()

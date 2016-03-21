@@ -48,7 +48,6 @@ local energyTickY = energyMeterY + 1
 local fuelMeterY = energyTickY + 2
 local fuelConsumedY = fuelMeterY + 1
 
-
 -- ---------------------------------------------------------------------------
 -- Functions
 -- ---------------------------------------------------------------------------
@@ -57,7 +56,7 @@ local fuelConsumedY = fuelMeterY + 1
 -- REACTOR_FALLBACK_ID
 --
 -- @return {int} reactorId
-function findReactor()
+function findReactor() -- luacheck: ignore
   if IS_FIND_REACTOR then
     local lookupId = wireless.lookup(REACTOR_PROTOCOL, REACTOR_HOSTNAME)
     if lookupId then return lookupId end
@@ -72,7 +71,7 @@ end
 --
 -- @tparam {int} reactorId
 -- @tparam {string} action
-function requestAction(reactorId, action)
+function requestAction(reactorId, action) -- luacheck: ignore
   if action == 'autotoggle' then
     rednet.send(reactorId, 'autotoggle', REACTOR_PROTOCOL)
   elseif action == 'toggle' then
@@ -82,7 +81,7 @@ end
 
 
 --- Display script usage
-function usage()
+function usage() -- luacheck: ignore
   term.setCursorPos(1,1)
   term.setBackgroundColor(colors.black)
   term.setTextColor(colors.lightGray)
@@ -93,7 +92,7 @@ end
 
 --- Display field labels for reactor status
 --
-function showStatusLabels(reactorId)
+function showStatusLabels(reactorId) -- luacheck: ignore
   term.setCursorPos(1,2)
   print("Reactor ID: " .. reactorId)
 
@@ -173,11 +172,10 @@ end
 
 --- Request status messages from reactors over rednet and display
 --
-function requestStatus(reactorId)
+function requestStatus(reactorId) -- luacheck: ignore
   rednet.send(reactorId, 'status', REACTOR_PROTOCOL)
   -- luacheck: ignore protocol
   local senderId, data, protocol = rednet.receive(PROTOCOL, 1)
   if senderId ~= nil and data ~= nil then showStatus(data) end
 end
-
 
