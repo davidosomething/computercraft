@@ -80,8 +80,9 @@ end
   if #tArgs > 3 then ref = tArgs[4] end
   if ref == nil then ref = "master" end
 
-  local url = GH_URL .. "/" .. USERNAME .. "/" .. REPO .. "/" .. ref .. "/" .. filepath
-  local request = http.get( url )
+  local urlparts = { GH_URL, USERNAME, REPO, ref, filepath }
+  local url = table.concat(urlparts, '/')
+  local request = http.get(url)
   if request then
     local response = request.readAll()
     request.close()

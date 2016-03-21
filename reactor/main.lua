@@ -20,8 +20,9 @@ os.unloadAPI('/lib/wireless')
 os.loadAPI('/lib/wireless')
 
 local ENERGY_MAX = 10000000
-local is_exit = false
+local isExit = false
 local config = json.decodeFromFile('/reactor/config.json')
+local isAutotoggle
 
 
 -- ---------------------------------------------------------------------------
@@ -31,16 +32,9 @@ local config = json.decodeFromFile('/reactor/config.json')
 -- monitor
 local m = peripheral.find('monitor')
 local termW, termH -- luacheck: ignore termH
-if m == nil then is_exit = true end
 
 -- reactor
 local r = peripheral.wrap(config['reactor_side'])
-if r == nil then is_exit = true end
-
--- modem
-rednet.open(config['modem_side'])
-rednet.host(config['protocol'], config['hostname'])
-
 
 -- ---------------------------------------------------------------------------
 -- Functions
@@ -55,21 +49,9 @@ end
 --- Rules for when to turn the reactor on/off automatically
 --
 local function doAutotoggle()
-  -- no fuel, leave off
-  if r.getFuelAmount() == 0 then
-    r.setActive(false)
-    return
-  end
-
-  -- turn on if empty buffer
+  -- ON: buffer not full
   if getEnergyPercentage() < config['autotoggle_threshold'] then
     r.setActive(true)
-    return
-  end
-
-  -- turn off if not needed
-  if r.getEnergyProducedLastTick() == 0 then
-    r.setActive(false)
     return
   end
 end
@@ -90,8 +72,8 @@ local function sendStatus(remoteId)
   message['fuelConsumedLastTick']   = r.getFuelConsumedLastTick()
   message['fuelTemperature']        = r.getFuelTemperature()
   message['casingTemperature']      = r.getCasingTemperature()
-  message['is_autotoggle']          = config['is_autotoggle']
   message['energyPercentage']       = getEnergyPercentage()
+  message['isAutotoggle']           = isAutotoggle
 
   rednet.send(remoteId, message, config['remote_protocol'])
 end
@@ -125,7 +107,7 @@ local function status()
 
   m.setCursorPos(19,1)
   statusLabel('auto: ')
-  if config['is_autotoggle'] then
+  if isAutotoggle then
     m.setTextColor(colors.lime)
     write('ON')
   else
@@ -199,7 +181,7 @@ end
 --- Switch autotoggle on/off state, persist to configFile
 --
 local function toggleAutotoggle()
-  config['is_autotoggle'] = not config['is_autotoggle']
+  isAutotoggle = not isAutotoggle
   local configFile = fs.open('/reactor/config.json', 'w')
   configFile.write(textutils.serializeJSON(config))
   configFile.close()
@@ -235,7 +217,7 @@ local function getKey()
   local event, code = os.pullEvent('key')
   if      code == keys.a then toggleAutotoggle()
   elseif  code == keys.t then toggleReactor()
-  elseif  code == keys.q then is_exit = true
+  elseif  code == keys.q then isExit = true
   end
 end
 
@@ -261,7 +243,7 @@ end
 local function getTimeout()
   -- luacheck: ignore event timerHandler
   local event, timerHandler = os.pullEvent('timer')
-  if config['is_autotoggle'] then doAutotoggle() end
+  if isAutotoggle then doAutotoggle() end
 end
 
 
@@ -270,12 +252,20 @@ end
 -- ---------------------------------------------------------------------------
 
 (function ()
-  if is_exit then return end
+  -- reactor
+  if r == nil then return end
 
+  -- monitor
+  if m == nil then return end
   term.redirect(m)
   termW, termH = m.getSize()
 
-  while not is_exit do
+  -- modem
+  rednet.open(config['modem_side'])
+  rednet.host(config['protocol'], config['hostname'])
+
+  -- io
+  while not isExit do
     local statusTimer = os.startTimer(0.5)
     status()
 
