@@ -1,9 +1,0 @@
-{
-  "protocol": "reactor",
-  "remote_protocol": "reactor_remote",
-  "hostname": "main",
-  "modem_side": "top",
-  "reactor_side": "back",
-  "is_autotoggle": true,
-  "autotoggle_threshold": 50
-}

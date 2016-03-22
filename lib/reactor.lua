@@ -1,43 +1,18 @@
 ---
--- Reactor autostart
--- reactor/main
---
--- pastebin 710inmxN
---
--- @release 5.0.1
+-- Big Reactor API
+-- lib/reactor
+-- @release 1.0.0
 -- @author David O'Trakoun <me@davidosomething.com>
 --
 
 -- luacheck: globals json meter
 
-os.unloadAPI('/lib/meter')
-os.loadAPI('/lib/meter')
-
-os.unloadAPI('/lib/json')
-os.loadAPI('/lib/json')
-
-os.unloadAPI('/lib/wireless')
-os.loadAPI('/lib/wireless')
-
-local ENERGY_MAX = 10000000
-local isExit = false
-local config = json.decodeFromFile('/reactor/config.json')
-local isAutotoggle
-
+local reactorConfig = {}
+reactorConfig.ENERGY_MAX    = 10000000
+reactorConfig.isAutotoggle  = false
 
 -- ---------------------------------------------------------------------------
--- Peripheral config
--- ---------------------------------------------------------------------------
-
--- monitor
-local m = peripheral.find('monitor')
-local termW, termH -- luacheck: ignore termH
-
--- reactor
-local r = peripheral.wrap(config['reactor_side'])
-
--- ---------------------------------------------------------------------------
--- Functions
+-- API
 -- ---------------------------------------------------------------------------
 
 --- Get the energy stored in the reactor's buffer as a percentage
@@ -247,22 +222,8 @@ local function getTimeout()
 end
 
 
--- ---------------------------------------------------------------------------
--- Main
--- ---------------------------------------------------------------------------
-
-(function ()
-  -- reactor
-  if r == nil then return end
-
-  -- monitor
-  if m == nil then return end
-  term.redirect(m)
-  termW, termH = m.getSize()
-
-  -- modem
-  rednet.open(config['modem_side'])
-  rednet.host(config['protocol'], config['hostname'])
+local function init(side)
+  r = peripheral.wrap(side)
 
   -- io
   while not isExit do
@@ -274,4 +235,5 @@ end
   end
 
   print()
-end)()
+
+end

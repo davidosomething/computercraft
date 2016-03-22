@@ -15,18 +15,27 @@ local systemScripts = {}
 systemScripts['bin/gh']     = 'QwW6Xg6M'
 systemScripts['bin/script'] = '0khvYUyX'
 
+devices = {}
+
 -- ---------------------------------------------------------------------------
 -- Functions
 -- ---------------------------------------------------------------------------
 
-
---- Wait for keypress
+--- Reset to default terminal colors
 --
-local function pause()
+local function resetColors()
+  term.setTextColor(colors.white)
   term.setBackgroundColor(colors.black)
-  term.setTextColor(colors.lightGray)
-  print('Press any key to continue')
-  os.pullEvent("key")
+end
+
+
+--- Draw full length line
+--
+local function rule()
+  term.setBackgroundColor(colors.lightGray)
+  print()
+  resetColors()
+  print()
 end
 
 
@@ -57,6 +66,16 @@ local function errorMessage(text)
   term.setBackgroundColor(colors.pink)
   term.setTextColor(colors.red)
   write(' ' .. text .. '\n')
+end
+
+
+--- Wait for keypress
+--
+local function pause()
+  term.setBackgroundColor(colors.black)
+  term.setTextColor(colors.lightGray)
+  print('Press any key to continue')
+  os.pullEvent("key")
 end
 
 
@@ -133,49 +152,41 @@ local function update()
 end
 
 
---- Update scripts specific to a computer with label
---
-local function localUpdate()
-  if os.getComputerLabel() == nil then return end
-
-  -- machine path
-  fs.makeDir(os.getComputerLabel())
-
-  -- capacitor
-  if os.getComputerLabel() == 'capacitor' then
-    shell.run('script', 'get', 'SQsnn6aE', 'capacitor/main')
-  end
-
-  -- reactor
-  if os.getComputerLabel() == 'reactor' then
-    shell.run('script', 'get', '710inmxN', 'reactor/main')
-  end
-
-  -- remote
-  if os.getComputerLabel() == 'remote' then
-    shell.run('script', 'get', 'Y4UsBfP7', 'lib/reactorRemote')
-    shell.run('script', 'get', 'SHyMGSSK', 'remote/main')
-  end
-end
-
-
 --- Do full update only
 --
 local function doUpdate()
   systemUpdate()
   update()
-  localUpdate()
 end
 
 
---- Run this computer's autostart program in a background tab
-local function doAutostart()
-  if os.getComputerLabel() == nil then return end
-  local mainfile = os.getComputerLabel() .. '/main'
-  if fs.exists(mainfile) then
-    message("Starting " .. mainfile .. " in bg...")
-    print()
-    shell.openTab(mainfile)
+--- Set up peripheral APIs in global
+local function setupPeripherals()
+  local API_MAP = {}
+  API_MAP['BigReactors-Reactor']   = 'reactor'
+  API_MAP['BigReactors-Reactor_0'] = 'reactor'
+  API_MAP['BigReactors-Reactor_4'] = 'reactor'
+  API_MAP['BigReactors-Reactor_6'] = 'reactor'
+
+  local peripherals = peripheral.getNames()
+  for i = 1, #peripherals do
+    local pType     = peripheral.getType(peripherals[i])
+    local pLocation = peripherals[i]
+    message('  Found ' .. pType ..  ' at "' .. pLocation .. '"')
+
+    local pDevice = pType
+    if API_MAP[pType] ~= nil then pDevice = API_MAP[pType] end
+
+    -- make globally accessible
+    _G[pDevice] = peripheral.wrap(pLocation)
+
+    -- load library
+    local pApiFile = '/lib/' .. pDevice
+    if fs.exists(pApiFile) then
+      message('  Initializing API for ' .. pDevice)
+      os.unloadAPI(pApiFile)
+      os.loadAPI(pApiFile)
+    end
   end
 end
 
@@ -185,27 +196,44 @@ end
 -- ---------------------------------------------------------------------------
 
 (function ()
-  if os.getComputerLabel() == nil then
-    return errorMessage('Computer has no label! Please set one and reboot.')
-  end
-
+  -- cli: update
   local fn = tArgs[1]
   if fn == 'update' then
-    message('Updating...')
+    message('Updating')
     return doUpdate()
   end
 
-  message('Bootstrapping...')
+  -- actual startup
+  message('Bootstrapping')
   bootstrap()
   print()
 
-  message('System update...')
+  message('Updating system')
   doUpdate()
   print()
 
-  doAutostart()
+  message('Loading libraries')
+  os.unloadAPI('/lib/meter')
+  os.loadAPI('/lib/meter')
+  print('  Loaded meter')
+  os.unloadAPI('/lib/json')
+  os.loadAPI('/lib/json')
+  print('  Loaded json')
+  print()
+
+  message('Initializing peripherals')
+  setupPeripherals()
+  print()
 
   -- output message of the day
-  if fs.exists('bin/motd') then shell.run('bin/motd') end
+  resetColors()
+  rule()
+  print()
+  write(' Welcome to ' .. os.version())
+  -- luacheck: globals _HOST
+  if _HOST ~= nil then write(' (' .. _HOST .. ')\n') end
+  print(' Day ' .. os.day() .. ' ' .. textutils.formatTime(os.time(), false))
+  rule()
+  print()
 end)()
 
