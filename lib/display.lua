@@ -14,7 +14,10 @@ local windows = {}
 --- Create or reuse a window on the current display
 --
 function use(name) -- luacheck: ignore
-  -- Already using the window
+  -- Window exists, make visible
+  if windows[name] != nil then windows[name].setVisible(true) end
+
+  -- Already using the window, done
   if term.current() == windows[name] then return end
 
   -- Window doesn't exist, create it in the monitor
@@ -24,7 +27,7 @@ function use(name) -- luacheck: ignore
     windows[name] = window.create(parentTerm, 1, 1, termW, termH)
   end
 
-  -- Window exists, use it
+  -- Use window
   term.redirect(windows[name])
 end
 
