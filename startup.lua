@@ -5,11 +5,11 @@
 -- @author David O'Trakoun <me@davidosomething.com>
 --
 
-local tArgs = { ... }
+local cliArgs = { ... }
 
-local systemScripts = {}
-systemScripts['bin/gh']     = 'QwW6Xg6M'
-systemScripts['bin/script'] = '0khvYUyX'
+local SYSTEM_BIN = {}
+SYSTEM_BIN['bin/gh']     = 'QwW6Xg6M'
+SYSTEM_BIN['bin/script'] = '0khvYUyX'
 
 devices = {}
 
@@ -34,20 +34,21 @@ local function rule()
   print()
 end
 
---- Output white text
+--- Output white text (e.g. for reactor labels)
 --
 -- @tparam string text
-local function label(text)
-  devices['monitor'].setTextColor(colors.white)
+local function label(text) -- luacheck: ignore
+  term.setBackgroundColor(colors.black)
+  term.setTextColor(colors.white)
   write(text)
 end
 
 
---- Output fancy system message
+--- Output fancy system message (magenta bullet and text)
 --
 -- @tparam {string} text
 local function message(text)
-  -- square
+  -- bullet
   term.setBackgroundColor(colors.magenta)
   write(' ')
 
@@ -86,8 +87,6 @@ end
 --- Create system dirs and set aliases
 --
 local function bootstrap()
-  term.setTextColor(colors.lightGray)
-
   shell.setDir('/')
 
   -- system paths
@@ -109,13 +108,12 @@ end
 
 --- Updates the updater
 --
--- @tparam {table} systemScripts
 local function systemUpdate()
   term.setTextColor(colors.lightGray)
 
   shell.setDir('/')
 
-  for dest,pastebinId in pairs(systemScripts) do
+  for dest,pastebinId in pairs(SYSTEM_BIN) do
     (function()
       if pastebinId == nil then return end
 
@@ -147,12 +145,9 @@ local function update()
   end
 
   shell.run('script', 'get', 'uVtX8Yx6', 'startup')
-  shell.run('script', 'get', 'zs7pMz89', 'bin/motd')
   shell.run('script', 'get', 'aq8ci7Fc', 'lib/console')
   shell.run('script', 'get', '4nRg9CHU', 'lib/json')
   shell.run('script', 'get', 'LeGJ4Wkb', 'lib/meter')
-  shell.run('script', 'get', 'rTCUgtUz', 'lib/wireless')
-  shell.run('script', 'get', 'grsCHK53', 'lib/cx4', 'pastebin')
 end
 
 
@@ -164,13 +159,27 @@ local function doUpdate()
 end
 
 
+--- Load global APIs
+--
+local function initApis()
+  local APIS = { 'display', 'json', 'meter' }
+
+  for i, file in ipairs(APIS) do
+    os.unloadAPI('/lib/' .. name)
+    os.loadAPI('/lib/' .. name)
+    print('  Loaded ' .. name)
+  end
+end
+
+
 --- Set up peripheral APIs in global
-local function setupPeripherals()
-  local API_MAP = {}
-  API_MAP['BigReactors-Reactor']   = 'reactor'
-  API_MAP['BigReactors-Reactor_0'] = 'reactor'
-  API_MAP['BigReactors-Reactor_4'] = 'reactor'
-  API_MAP['BigReactors-Reactor_6'] = 'reactor'
+local function initPeripherals()
+  local API_MAP = {
+    ['BigReactors-Reactor']   = 'reactor',
+    ['BigReactors-Reactor_0'] = 'reactor',
+    ['BigReactors-Reactor_4'] = 'reactor',
+    ['BigReactors-Reactor_6'] = 'reactor',
+  }
 
   local peripherals = peripheral.getNames()
   for i = 1, #peripherals do
@@ -200,8 +209,23 @@ end
 -- ---------------------------------------------------------------------------
 
 (function ()
+  term.redirect(term.native())
+
+  -- output message of the day
+  resetColors()
+  rule()
+  print()
+  write(' Welcome to ' .. os.version())
+  -- luacheck: globals _HOST
+  if _HOST ~= nil then write(' (' .. _HOST .. ')\n') end
+  print(' Day ' .. os.day() .. ' ' .. textutils.formatTime(os.time(), false))
+  rule()
+  print()
+
+  term.setTextColor(colors.lightGray)
+
   -- cli: update
-  local fn = tArgs[1]
+  local fn = cliArgs[1]
   if fn == 'update' then
     message('Updating')
     return doUpdate()
@@ -216,31 +240,25 @@ end
   doUpdate()
   print()
 
-  message('Loading libraries')
-  os.unloadAPI('/lib/meter')
-  os.loadAPI('/lib/meter')
-  print('  Loaded meter')
-  os.unloadAPI('/lib/json')
-  os.loadAPI('/lib/json')
-  print('  Loaded json')
+  message('Initializing global APIs')
+  initApis()
   print()
 
   message('Loading config')
-  config = json.decodeFromFile('/config.json') -- luacheck: ignore
+  -- luacheck: push ignore unused config
+  if fs.exists('/config.json') then
+    config = json.decodeFromFile('/config.json')
+  else
+    config = {
+      reactor = { isActive = false, isOptimizing = false }
+    }
+  end
+  -- luacheck: pop
 
-  message('Initializing peripherals')
-  setupPeripherals()
+  message('Initializing peripheral APIs')
+  initPeripherals()
   print()
 
-  -- output message of the day
-  resetColors()
-  rule()
-  print()
-  write(' Welcome to ' .. os.version())
-  -- luacheck: globals _HOST
-  if _HOST ~= nil then write(' (' .. _HOST .. ')\n') end
-  print(' Day ' .. os.day() .. ' ' .. textutils.formatTime(os.time(), false))
-  rule()
-  print()
+  begin()
 end)()
 

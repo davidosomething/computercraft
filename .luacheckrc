@@ -14,10 +14,11 @@ globals = {
   'read',
   'rednet',
   'redstone',
-  'write',
   'shell',
   'term',
   'textutils'
+  'window',
+  'write',
 }
 
 ignore = {

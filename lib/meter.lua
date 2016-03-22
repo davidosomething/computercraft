@@ -1,10 +1,6 @@
 ---
--- Meter exposed as API
--- lib/meter
---
--- pastebin LeGJ4Wkb
---
--- @release 2.2.0
+-- lib/meter - Meter exposed as API
+-- @release 2.3.0
 -- @author David O'Trakoun <me@davidosomething.com>
 --
 
@@ -14,7 +10,7 @@ local EMPTY_COLOR = colors.gray
 -- Functions
 -- ---------------------------------------------------------------------------
 
-function percent(value, max)
+function percent(value, max) -- luacheck: ignore
   if value <= 0 then return 0 end
   if max <= 0 then return 0 end
   return math.floor(value / max * 100)
@@ -31,7 +27,7 @@ end
 -- @tparam int value
 -- @tparam int max
 -- @tparam int fillColor from colors API
-function horizontal(startX, startY, endX, endY, value, max, fillColor)
+function horizontal(startX, startY, endX, endY, value, max, fillColor) -- luacheck: ignore
   -- default for args
   if fillColor == nil then fillColor = colors.red end
 

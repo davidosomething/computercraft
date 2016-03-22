@@ -4,11 +4,15 @@
 -- @author David O'Trakoun <me@davidosomething.com>
 --
 
--- luacheck: globals config devices monitor json meter label
+-- luacheck: globals display meter
+-- luacheck: globals config devices
+-- luacheck: globals label
 
+local DEVICE     = 'reactor'
 local ENERGY_MAX = 10000000
 local TEMP_MAX   = 900
 
+local Reactor = devices[DEVICE]
 local state = {}
 
 -- ---------------------------------------------------------------------------
@@ -17,35 +21,34 @@ local state = {}
 
 --- Get the energy stored in the reactor's buffer as a percentage
 -- @return int buffer percent full
-local function getEnergyPercentage() -- luacheck: ignore
-  return meter.percent(devices['reactor'].getEnergyStored(), ENERGY_MAX)
+function getEnergyPercentage() -- luacheck: ignore
+  return meter.percent(Reactor.getEnergyStored(), ENERGY_MAX)
 end
 
 
---- Display reactor status on monitor
+--- Display reactor status on in a window
 --
-local function status() -- luacheck: ignore
-  devices['monitor'].clear()
-  devices['monitor'].setTextScale(0.5)
-  devices['monitor'].setCursorPos(1,1)
+function status() -- luacheck: ignore
+  display.use(DEVICE)
+  local termW, termH = term.getSize()
 
   -- line 1
   label('reactor: ')
-  if devices['reactor'].getActive() then
-    devices['monitor'].setTextColor(colors.lime)
+  if Reactor.getActive() then
+    term.setTextColor(colors.lime)
     write('ON')
   else
-    devices['monitor'].setTextColor(colors.red)
+    term.setTextColor(colors.red)
     write('off')
   end
 
-  devices['monitor'].setCursorPos(19,1)
-  label('auto: ')
-  if state.isAutotoggle then
-    devices['monitor'].setTextColor(colors.lime)
+  term.setCursorPos(19,1)
+  label('optimize: ')
+  if state.isOptimizing then
+    term.setTextColor(colors.lime)
     write('ON')
   else
-    devices['monitor'].setTextColor(colors.gray)
+    term.setTextColor(colors.gray)
     write('off')
   end
   print()
@@ -55,13 +58,13 @@ local function status() -- luacheck: ignore
 
   -- line 3
   label('energy: ')
-  devices['monitor'].setTextColor(colors.lightGray)
-  write(devices['reactor'].getEnergyStored() .. '/10000000 RF')
+  term.setTextColor(colors.lightGray)
+  write(Reactor.getEnergyStored() .. '/10000000 RF')
   print()
 
   -- line 4
-  meter.horizontal(2, 4, monitor.termW - 1, 4,
-    devices['reactor'].getEnergyStored(), ENERGY_MAX,
+  meter.horizontal(2, 4, termW - 1, 4,
+    Reactor.getEnergyStored(), ENERGY_MAX,
     colors.red)
 
   -- line 5
@@ -69,52 +72,52 @@ local function status() -- luacheck: ignore
 
   -- line 6
   label('output: ')
-  devices['monitor'].setTextColor(colors.lightGray)
-  write(devices['reactor'].getEnergyProducedLastTick() .. ' RF/t')
+  term.setTextColor(colors.lightGray)
+  write(Reactor.getEnergyProducedLastTick() .. ' RF/t')
   print()
 
   -- line 7
   label('fuel:   ')
-  devices['monitor'].setTextColor(colors.yellow)
-  write(devices['reactor'].getFuelAmount())
-  devices['monitor'].setTextColor(colors.lightGray)
+  term.setTextColor(colors.yellow)
+  write(Reactor.getFuelAmount())
+  term.setTextColor(colors.lightGray)
   write('/')
-  devices['monitor'].setTextColor(colors.lightBlue)
-  write(devices['reactor'].getWasteAmount())
-  devices['monitor'].setTextColor(colors.lightGray)
-  write('/' .. devices['reactor'].getFuelAmountMax() .. 'mb')
+  term.setTextColor(colors.lightBlue)
+  write(Reactor.getWasteAmount())
+  term.setTextColor(colors.lightGray)
+  write('/' .. Reactor.getFuelAmountMax() .. 'mb')
   print()
 
   -- line 8
-  meter.horizontal(2, 8, monitor.termW - 1, 8,
-    devices['reactor'].getFuelAmount(), devices['reactor'].getFuelAmountMax(),
+  meter.horizontal(2, 8, termW - 1, 8,
+    Reactor.getFuelAmount(), Reactor.getFuelAmountMax(),
     colors.yellow)
 
   -- line 9
   print()
 
   label('usage:  ')
-  devices['monitor'].setTextColor(colors.lightGray)
-  write(devices['reactor'].getFuelConsumedLastTick() .. 'mb/t')
+  term.setTextColor(colors.lightGray)
+  write(Reactor.getFuelConsumedLastTick() .. 'mb/t')
   print()
 
   label('core:   ')
-  devices['monitor'].setTextColor(colors.lightGray)
-  write(devices['reactor'].getFuelTemperature() .. 'C')
+  term.setTextColor(colors.lightGray)
+  write(Reactor.getFuelTemperature() .. 'C')
   print()
 
   label('case:   ')
-  devices['monitor'].setTextColor(colors.lightGray)
-  write(devices['reactor'].getCasingTemperature() .. 'C')
+  term.setTextColor(colors.lightGray)
+  write(Reactor.getCasingTemperature() .. 'C')
   print()
 end
 
 
---- Switch autotoggle on/off state, persist to configFile
+--- Switch optimize on/off state, persist to configFile
 --
-local function toggleAutotoggle() -- luacheck: ignore
+function toggleOptimize() -- luacheck: ignore
   -- toggle
-  state.isAutotoggle = not state.isAutotoggle
+  state.isOptimizing = not state.isOptimizing
   config.reactor = state
 
   -- save
@@ -127,10 +130,10 @@ end
 --- Switch reactor on/off
 --
 -- @tparam {nil,boolean} state - toggle if nil, on if true, off if false
-local function toggleReactor() -- luacheck: ignore
+function toggleReactor() -- luacheck: ignore
   -- toggle
-  state.isActive = not devices['reactor'].getActive()
-  devices['reactor'].setActive(state.isActive)
+  state.isActive = not Reactor.getActive()
+  Reactor.setActive(state.isActive)
 
   -- save
   config.reactor = state
@@ -142,20 +145,20 @@ end
 
 --- Lower temperature below optimal max
 --
-local function optimizeTemp()
-  local insertionLevel = devices['reactor'].getControlRodLevel(0)
+function optimizeTemp()
+  local insertionLevel = Reactor.getControlRodLevel(0)
   while true do
     print('Optimizing control rod insertion... (any key to cancel)')
-    print('      level: ' .. devices['reactor'].getControlRodLevel(0))
-    print('  fuel temp: ' .. devices['reactor'].getFuelTemperature() .. 'C')
+    print('      level: ' .. Reactor.getControlRodLevel(0))
+    print('  fuel temp: ' .. Reactor.getFuelTemperature() .. 'C')
 
-    local isHot = devices['reactor'].getFuelTemperature() > TEMP_MAX
+    local isHot = Reactor.getFuelTemperature() > TEMP_MAX
     if isHot then insertionLevel = insertionLevel + 2 else break end
-    devices['reactor'].setAllControlRodLevels(insertionLevel)
+    Reactor.setAllControlRodLevels(insertionLevel)
 
     -- let optimize for 2 seconds, or user does something
     local timer = os.startTimer(2)
-    local event = {os.pullEvent()}
+    local event = { os.pullEvent() }
     if (event[1] ~= "timer" or event[2] ~= timer) then
       print('User cancelled optimizing (' .. event[1] .. ')')
       break
@@ -166,7 +169,7 @@ end
 
 --- Optimize rod level based on energy buffer, then level off by temperature
 --
-local function optimize() -- luacheck: ignore
+function optimize() -- luacheck: ignore
   if not state.isActive then
     print('Reactor is not active')
     return
@@ -174,21 +177,21 @@ local function optimize() -- luacheck: ignore
 
   -- Initialize all rods to the buffer level so reactor is essentially off
   -- when buffer is full
-  devices['reactor'].setAllControlRodLevels(getEnergyPercentage())
+  Reactor.setAllControlRodLevels(getEnergyPercentage())
 
   -- Check if that does the trick
   print('Optimizing control rod insertion... (any key to cancel)')
-  print('      level: ' .. devices['reactor'].getControlRodLevel(0))
+  print('      level: ' .. Reactor.getControlRodLevel(0))
   os.sleep(2)
-  local isOptimal = devices['reactor'].getFuelTemperature() < TEMP_MAX
+  local isOptimal = Reactor.getFuelTemperature() < TEMP_MAX
   if isOptimal then return else optimizeTemp() end
 end
 
 
---- Called by setupPeripherals
+--- Called by initPeripherals
 --
-local function init() -- luacheck: ignore
-  state.isActive     = config['reactor'].isActive
-  state.isAutotoggle = config['reactor'].isAutotoggle
+function init() -- luacheck: ignore
+  state.isActive     = Reactor.getActive()
+  state.isOptimizing = config['reactor'].isOptimizing
 end
 
