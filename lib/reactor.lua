@@ -28,7 +28,7 @@ end
 
 --- Display reactor status on in a window
 --
-function status() -- luacheck: ignore
+function updateStatus() -- luacheck: ignore
   display.use(DEVICE)
   local termW, termH = term.getSize()
 
@@ -193,5 +193,15 @@ end
 function init() -- luacheck: ignore
   state.isActive     = Reactor.getActive()
   state.isOptimizing = config['reactor'].isOptimizing
+end
+
+
+--- Run in background tab!
+--
+function bg() -- luacheck: ignore
+  while true do
+    updateStatus() -- luacheck: ignore
+    os.sleep(2)
+  end
 end
 
