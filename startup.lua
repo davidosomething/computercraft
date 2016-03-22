@@ -1,10 +1,6 @@
 ---
--- Run on all computers; shows system meta data, updates system scripts, loads
--- APIs, autoruns local system scripts
--- startup
---
--- pastebin uVtX8Yx6
---
+-- startup.lua - Run on all computers; shows system meta data, updates system
+-- scripts, loads APIs, autoruns local system scripts
 -- @release 5.0.1
 -- @author David O'Trakoun <me@davidosomething.com>
 --
@@ -36,6 +32,14 @@ local function rule()
   print()
   resetColors()
   print()
+end
+
+--- Output white text
+--
+-- @tparam string text
+local function label(text)
+  devices['monitor'].setTextColor(colors.white)
+  write(text)
 end
 
 
@@ -178,7 +182,7 @@ local function setupPeripherals()
     if API_MAP[pType] ~= nil then pDevice = API_MAP[pType] end
 
     -- make globally accessible
-    _G[pDevice] = peripheral.wrap(pLocation)
+    devices[pDevice] = peripheral.wrap(pLocation)
 
     -- load library
     local pApiFile = '/lib/' .. pDevice
@@ -220,6 +224,9 @@ end
   os.loadAPI('/lib/json')
   print('  Loaded json')
   print()
+
+  message('Loading config')
+  config = json.decodeFromFile('/config.json') -- luacheck: ignore
 
   message('Initializing peripherals')
   setupPeripherals()
