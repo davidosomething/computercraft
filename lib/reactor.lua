@@ -6,7 +6,9 @@
 
 -- luacheck: globals config devices monitor json meter label
 
-local ENERGY_MAX = 10000000
+local ENERGY_MAX        = 10000000
+local OPTIMAL_FUEL_TEMP_MIN = 725
+local OPTIMAL_FUEL_TEMP_MAX = 900
 
 local state = {}
 
@@ -136,6 +138,36 @@ local function toggleReactor() -- luacheck: ignore
   local configFile = fs.open('/config.json', 'w')
   configFile.write(textutils.serializeJSON(config))
   configFile.close()
+end
+
+
+local function optimize() -- luacheck: ignore
+  -- Initialize rods
+  local currentRodLevel = devices['reactor'].getControlRodLevel(0)
+  devices['reactor'].setAllControlRodLevels(currentRodLevel)
+
+  while true do
+    print('Optimizing... (any key to cancel)')
+    print('      level: ' .. devices['reactor'].getControlRodLevel(0))
+    print('  fuel temp: ' .. devices['reactor'].getFuelTemperature() .. 'C')
+    if devices['reactor'].getFuelTemperature() < OPTIMAL_FUEL_TEMP_MIN then
+      -- decrease insertion so temp rises
+      devices['reactor'].setAllControlRodLevels(currentRodLevel - 2)
+    elseif devices['reactor'].getFuelTemperature() > OPTIMAL_FUEL_TEMP_MAX then
+      -- increase insertion so temp lowers
+      devices['reactor'].setAllControlRodLevels(currentRodLevel + 2)
+    else
+      break
+    end
+
+    -- let optimize for 2 seconds or user does something to break operation
+    local timer = os.startTimer(2)
+    local event = {os.pullEvent()}
+    if (event[1] ~= "timer" or event[2] ~= timer) then
+      print('User cancelled optimizing (' .. event[1] .. ')')
+      break
+    end
+  end
 end
 
 
