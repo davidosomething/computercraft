@@ -6,9 +6,8 @@
 
 -- luacheck: globals config devices monitor json meter label
 
-local ENERGY_MAX        = 10000000
-local OPTIMAL_FUEL_TEMP_MIN = 725
-local OPTIMAL_FUEL_TEMP_MAX = 900
+local ENERGY_MAX = 10000000
+local TEMP_MAX   = 900
 
 local state = {}
 
@@ -141,26 +140,20 @@ local function toggleReactor() -- luacheck: ignore
 end
 
 
-local function optimize() -- luacheck: ignore
-  -- Initialize rods
-  local currentRodLevel = devices['reactor'].getControlRodLevel(0)
-  devices['reactor'].setAllControlRodLevels(currentRodLevel)
-
+--- Lower temperature below optimal max
+--
+local function optimizeTemp()
+  local insertionLevel = devices['reactor'].getControlRodLevel(0)
   while true do
-    print('Optimizing... (any key to cancel)')
+    print('Optimizing control rod insertion... (any key to cancel)')
     print('      level: ' .. devices['reactor'].getControlRodLevel(0))
     print('  fuel temp: ' .. devices['reactor'].getFuelTemperature() .. 'C')
-    if devices['reactor'].getFuelTemperature() < OPTIMAL_FUEL_TEMP_MIN then
-      -- decrease insertion so temp rises
-      devices['reactor'].setAllControlRodLevels(currentRodLevel - 2)
-    elseif devices['reactor'].getFuelTemperature() > OPTIMAL_FUEL_TEMP_MAX then
-      -- increase insertion so temp lowers
-      devices['reactor'].setAllControlRodLevels(currentRodLevel + 2)
-    else
-      break
-    end
 
-    -- let optimize for 2 seconds or user does something to break operation
+    local isHot = devices['reactor'].getFuelTemperature() > TEMP_MAX
+    if isHot then insertionLevel = insertionLevel + 2 else break end
+    devices['reactor'].setAllControlRodLevels(insertionLevel)
+
+    -- let optimize for 2 seconds, or user does something
     local timer = os.startTimer(2)
     local event = {os.pullEvent()}
     if (event[1] ~= "timer" or event[2] ~= timer) then
@@ -168,6 +161,27 @@ local function optimize() -- luacheck: ignore
       break
     end
   end
+end
+
+
+--- Optimize rod level based on energy buffer, then level off by temperature
+--
+local function optimize() -- luacheck: ignore
+  if not state.isActive then
+    print('Reactor is not active')
+    return
+  end
+
+  -- Initialize all rods to the buffer level so reactor is essentially off
+  -- when buffer is full
+  devices['reactor'].setAllControlRodLevels(getEnergyPercentage())
+
+  -- Check if that does the trick
+  print('Optimizing control rod insertion... (any key to cancel)')
+  print('      level: ' .. devices['reactor'].getControlRodLevel(0))
+  os.sleep(2)
+  local isOptimal = devices['reactor'].getFuelTemperature() < TEMP_MAX
+  if isOptimal then return else optimizeTemp() end
 end
 
 
