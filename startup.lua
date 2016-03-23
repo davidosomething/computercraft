@@ -162,17 +162,18 @@ end
 --- Load global APIs
 --
 local function initApis()
-  local APIS = { 'display', 'json', 'meter' }
+  local APIS = { 'display', 'json', 'meter', 'config' }
 
   for i, file in ipairs(APIS) do
-    os.unloadAPI('/lib/' .. name)
-    os.loadAPI('/lib/' .. name)
-    print('  Loaded ' .. name)
+    os.unloadAPI('/lib/' .. file)
+    os.loadAPI('/lib/' .. file)
+    print('  Loaded ' .. file)
   end
 end
 
 
 --- Set up peripheral APIs in global
+--
 local function initPeripherals()
   local API_MAP = {
     ['BigReactors-Reactor']   = 'reactor',
@@ -244,21 +245,8 @@ end
   initApis()
   print()
 
-  message('Loading config')
-  -- luacheck: push ignore unused config
-  if fs.exists('/config.json') then
-    config = json.decodeFromFile('/config.json')
-  else
-    config = {
-      reactor = { isActive = false, isOptimizing = false }
-    }
-  end
-  -- luacheck: pop
-
   message('Initializing peripheral APIs')
   initPeripherals()
   print()
-
-  begin()
 end)()
 

@@ -4,8 +4,8 @@
 -- @author David O'Trakoun <me@davidosomething.com>
 --
 
--- luacheck: globals display meter
--- luacheck: globals config devices
+-- luacheck: globals config display meter
+-- luacheck: globals devices
 -- luacheck: globals label
 
 local DEVICE     = 'reactor'
@@ -116,14 +116,9 @@ end
 --- Switch optimize on/off state, persist to configFile
 --
 function toggleOptimize() -- luacheck: ignore
-  -- toggle
   state.isOptimizing = not state.isOptimizing
-  config.reactor = state
-
-  -- save
-  local configFile = fs.open('/config.json', 'w')
-  configFile.write(textutils.serializeJSON(config))
-  configFile.close()
+  config.set('reactor', state)
+  config.save()
 end
 
 
@@ -131,15 +126,10 @@ end
 --
 -- @tparam {nil,boolean} state - toggle if nil, on if true, off if false
 function toggleReactor() -- luacheck: ignore
-  -- toggle
   state.isActive = not Reactor.getActive()
   Reactor.setActive(state.isActive)
-
-  -- save
-  config.reactor = state
-  local configFile = fs.open('/config.json', 'w')
-  configFile.write(textutils.serializeJSON(config))
-  configFile.close()
+  config.set('reactor', state)
+  config.save()
 end
 
 

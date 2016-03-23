@@ -16,7 +16,7 @@ globals = {
   'redstone',
   'shell',
   'term',
-  'textutils'
+  'textutils',
   'window',
   'write',
 }
