@@ -186,7 +186,7 @@ local function initPeripherals()
   for i = 1, #peripherals do
     local pType     = peripheral.getType(peripherals[i])
     local pLocation = peripherals[i]
-    message('  Found ' .. pType ..  ' at "' .. pLocation .. '"')
+    print('  Found ' .. pType ..  ' at "' .. pLocation .. '"')
 
     local pDevice = pType
     if API_MAP[pType] ~= nil then pDevice = API_MAP[pType] end
@@ -197,7 +197,7 @@ local function initPeripherals()
     -- load library
     local pApiFile = '/lib/' .. pDevice
     if fs.exists(pApiFile) then
-      message('  Initializing API for ' .. pDevice)
+      print('  Initializing API for ' .. pDevice)
       os.unloadAPI(pApiFile)
       os.loadAPI(pApiFile)
     end
