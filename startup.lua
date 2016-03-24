@@ -90,11 +90,6 @@ end
 
   term.setTextColor(colors.lightGray)
 
-  -- actual startup
-  dko.message('Bootstrapping')
-  dko.bootstrap()
-  print()
-
   dko.message('Initializing global APIs')
   startup.initApis()
   print()

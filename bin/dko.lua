@@ -22,34 +22,6 @@ local function usage() -- luacheck: ignore
 end
 
 
---- Get the github downloader script
---
-local function getGh()
-  if fs.exists('/bin/gh') then return end
-
-  local GH_URL   = 'https://raw.githubusercontent.com'
-  local USERNAME = 'davidosomething'
-  local REPO     = 'computercraft'
-  local REF      = 'apis'
-  local FILENAME = 'bin/gh.lua'
-  local urlparts = { GH_URL, USERNAME, REPO, REF, FILENAME }
-  local url = table.concat(urlparts, '/')
-
-  local request = http.get(url)
-  if not request then
-    print('error: Could not download /bin/gh')
-    return
-  end
-
-  local response = request.readAll()
-  request.close()
-
-  local file = fs.open('/bin/gh', "w")
-  file.write(response)
-  file.close()
-end
-
-
 -- ---------------------------------------------------------------------------
 -- API
 -- ---------------------------------------------------------------------------
@@ -74,54 +46,11 @@ dko.strsplit = function (inputstr, sep)
 end
 
 
---- Create system dirs and set aliases
---
-dko.bootstrap = function ()
-  shell.setDir('/')
-
-  -- system paths
-  shell.run('mkdir', 'bin')
-  shell.run('mkdir', 'lib')
-  shell.run('mkdir', 'tmp')
-  shell.run('mkdir', 'var')
-
-  -- set path
-  shell.setPath(shell.path()..':/bin')
-
-  -- set aliases
-  shell.setAlias('l', 'list')
-  shell.setAlias('ll', 'list')
-  shell.setAlias('e', 'edit')
-  shell.setAlias('up', 'startup update')
-  shell.setAlias('update', 'startup update')
-end
-
-
 --- Reset to default terminal colors
 --
 dko.resetColors = function ()
   term.setTextColor(colors.white)
   term.setBackgroundColor(colors.black)
-end
-
-
---- Draw full length line
---
-dko.rule = function ()
-  term.setBackgroundColor(colors.lightGray)
-  print()
-  dko.resetColors()
-  print()
-end
-
-
---- Output white text (e.g. for reactor labels)
---
--- @tparam string text
-dko.label = function (text)
-  term.setBackgroundColor(colors.black)
-  term.setTextColor(colors.white)
-  write(text)
 end
 
 
@@ -155,6 +84,26 @@ dko.errorMessage = function (text)
 end
 
 
+--- Draw full length line
+--
+dko.rule = function ()
+  term.setBackgroundColor(colors.lightGray)
+  print()
+  dko.resetColors()
+  print()
+end
+
+
+--- Output white text (e.g. for reactor labels)
+--
+-- @tparam string text
+dko.label = function (text)
+  term.setBackgroundColor(colors.black)
+  term.setTextColor(colors.white)
+  write(text)
+end
+
+
 --- Wait for keypress
 --
 dko.pause = function ()
@@ -165,13 +114,68 @@ dko.pause = function ()
 end
 
 
+--- Get the github downloader script
+--
+dko.getGh = function ()
+  if fs.exists('/bin/gh') then return end
+
+  local GH_URL   = 'https://raw.githubusercontent.com'
+  local USERNAME = 'davidosomething'
+  local REPO     = 'computercraft'
+  local REF      = 'apis'
+  local FILENAME = 'bin/gh.lua'
+  local urlparts = { GH_URL, USERNAME, REPO, REF, FILENAME }
+  local url = table.concat(urlparts, '/')
+
+  local request = http.get(url)
+  if not request then
+    print('error: Could not download /bin/gh')
+    return
+  end
+
+  local response = request.readAll()
+  request.close()
+
+  local file = fs.open('/bin/gh', "w")
+  file.write(response)
+  file.close()
+end
+
+
+--- Create system dirs and set aliases
+--
+dko.bootstrap = function ()
+  dko.message('Bootstrapping')
+
+  dko.getGh()
+
+  shell.setDir('/')
+
+  -- system paths
+  shell.run('mkdir', 'bin')
+  shell.run('mkdir', 'lib')
+  shell.run('mkdir', 'tmp')
+  shell.run('mkdir', 'var')
+
+  -- set path
+  shell.setPath(shell.path()..':/bin')
+
+  -- set aliases
+  shell.setAlias('l', 'list')
+  shell.setAlias('ll', 'list')
+  shell.setAlias('e', 'edit')
+  shell.setAlias('up', 'startup update')
+  shell.setAlias('update', 'startup update')
+
+  dko.update()
+end
+
 
 --- Update manifest and scripts listed in it in the format:
 -- bin/someprogram
 -- lib/anapi
 --
 dko.update = function ()
-  getGh()
   shell.setDir('/')
 
   fs.delete('/var/manifest')
