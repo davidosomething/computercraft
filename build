@@ -12,7 +12,7 @@ var path = require('path');
 var fs = require('fs');
 
 /**
- * map filepath in array of filepaths to object {path:{version,pastebinid}}
+ * map filepath in array of filepaths to object {path:{version}}
  *
  * @param {string} file filepath
  * @return {object}
@@ -21,14 +21,12 @@ const mapObject = (file) => {
   let result = {};
 
   const data = fs.readFileSync(file);
-  const pastebinSearch = /pastebin ([0-9A-Za-z]+)/.exec(data);
   const versionSearch = /@release ([0-9\.]+([-a-z]+)?)/.exec(data);
   const pathParts = path.parse(file);
   const filepath = path.join(pathParts.dir.substr(2), pathParts.name);
 
   result[filepath] = {
     version:  (versionSearch ? versionSearch[1] : '0.0.0'),
-    pastebin: (pastebinSearch ? pastebinSearch[1] : '')
   };
 
   return result;
@@ -62,4 +60,8 @@ const walk = (dir) => {
 const luaFiles = walk('.').filter((file) => file.substr(-4) === '.lua');
 const ccFiles = luaFiles.map(mapObject);
 
-console.log(ccFiles);
+ccFiles.forEach((fileObject, data) => {
+  Object.keys(fileObject).forEach((file) => {
+    console.log('/' + file);
+  });
+})

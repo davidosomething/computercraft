@@ -7,7 +7,95 @@
 
 local CLI_ARGS = { ... }
 
+-- ---------------------------------------------------------------------------
+-- Private
+-- ---------------------------------------------------------------------------
+
+local function usage() -- luacheck: ignore
+  print('USAGE:')
+  print()
+  print('  bootstrap      -- Create system directories')
+  print('  pause          -- Press any key to continue prompt')
+  print('  resetColors    -- Reset terminal fg and bg colors')
+  print('  rule           -- Draw a light gray horizontal line')
+  print('  update         -- Update scripts ')
+end
+
+
+--- Get the github downloader script
+--
+local function getGh()
+  if fs.exists('/bin/gh') then return end
+
+  local GH_URL   = 'https://raw.githubusercontent.com'
+  local USERNAME = 'davidosomething'
+  local REPO     = 'computercraft'
+  local REF      = 'apis'
+  local FILENAME = 'bin/gh.lua'
+  local urlparts = { GH_URL, USERNAME, REPO, REF, FILENAME }
+  local url = table.concat(urlparts, '/')
+
+  local request = http.get(url)
+  if not request then
+    print('error: Could not download /bin/gh')
+    return
+  end
+
+  local response = request.readAll()
+  request.close()
+
+  local file = fs.open('/bin/gh', "w")
+  file.write(response)
+  file.close()
+end
+
+
+-- ---------------------------------------------------------------------------
+-- API
+-- ---------------------------------------------------------------------------
+
 local dko = {}
+
+
+--- Split a string into a table
+--
+-- @see http://stackoverflow.com/a/7615129/230473
+-- @tparam string inputstr
+-- @tparam string sep separating character
+dko.strsplit = function (inputstr, sep)
+  if sep == nil then sep = "%s" end
+  local t = {}
+  local i = 1
+  for str in string.gmatch(inputstr, "([^" .. sep .. "]+)") do
+    t[i] = str
+    i = i + 1
+  end
+  return t
+end
+
+
+--- Create system dirs and set aliases
+--
+dko.bootstrap = function ()
+  shell.setDir('/')
+
+  -- system paths
+  shell.run('mkdir', 'bin')
+  shell.run('mkdir', 'lib')
+  shell.run('mkdir', 'tmp')
+  shell.run('mkdir', 'var')
+
+  -- set path
+  shell.setPath(shell.path()..':/bin')
+
+  -- set aliases
+  shell.setAlias('l', 'list')
+  shell.setAlias('ll', 'list')
+  shell.setAlias('e', 'edit')
+  shell.setAlias('up', 'startup update')
+  shell.setAlias('update', 'startup update')
+end
+
 
 --- Reset to default terminal colors
 --
@@ -25,6 +113,7 @@ dko.rule = function ()
   dko.resetColors()
   print()
 end
+
 
 --- Output white text (e.g. for reactor labels)
 --
@@ -76,74 +165,52 @@ dko.pause = function ()
 end
 
 
---- Updates the updater
+
+--- Update manifest and scripts listed in it in the format:
+-- bin/someprogram
+-- lib/anapi
 --
-dko.systemUpdate = function ()
-  local SYSTEM_BIN = {
-    ['bin/gh']     = 'QwW6Xg6M',
-    ['bin/script'] = '0khvYUyX',
-  }
-
+dko.update = function ()
+  getGh()
   shell.setDir('/')
-  term.setTextColor(colors.lightGray)
 
-  for dest, pastebinId in pairs(SYSTEM_BIN) do
-    (function()
-      if pastebinId == nil then return end
+  fs.delete('/var/manifest')
+  shell.run('gh', 'get', 'manifest', '/var/manifest')
+  dko.message('Updated /var/manifest')
 
-      local tmpfile = 'tmp/' .. pastebinId
-      fs.delete(tmpfile)
-
-      if http and fs.exists('bin/gh') then
-        shell.run('gh', 'get', dest .. '.lua', tmpfile)
-      else
-        shell.run('pastebin', 'get', pastebinId, tmpfile)
-      end
-
-      if fs.exists(tmpfile) then
-        fs.delete(dest)
-        fs.move(tmpfile, dest)
-      end
-    end)()
+  local manifest = fs.open('/var/manifest', 'w')
+  while true do
+    local dest = manifest.readLine()
+    if dest == nil then break end
+    fs.delete(dest)
+    shell.run('gh', 'get', dest .. '.lua', dest)
+    dko.message('Updated ' .. dest)
   end
+  manifest.close()
 end
 
 
---- Update startup and other system scripts
---
-dko.update = function ()
-  if not fs.exists('bin/script') then
-    dko.errorMessage('Missing bin/script')
-    dko.pause()
+-- ---------------------------------------------------------------------------
+-- Main
+-- ---------------------------------------------------------------------------
+
+(function ()
+
+  -- When used as API, expose dko globally
+  if shell.getRunningProgram() ~= 'bin/dko' then
+    _G['dko'] = dko
     return
   end
 
-  shell.run('script', 'get', 'uVtX8Yx6', 'startup')
-  shell.run('script', 'get', 'aq8ci7Fc', 'lib/console')
-  shell.run('script', 'get', '4nRg9CHU', 'lib/json')
-  shell.run('script', 'get', 'LeGJ4Wkb', 'lib/meter')
-end
-
-
---- Expose dko namespace to global scope so this can be used as an API
---
-local function exposeApi()
-  _G['dko'] = dko
-end
-
-
---- Main, parse args and run
---
-local function main()
+  -- When run as program
   if #CLI_ARGS == 0 then return end
-end
+  local command = CLI_ARGS[1]
+  if dko[command] == nil then
+    print("Command not found '" .. command "'")
+    return
+  end
 
+  dko[command]()
 
---- Expose namespaced functions to global scope when loaded as an API
---
-if shell.getRunningProgram() ~= 'bin/dko' then
-  exposeApi()
-else
-  main()
-end
+end)()
 

@@ -5,11 +5,9 @@
 -- @release 5.0.1
 -- @author David O'Trakoun <me@davidosomething.com>
 --
+-- luacheck: globals dko
 
 devices = {}
-
-os.unloadAPI('/bin/dko')
-os.loadAPI('/bin/dko')
 
 -- ---------------------------------------------------------------------------
 -- Functions
@@ -17,27 +15,6 @@ os.loadAPI('/bin/dko')
 
 --- My namespace
 local startup = {}
-
---- Create system dirs and set aliases
---
-startup.bootstrap = function ()
-  shell.setDir('/')
-
-  -- system paths
-  shell.run('mkdir', 'bin')
-  shell.run('mkdir', 'lib')
-  shell.run('mkdir', 'tmp')
-
-  -- set path
-  shell.setPath(shell.path()..':/bin')
-
-  -- set aliases
-  shell.setAlias('l', 'list')
-  shell.setAlias('ll', 'list')
-  shell.setAlias('e', 'edit')
-  shell.setAlias('up', 'startup update')
-  shell.setAlias('update', 'startup update')
-end
 
 
 --- Load global APIs
@@ -91,6 +68,13 @@ end
 -- ---------------------------------------------------------------------------
 
 (function ()
+  if not fs.exists('/bin/dko') then
+    print('error: Missing /bin/dko')
+    return
+  end
+  os.unloadAPI('/bin/dko')
+  os.loadAPI('/bin/dko')
+
   term.redirect(term.native())
 
   -- output message of the day
@@ -108,7 +92,7 @@ end
 
   -- actual startup
   dko.message('Bootstrapping')
-  startup.bootstrap()
+  dko.bootstrap()
   print()
 
   dko.message('Initializing global APIs')

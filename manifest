@@ -1,0 +1,15 @@
+/bin/dko
+/bin/gh
+/bin/package
+/lib/capacitor
+/lib/config
+/lib/console
+/lib/display
+/lib/json
+/lib/meter
+/lib/modem
+/lib/monitor
+/lib/reactor
+/lib/reactorRemote
+/lib/remote
+/startup
