@@ -1,9 +1,5 @@
 ---
--- Get a script from GitHub if available, otherwise pastebin.
--- bin/script
---
--- pastebin 0khvYUyX
---
+-- bin/script -- Get a script from GitHub if available, otherwise pastebin.
 -- @release 4.1.0
 -- @author David O'Trakoun <me@davidosomething.com>
 -- @script script

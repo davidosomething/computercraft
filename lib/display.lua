@@ -1,6 +1,6 @@
 ---
--- lib/display - Display exposed as API
--- @release 0.0.1
+-- lib/display.lua - Display exposed as API
+-- @release 0.0.2
 -- @author David O'Trakoun <me@davidosomething.com>
 --
 -- luacheck: globals devices
@@ -13,9 +13,10 @@ local windows = {}
 
 --- Create or reuse a window on the current display
 --
+-- @tparam string name
 function use(name) -- luacheck: ignore
   -- Window exists, make visible
-  if windows[name] != nil then windows[name].setVisible(true) end
+  if windows[name] ~= nil then windows[name].setVisible(true) end
 
   -- Already using the window, done
   if term.current() == windows[name] then return end
@@ -34,7 +35,7 @@ end
 
 --- Back to regular monitor/native term
 --
-function reset()
+function reset() -- luacheck: ignore
   -- Hide any open windows
   for name,win in pairs(windows) do win.setVisible(false) end
 

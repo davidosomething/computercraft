@@ -1,6 +1,7 @@
 ---
--- lib/meter - Meter exposed as API
--- @release 2.3.0
+-- lib/meter.lua -- Meter exposed as API
+--
+-- @release 2.3.1
 -- @author David O'Trakoun <me@davidosomething.com>
 --
 

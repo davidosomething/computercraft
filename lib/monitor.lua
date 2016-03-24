@@ -1,6 +1,7 @@
 ---
--- lib/monitor.lua - Monitor API
--- @release 1.0.0
+-- lib/monitor.lua -- Monitor API
+--
+-- @release 1.0.1
 -- @author David O'Trakoun <me@davidosomething.com>
 --
 -- luacheck: globals devices

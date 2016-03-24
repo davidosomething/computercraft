@@ -1,18 +1,11 @@
 ---
--- Main remote control program
--- remote/main
---
--- pastebin SHyMGSSK
+-- lib/remote.lua -- Main remote control program
 --
 -- @release 2.1.1
 -- @author David O'Trakoun <me@davidosomething.com>
 --
 
 -- luacheck: globals console reactorRemote
-
-os.unloadAPI('/lib/console')
-os.loadAPI('/lib/console')
-
 
 -- ---------------------------------------------------------------------------
 -- Meta

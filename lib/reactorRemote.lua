@@ -1,24 +1,12 @@
 ---
--- Remotely controls a reactor via Advanced Wireless Pocket Computer
--- Exposed as reactorRemote api
--- lib/reactorRemote
---
--- pastebin Y4UsBfP7
+-- lib/reactorRemote -- Remotely controls a reactor via Advanced Wireless
+-- Pocket Computer. Exposed as reactorRemote api.
 --
 -- @release 1.0.1
 -- @author David O'Trakoun <me@davidosomething.com>
 --
 
 -- luacheck: globals console meter wireless
-
-os.unloadAPI('/lib/console')
-os.loadAPI('/lib/console')
-
-os.unloadAPI('/lib/meter')
-os.loadAPI('/lib/meter')
-
-os.unloadAPI('/lib/wireless')
-os.loadAPI('/lib/wireless')
 
 -- ---------------------------------------------------------------------------
 -- Meta

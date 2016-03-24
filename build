@@ -1,23 +1,15 @@
 #!/usr/bin/env node
 
-/*eslint-env node*/
+/* eslint-env es6, node */
+
 /**
  * build script
  */
 
-var path = require("path");
-var fs = require("fs");
+'use strict';
 
-/**
- * filter a filename by lua extension
- *
- * @param {string} file
- * @return {boolean} whether file ends in lua extension
- */
-var filterLua = function (file) {
-  "use strict";
-  return file.substr(-4) === ".lua";
-};
+var path = require('path');
+var fs = require('fs');
 
 /**
  * map filepath in array of filepaths to object {path:{version,pastebinid}}
@@ -25,33 +17,37 @@ var filterLua = function (file) {
  * @param {string} file filepath
  * @return {object}
  */
-var mapObject = function (file) {
-  "use strict";
-  var result = {};
+const mapObject = (file) => {
+  let result = {};
 
-  var data = fs.readFileSync(file);
-  var pastebinSearch = /pastebin ([0-9A-Za-z]+)/.exec(data);
-  var versionSearch = /@release ([0-9\.]+([-a-z]+)?)/.exec(data);
-  var pathParts = path.parse(file);
+  const data = fs.readFileSync(file);
+  const pastebinSearch = /pastebin ([0-9A-Za-z]+)/.exec(data);
+  const versionSearch = /@release ([0-9\.]+([-a-z]+)?)/.exec(data);
+  const pathParts = path.parse(file);
+  const filepath = path.join(pathParts.dir.substr(2), pathParts.name);
 
-  var filepath = path.join(pathParts.dir.substr(2), pathParts.name);
   result[filepath] = {
-    version: (versionSearch ? versionSearch[1] : "0.0.0"),
-    pastebin: (pastebinSearch ? pastebinSearch[1] : "")
+    version:  (versionSearch ? versionSearch[1] : '0.0.0'),
+    pastebin: (pastebinSearch ? pastebinSearch[1] : '')
   };
-
 
   return result;
 };
 
-// http://stackoverflow.com/a/16684530
-var walk = function (dir) {
-  "use strict";
-  var results = [];
-  var list = fs.readdirSync(dir);
-  list.forEach(function(file) {
-    file = dir + "/" + file;
-    var stat = fs.statSync(file);
+/**
+ * Get filelist of dir by recursive walk
+ *
+ * @see http://stackoverflow.com/a/16684530
+ * @param {String} dir
+ */
+const walk = (dir) => {
+  let results = [];
+
+  const list = fs.readdirSync(dir);
+
+  list.forEach((file) => {
+    file = `${dir}/${file}`;
+    const stat = fs.statSync(file);
     if (stat && stat.isDirectory()) {
       results = results.concat(walk(file));
     }
@@ -59,10 +55,11 @@ var walk = function (dir) {
       results.push(file);
     }
   });
+
   return results;
 };
 
-var luaFiles = walk(".").filter(filterLua);
-var ccFiles = luaFiles.map(mapObject);
+const luaFiles = walk('.').filter((file) => file.substr(-4) === '.lua');
+const ccFiles = luaFiles.map(mapObject);
 
 console.log(ccFiles);

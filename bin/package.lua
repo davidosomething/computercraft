@@ -1,9 +1,5 @@
 ---
--- Package manager
--- bin/package
---
--- pastebin
---
+-- bin/package -- Package manager
 -- @release 0.0.4-alpha
 -- @author David O'Trakoun <me@davidosomething.com>
 -- @script package

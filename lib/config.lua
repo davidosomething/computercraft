@@ -1,5 +1,5 @@
 ---
--- lib/config.lua - JSON config API
+-- lib/config.lua -- JSON config API
 -- @release 1.0.0
 -- @author David O'Trakoun <me@davidosomething.com>
 --
@@ -7,9 +7,7 @@
 
 local CONFIG_FILE = '/config.json'
 
-local Data = {
-  reactor = { isActive = false, isOptimizing = false }
-}
+local Data
 
 -- ---------------------------------------------------------------------------
 -- API
@@ -19,7 +17,10 @@ local Data = {
 --
 function init()
   Data = {
-    reactor = { isActive = false, isOptimizing = false }
+    reactor = {
+      isActive = false,
+      isOptimizing = false,
+    }
   }
 end
 

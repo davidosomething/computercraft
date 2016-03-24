@@ -1,12 +1,10 @@
---- JSON for ComputerCraft
+---
+-- lib/json.lua -- JSON for ComputerCraft
+-- not by me but cleaned up a bit
 --
--- pastebin 4nRg9CHU
---
--- http://www.computercraft.info/forums2/index.php?/topic/5854-json-api-v201-for-computercraft/
--- http://pastebin.com/4nRg9CHU
---
--- @release 2.0.1
--- not by me
+-- @see http://www.computercraft.info/forums2/index.php?/topic/5854-json-api-v201-for-computercraft/
+-- @see http://pastebin.com/4nRg9CHU
+-- @release 2.0.2
 --
 
 --
@@ -43,7 +41,7 @@ local function encodeCommon(val, pretty, tabLevel, tTracking)
 		str = str .. ("\t"):rep(tabLevel) .. s
 	end
 
-	local function arrEncoding(val, bracket, closeBracket, iterator, loopFunc)
+	local function arrEncoding(bracket, closeBracket, iterator, loopFunc)
 		str = str .. bracket
 		if pretty then
 			str = str .. "\n"
@@ -71,11 +69,11 @@ local function encodeCommon(val, pretty, tabLevel, tTracking)
 		assert(not tTracking[val], "Cannot encode a table holding itself recursively")
 		tTracking[val] = true
 		if isArray(val) then
-			arrEncoding(val, "[", "]", ipairs, function(k,v)
+			arrEncoding("[", "]", ipairs, function(k,v)
 				str = str .. encodeCommon(v, pretty, tabLevel, tTracking)
 			end)
 		else
-			arrEncoding(val, "{", "}", pairs, function(k,v)
+			arrEncoding("{", "}", pairs, function(k,v)
 				assert(type(k) == "string", "JSON object keys must be strings", 2)
 				str = str .. encodeCommon(k, pretty, tabLevel, tTracking)
 				str = str .. (pretty and ": " or ":") .. encodeCommon(v, pretty, tabLevel, tTracking)
@@ -93,11 +91,11 @@ local function encodeCommon(val, pretty, tabLevel, tTracking)
 	return str
 end
 
-function encode(val)
+function encode(val) -- luacheck: ignore
 	return encodeCommon(val, false, 0, {})
 end
 
-function encodePretty(val)
+function encodePretty(val) -- luacheck: ignore
 	return encodeCommon(val, true, 0, {})
 end
 
@@ -143,7 +141,7 @@ function parseArray(str)
 	local val = {}
 	local i = 1
 	while str:sub(1, 1) ~= "]" do
-		local v = nil
+		local v = nil -- luacheck: ignore
 		v, str = parseValue(str)
 		val[i] = v
 		i = i + 1
@@ -158,7 +156,7 @@ function parseObject(str)
 	
 	local val = {}
 	while str:sub(1, 1) ~= "}" do
-		local k, v = nil, nil
+		local k, v = nil, nil -- luacheck: ignore
 		k, v, str = parseMember(str)
 		val[k] = v
 		str = removeWhite(str)
@@ -168,9 +166,9 @@ function parseObject(str)
 end
 
 function parseMember(str)
-	local k = nil
+	local k = nil -- luacheck: ignore
 	k, str = parseValue(str)
-	local val = nil
+	local val = nil -- luacheck: ignore
 	val, str = parseValue(str)
 	return k, val, str
 end
@@ -199,7 +197,7 @@ function decode(str)
 	return t
 end
 
-function decodeFromFile(path)
+function decodeFromFile(path) -- luacheck: ignore
 	local file = assert(fs.open(path, "r"))
 	return decode(file.readAll())
 end
