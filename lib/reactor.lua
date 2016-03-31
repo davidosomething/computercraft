@@ -10,9 +10,9 @@
 -- luacheck: globals dko
 
 local DEVICE     = 'reactor'
+local REACTOR    = devices[DEVICE]
 local ENERGY_MAX = 10000000
 local TEMP_MAX   = 900
-local REACTOR    = devices[DEVICE]
 
 local state
 

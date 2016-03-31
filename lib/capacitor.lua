@@ -1,45 +1,27 @@
 ---
--- Capacitor autostart
--- capacitor/main
+-- lib/capacitor Capacitor status
 --
--- pastebin SQsnn6aE
---
--- @release 0.0.4-alpha
+-- @release 1.0.0-alpha
 -- @author David O'Trakoun <me@davidosomething.com>
 --
 
--- luacheck: globals console json meter wireless
+-- luacheck: globals config meter
+-- luacheck: globals devices
+-- luacheck: globals dko
 
-os.unloadAPI('/lib/console')
-os.loadAPI('/lib/console')
+local DEVICE  = 'capacitor'
+local REACTOR = devices[DEVICE]
 
-os.unloadAPI('/lib/json')
-os.loadAPI('/lib/json')
-
-os.unloadAPI('/lib/meter')
-os.loadAPI('/lib/meter')
-
-local is_exit = false
-local config = json.decodeFromFile('/capacitor/config.json')
-
+local state
 
 -- ---------------------------------------------------------------------------
--- Peripheral config
--- ---------------------------------------------------------------------------
-
-local c = peripheral.wrap(config['capacitor_side'])
-
-redstone.setOutput(config['redstone_side'], false)
-
-
--- ---------------------------------------------------------------------------
--- Functions
+-- API
 -- ---------------------------------------------------------------------------
 
 --- Get capacitor energy percent
 --
 -- @treturn int
-local function getEnergyPercent()
+function getEnergyPercent()
   return meter.percent(c.getEnergyStored(), c.getMaxEnergyStored())
 end
 
@@ -47,64 +29,16 @@ end
 --- Detect if the capacitor is low on energy
 --
 -- @treturn boolean true if low
-local function isLowEnergy()
-  return getEnergyPercent() < config['redstone_toggle_threshold']
+function isLow()
+  return getEnergyPercent() < 50
 end
 
 
---- Send status as a table over rednet
+--- Called by initPeripherals
 --
--- @tparam int remoteId computerId to send rednet message to
-local function sendStatus(remoteId)
-  local message = {}
-
-  message['energyStored'] = c.getEnergyStored()
-  message['maxEnergyStored'] = c.getMaxEnergyStored()
-  message['energyPercent'] = getEnergyPercent()
-
-  rednet.send(remoteId, message, config['remote_protocol'])
+function init() -- luacheck: ignore
+  state = {
+    isActive     = REACTOR.getActive(),
+    isOptimizing = config['reactor'].isOptimizing,
+  }
 end
-
-
---- toggle redstone signal on timeout
-local function toggleRedstoneSignal()
-  if isLowEnergy() then
-    redstone.setOutput(config['redstone_side'], true)
-  else
-    redstone.setOutput(config['redstone_side'], false)
-  end
-end
-
-
---- Do some action if receiving redstone message from modem
---
-local function getModemMessage()
-  -- luacheck: ignore protocol
-  local senderId, message, protocol = rednet.receive('reactor')
-  sendStatus(senderId)
-end
-
-
---- Wait for system timer to trigger
---
-local function getTimeout()
-  -- luacheck: ignore event timerHandler
-  local event, timerHandler = os.pullEvent('timer')
-  toggleRedstoneSignal()
-end
-
-
--- ---------------------------------------------------------------------------
--- Main
--- ---------------------------------------------------------------------------
-
-(function ()
-  if is_exit then return end
-
-  while not is_exit do
-    local statusTimer = os.startTimer(0.5)
-    parallel.waitForAny(getModemMessage, getTimeout)
-    os.cancelTimer(statusTimer)
-  end
-end)()
-
