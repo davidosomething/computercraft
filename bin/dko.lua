@@ -201,12 +201,8 @@ end
 
 (function ()
 
-  -- When not run as program, expose dko globally as API
-  local program = shell.getRunningProgram()
-  if program == nil or string.find(program, 'dko') == nil then
-    _G['dko'] = dko
-    return
-  end
+  -- Expose as an API
+  _G['dko'] = dko
 
   -- When run as program
   if #CLI_ARGS == 0 then return end
