@@ -148,7 +148,6 @@ end
 dko.bootstrap = function ()
   dko.message('Bootstrapping')
   shell.setDir('/')
-  dko.getGh()
 
   -- system paths
   shell.run('mkdir', 'bin')
@@ -166,6 +165,8 @@ dko.bootstrap = function ()
   shell.setAlias('up', 'startup update')
   shell.setAlias('update', 'startup update')
 
+  -- get scripts
+  dko.getGh()
   dko.update()
 end
 
