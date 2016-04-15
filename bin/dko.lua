@@ -129,7 +129,7 @@ dko.getGh = function ()
 
   local request = http.get(url)
   if not request then
-    print('error: Could not download /bin/gh')
+    dko.errorMessage('Could not download /bin/gh')
     return
   end
 
@@ -147,10 +147,8 @@ end
 --
 dko.bootstrap = function ()
   dko.message('Bootstrapping')
-
-  dko.getGh()
-
   shell.setDir('/')
+  dko.getGh()
 
   -- system paths
   shell.run('mkdir', 'bin')
@@ -210,7 +208,7 @@ end
   if #CLI_ARGS == 0 then return end
   local command = CLI_ARGS[1]
   if dko[command] == nil then
-    print("Command not found '" .. command "'")
+    dko.errorMessage("Command not found '" .. command "'")
     return
   end
 
