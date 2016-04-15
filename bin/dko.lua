@@ -191,12 +191,10 @@ dko.update = function ()
   local manifest = fs.open('/var/manifest', 'r')
   while true do
     local dest = manifest.readLine()
-    dko.message('Updating ' .. dest)
     if dest == nil then break end
 
-    if fs.exists(dest) then fs.delete(dest) end
+    dko.message('Updating ' .. dest)
     shell.run('gh', 'get', dest .. '.lua', dest)
-    dko.message('Updated ' .. dest)
   end
   manifest.close()
 end
@@ -220,7 +218,7 @@ end
     return
   end
 
-  dko[command](dko.rest(CLI_ARGS))
+  dko[command](unpack(dko.rest(CLI_ARGS)))
 
 end)()
 

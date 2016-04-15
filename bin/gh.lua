@@ -77,8 +77,8 @@ end
     local response = request.readAll()
     request.close()
 
-    local file = fs.open( destPath, "w" )
-    file.write( response )
+    local file = fs.open(destPath, "w")
+    file.write(response)
     file.close()
   else
     errorMessage('Error retrieving ' .. srcRelativePath)
