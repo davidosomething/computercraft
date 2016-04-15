@@ -7,11 +7,15 @@
 
 local CLI_ARGS = { ... }
 
+
 -- ---------------------------------------------------------------------------
--- Private
+-- API
 -- ---------------------------------------------------------------------------
 
-local function usage(...) -- luacheck: ignore
+local dko = {}
+
+
+dko.usage = function (...)
   print('USAGE:')
   print()
   print('  bootstrap      -- Create system directories')
@@ -23,20 +27,16 @@ local function usage(...) -- luacheck: ignore
 end
 
 
--- ---------------------------------------------------------------------------
--- API
--- ---------------------------------------------------------------------------
-
-local dko = {}
-
-
 --- Split a string into a table
 --
 -- @see http://stackoverflow.com/a/7615129/230473
 -- @tparam string inputstr
 -- @tparam string sep separating character
-dko.strsplit = function (shell, inputstr, sep)
-  if sep == nil then sep = "%s" end
+dko.strsplit = function (...)
+  shell     = arg[0]
+  inputstr  = arg[1]
+  sep       = arg[2] or "%s"
+
   local t = {}
   local i = 1
   for str in string.gmatch(inputstr, "([^" .. sep .. "]+)") do
@@ -47,10 +47,12 @@ dko.strsplit = function (shell, inputstr, sep)
 end
 
 
-dko.rest = function (shell, array, index)
-  if not array then return {} end
+dko.rest = function (...)
+  shell = arg[0]
+  array = arg[1]
+  index = arg[2] or 2
 
-  index = index or 2
+  if not array then return {} end
 
   local rest = {}
   for i=index,#array do
@@ -71,7 +73,10 @@ end
 --- Output fancy system message (magenta bullet and text)
 --
 -- @tparam string text
-dko.message = function (shell, text)
+dko.message = function (arg)
+  shell = arg[0]
+  text = arg[1]
+
   -- bullet
   term.setBackgroundColor(colors.magenta)
   write(' ')
@@ -86,7 +91,10 @@ end
 --- Output fancy error message
 --
 -- @tparam string text
-dko.errorMessage = function (shell, text)
+dko.errorMessage = function (...)
+  shell = arg[0]
+  text = arg[1]
+
   -- square
   term.setBackgroundColor(colors.red)
   write(' ')
@@ -111,7 +119,10 @@ end
 --- Output white text (e.g. for reactor labels)
 --
 -- @tparam string text
-dko.label = function (shell, text)
+dko.label = function (...)
+  shell = arg[0]
+  text = arg[1]
+
   term.setBackgroundColor(colors.black)
   term.setTextColor(colors.white)
   write(text)
@@ -160,6 +171,8 @@ end
 --- Create system dirs and set aliases
 --
 dko.bootstrap = function (...)
+  shell = arg[0]
+
   dko.message('Bootstrapping')
   shell.setDir('/')
 
@@ -187,6 +200,8 @@ end
 -- lib/anapi
 --
 dko.update = function (...)
+  shell = arg[0]
+
   shell.setDir('/')
 
   shell.run('gh', 'get', 'var/manifest', '/var/manifest')
@@ -220,7 +235,10 @@ end
   end
 
   -- Usage if no command in args
-  if #CLI_ARGS == 0 then return usage() end
+  if #CLI_ARGS == 0 then
+    dko.usage()
+    return
+  end
 
   -- Pass command
   local command = CLI_ARGS[1]
@@ -230,8 +248,7 @@ end
   end
 
   -- just in case for lua 5.2, not sure what CC includes
-  local unpack = unpack or table.unpack
-  dko[command](shell, unpack(dko.rest(CLI_ARGS)))
+  dko[command](shell, dko.rest(CLI_ARGS))
 
 end)()
 
