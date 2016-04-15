@@ -73,9 +73,14 @@ end
 --- Output fancy system message (magenta bullet and text)
 --
 -- @tparam string text
-dko.message = function (arg)
+dko.message = function (...)
   shell = arg[0]
   text = arg[1]
+
+  if not text then
+    dko.errorMessage(shell, 'No text provided to dko.message')
+    return
+  end
 
   -- bullet
   term.setBackgroundColor(colors.magenta)
@@ -123,6 +128,11 @@ dko.label = function (...)
   shell = arg[0]
   text = arg[1]
 
+  if not text then
+    dko.errorMessage(shell, 'No text provided to dko.label')
+    return
+  end
+
   term.setBackgroundColor(colors.black)
   term.setTextColor(colors.white)
   write(text)
@@ -154,7 +164,7 @@ dko.getGh = function (...)
 
   local request = http.get(url)
   if not request then
-    dko.errorMessage('Could not download /bin/gh')
+    dko.errorMessage(shell, 'Could not download /bin/gh')
     return
   end
 
@@ -164,7 +174,7 @@ dko.getGh = function (...)
   local file = fs.open('/bin/gh', "w")
   file.write(response)
   file.close()
-  dko.message('Updated /bin/gh')
+  dko.message(shell, 'Updated /bin/gh')
 end
 
 
@@ -173,7 +183,7 @@ end
 dko.bootstrap = function (...)
   shell = arg[0]
 
-  dko.message('Bootstrapping')
+  dko.message(shell, 'Bootstrapping')
   shell.setDir('/')
 
   -- system paths
@@ -205,14 +215,14 @@ dko.update = function (...)
   shell.setDir('/')
 
   shell.run('gh', 'get', 'var/manifest', '/var/manifest')
-  dko.message('Updated /var/manifest')
+  dko.message(shell, 'Updated /var/manifest')
 
   local manifest = fs.open('/var/manifest', 'r')
   while true do
     local dest = manifest.readLine()
     if dest == nil then break end
 
-    dko.message('Updating ' .. dest)
+    dko.message(shell, 'Updating ' .. dest)
     shell.run('gh', 'get', dest .. '.lua', dest)
   end
   manifest.close()
@@ -248,7 +258,7 @@ end
   end
 
   -- just in case for lua 5.2, not sure what CC includes
-  dko[command](shell, dko.rest(CLI_ARGS))
+  dko[command](shell, unpack(dko.rest(CLI_ARGS)))
 
 end)()
 
