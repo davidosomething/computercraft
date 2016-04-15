@@ -122,7 +122,7 @@ dko.getGh = function ()
   local GH_URL   = 'https://raw.githubusercontent.com'
   local USERNAME = 'davidosomething'
   local REPO     = 'computercraft'
-  local REF      = 'apis'
+  local REF      = 'master'
   local FILENAME = 'bin/gh.lua'
   local urlparts = { GH_URL, USERNAME, REPO, REF, FILENAME }
   local url = table.concat(urlparts, '/')
@@ -139,6 +139,7 @@ dko.getGh = function ()
   local file = fs.open('/bin/gh', "w")
   file.write(response)
   file.close()
+  dko.message('Updated /bin/gh')
 end
 
 
@@ -178,11 +179,9 @@ end
 dko.update = function ()
   shell.setDir('/')
 
-  fs.delete('/var/manifest')
-  shell.run('gh', 'get', 'var/manifest', '/var/manifest')
   dko.message('Updated /var/manifest')
 
-  local manifest = fs.open('/var/manifest', 'w')
+  local manifest = fs.open('/var/manifest', 'r')
   while true do
     local dest = manifest.readLine()
     if dest == nil then break end
