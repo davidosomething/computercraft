@@ -46,6 +46,16 @@ dko.strsplit = function (inputstr, sep)
 end
 
 
+dko.rest = function (array, index)
+  index = index or 2
+  local rest = {}
+  for i=index,#array do
+    rest[#rest+1] = array[i]
+  end
+  return rest
+end
+
+
 --- Reset to default terminal colors
 --
 dko.resetColors = function ()
@@ -210,7 +220,7 @@ end
     return
   end
 
-  dko[command]()
+  dko[command](dko.rest(CLI_ARGS))
 
 end)()
 

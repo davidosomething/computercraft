@@ -76,8 +76,8 @@ end
   term.redirect(term.native())
 
   -- output message of the day
-  dko.resetColors()
-  dko.rule()
+  shell.run('dko', 'resetColors')
+  shell.run('dko', 'rule')
   print()
   write(' Welcome to ' .. os.version())
 
@@ -86,16 +86,16 @@ end
   if _CC_VERSION ~= nil then write(' (' .. _CC_VERSION .. ')\n') end
 
   print(' Day ' .. os.day() .. ' ' .. textutils.formatTime(os.time(), false))
-  dko.rule()
+  shell.run('dko', 'rule')
   print()
 
   term.setTextColor(colors.lightGray)
 
-  dko.message('Initializing global APIs')
+  shell.run('dko', 'message', 'Initializing global APIs')
   startup.initApis()
   print()
 
-  dko.message('Initializing peripheral APIs')
+  shell.run('dko', 'message', 'Initializing peripheral APIs')
   startup.initPeripherals()
   print()
 end)()
