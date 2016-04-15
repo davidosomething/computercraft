@@ -34,7 +34,7 @@ local dko = {}
 -- @see http://stackoverflow.com/a/7615129/230473
 -- @tparam string inputstr
 -- @tparam string sep separating character
-dko.strsplit = function (shell inputstr, sep)
+dko.strsplit = function (shell, inputstr, sep)
   if sep == nil then sep = "%s" end
   local t = {}
   local i = 1
