@@ -179,6 +179,7 @@ end
 dko.update = function ()
   shell.setDir('/')
 
+  shell.run('gh', 'get', 'var/manifest', '/var/manifest')
   dko.message('Updated /var/manifest')
 
   local manifest = fs.open('/var/manifest', 'r')
