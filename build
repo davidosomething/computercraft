@@ -62,6 +62,6 @@ const ccFiles = luaFiles.map(mapObject);
 
 ccFiles.forEach((fileObject, data) => {
   Object.keys(fileObject).forEach((file) => {
-    console.log('/' + file);
+    console.log(file);
   });
 })
