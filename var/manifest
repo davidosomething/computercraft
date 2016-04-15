@@ -1,4 +1,6 @@
-/bin/package
+/bin/dko
+/bin/gh
+/lib/armor
 /lib/capacitor
 /lib/config
 /lib/console
