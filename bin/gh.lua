@@ -53,7 +53,7 @@ end
   end
 
   if (#tArgs < 3) then
-    print("USAGE: gh get FILEPATH DEST")
+    print("USAGE: gh get SRC DEST")
     return
   end
 
@@ -63,31 +63,26 @@ end
     return
   end
 
-  local filepath = tArgs[2]
-
-  local program = tArgs[3]
-  if fs.exists(program) then
-    errorMessage("File " .. program .. " exists. No action taken.")
-    return
-  end
+  local srcRelativePath = tArgs[2]
+  local destPath = tArgs[3]
 
   local ref
   if #tArgs > 3 then ref = tArgs[4] end
   if ref == nil then ref = "master" end
 
-  local urlparts = { GH_URL, USERNAME, REPO, ref, filepath }
+  local urlparts = { GH_URL, USERNAME, REPO, ref, srcRelativePath }
   local url = table.concat(urlparts, '/')
   local request = http.get(url)
   if request then
     local response = request.readAll()
     request.close()
 
-    local file = fs.open( program, "w" )
+    local file = fs.open( destPath, "w" )
     file.write( response )
     file.close()
   else
-    errorMessage('Error retrieving ' .. filepath .. ' from ' .. program)
-    errorMessage(url)
+    errorMessage('Error retrieving ' .. srcRelativePath)
+    errorMessage('from ' .. url)
     pause()
   end
 
