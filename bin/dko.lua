@@ -216,10 +216,7 @@ end
   end
 
   -- Usage if no command in args
-  if #CLI_ARGS == 0 then
-    dko.usage()
-    return
-  end
+  if #CLI_ARGS == 0 then return usage() end
 
   -- Pass command
   local command = CLI_ARGS[1]
