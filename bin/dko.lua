@@ -156,7 +156,7 @@ dko.bootstrap = function ()
   shell.run('mkdir', 'var')
 
   -- set path
-  shell.setPath(shell.path()..':/bin')
+  shell.setPath(shell.path() .. ':/bin')
 
   -- set aliases
   shell.setAlias('l', 'list')
@@ -184,8 +184,10 @@ dko.update = function ()
   local manifest = fs.open('/var/manifest', 'r')
   while true do
     local dest = manifest.readLine()
+    dko.message('Updating ' .. dest)
     if dest == nil then break end
-    fs.delete(dest)
+
+    if fs.exists(dest) then fs.delete(dest) end
     shell.run('gh', 'get', dest .. '.lua', dest)
     dko.message('Updated ' .. dest)
   end
