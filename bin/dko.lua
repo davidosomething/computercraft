@@ -19,6 +19,7 @@ local function usage(...) -- luacheck: ignore
   print('  resetColors    -- Reset terminal fg and bg colors')
   print('  rule           -- Draw a light gray horizontal line')
   print('  update         -- Update scripts ')
+  print()
 end
 
 
@@ -47,7 +48,10 @@ end
 
 
 dko.rest = function (shell, array, index)
+  if not array then return {} end
+
   index = index or 2
+
   local rest = {}
   for i=index,#array do
     rest[#rest+1] = array[i]
