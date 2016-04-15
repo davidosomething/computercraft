@@ -73,7 +73,7 @@ end
 
   local ref
   if #tArgs > 3 then ref = tArgs[4] end
-  if ref == nil then ref = "apis" end
+  if ref == nil then ref = "master" end
 
   local urlparts = { GH_URL, USERNAME, REPO, ref, filepath }
   local url = table.concat(urlparts, '/')
