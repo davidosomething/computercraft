@@ -11,7 +11,7 @@ local CLI_ARGS = { ... }
 -- Private
 -- ---------------------------------------------------------------------------
 
-local function usage() -- luacheck: ignore
+local function usage(...) -- luacheck: ignore
   print('USAGE:')
   print()
   print('  bootstrap      -- Create system directories')
@@ -34,7 +34,7 @@ local dko = {}
 -- @see http://stackoverflow.com/a/7615129/230473
 -- @tparam string inputstr
 -- @tparam string sep separating character
-dko.strsplit = function (inputstr, sep)
+dko.strsplit = function (shell inputstr, sep)
   if sep == nil then sep = "%s" end
   local t = {}
   local i = 1
@@ -46,7 +46,7 @@ dko.strsplit = function (inputstr, sep)
 end
 
 
-dko.rest = function (array, index)
+dko.rest = function (shell, array, index)
   index = index or 2
   local rest = {}
   for i=index,#array do
@@ -58,7 +58,7 @@ end
 
 --- Reset to default terminal colors
 --
-dko.resetColors = function ()
+dko.resetColors = function (...)
   term.setTextColor(colors.white)
   term.setBackgroundColor(colors.black)
 end
@@ -67,7 +67,7 @@ end
 --- Output fancy system message (magenta bullet and text)
 --
 -- @tparam string text
-dko.message = function (text)
+dko.message = function (shell, text)
   -- bullet
   term.setBackgroundColor(colors.magenta)
   write(' ')
@@ -82,7 +82,7 @@ end
 --- Output fancy error message
 --
 -- @tparam string text
-dko.errorMessage = function (text)
+dko.errorMessage = function (shell, text)
   -- square
   term.setBackgroundColor(colors.red)
   write(' ')
@@ -96,7 +96,7 @@ end
 
 --- Draw full length line
 --
-dko.rule = function ()
+dko.rule = function (...)
   term.setBackgroundColor(colors.lightGray)
   print()
   dko.resetColors()
@@ -107,7 +107,7 @@ end
 --- Output white text (e.g. for reactor labels)
 --
 -- @tparam string text
-dko.label = function (text)
+dko.label = function (shell, text)
   term.setBackgroundColor(colors.black)
   term.setTextColor(colors.white)
   write(text)
@@ -116,7 +116,7 @@ end
 
 --- Wait for keypress
 --
-dko.pause = function ()
+dko.pause = function (...)
   term.setBackgroundColor(colors.black)
   term.setTextColor(colors.lightGray)
   print('Press any key to continue')
@@ -126,7 +126,7 @@ end
 
 --- Get the github downloader script
 --
-dko.getGh = function ()
+dko.getGh = function (...)
   if fs.exists('/bin/gh') then return end
 
   local GH_URL   = 'https://raw.githubusercontent.com'
@@ -155,7 +155,7 @@ end
 
 --- Create system dirs and set aliases
 --
-dko.bootstrap = function ()
+dko.bootstrap = function (...)
   dko.message('Bootstrapping')
   shell.setDir('/')
 
@@ -174,7 +174,7 @@ dko.bootstrap = function ()
 
   -- get scripts
   dko.getGh()
-  dko.update()
+  dko.update(shell)
 end
 
 
@@ -182,7 +182,7 @@ end
 -- bin/someprogram
 -- lib/anapi
 --
-dko.update = function ()
+dko.update = function (...)
   shell.setDir('/')
 
   shell.run('gh', 'get', 'var/manifest', '/var/manifest')
@@ -206,19 +206,31 @@ end
 
 (function ()
 
+  -- When used as API
+  if not shell then return end
+
   -- When run as program
-  if #CLI_ARGS == 0 then return end
+  -- Always set path
+  if not string.find(shell.path(), ':/bin') then
+    shell.setPath(shell.path() .. ':/bin')
+  end
 
-  -- set path
-  shell.setPath(shell.path() .. ':/bin')
+  -- Usage if no command in args
+  if #CLI_ARGS == 0 then
+    dko.usage()
+    return
+  end
 
+  -- Pass command
   local command = CLI_ARGS[1]
   if dko[command] == nil then
     dko.errorMessage("Command not found '" .. command "'")
     return
   end
 
-  dko[command](unpack(dko.rest(CLI_ARGS)))
+  -- just in case for lua 5.2, not sure what CC includes
+  local unpack = unpack or table.unpack
+  dko[command](shell, unpack(dko.rest(CLI_ARGS)))
 
 end)()
 

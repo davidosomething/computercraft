@@ -68,6 +68,11 @@ end
 -- ---------------------------------------------------------------------------
 
 (function ()
+  -- Always set path
+  if fs.exists('/bin') and string.find(shell.path(), ':/bin') == nil then
+    shell.setPath(shell.path() .. ':/bin')
+  end
+
   if not fs.exists('/bin/dko') then
     print('error: Missing /bin/dko')
     return
@@ -76,26 +81,27 @@ end
   term.redirect(term.native())
 
   -- output message of the day
-  shell.run('dko', 'resetColors')
-  shell.run('dko', 'rule')
+  dko.resetColors()
+  dko.rule()
   print()
   write(' Welcome to ' .. os.version())
 
+  -- _HOST is for CC 1.76+/MC 1.8+
   -- luacheck: globals _HOST
   if _HOST ~= nil then write(' (' .. _HOST .. ')\n') end
   if _CC_VERSION ~= nil then write(' (' .. _CC_VERSION .. ')\n') end
 
   print(' Day ' .. os.day() .. ' ' .. textutils.formatTime(os.time(), false))
-  shell.run('dko', 'rule')
+  dko.rule()
   print()
 
   term.setTextColor(colors.lightGray)
 
-  shell.run('dko', 'message', 'Initializing global APIs')
+  dko.message(shell, 'Initializing global APIs')
   startup.initApis()
   print()
 
-  shell.run('dko', 'message', 'Initializing peripheral APIs')
+  dko.message(shell, 'Initializing peripheral APIs')
   startup.initPeripherals()
   print()
 end)()
