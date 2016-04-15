@@ -242,7 +242,7 @@ end
 
   -- Pass command
   local command = CLI_ARGS[1]
-  if dko[command] == nil then
+  if not dko[command] then
     dko.errorMessage("Command not found '" .. command "'")
     return
   end
