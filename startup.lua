@@ -82,8 +82,11 @@ end
   dko.rule()
   print()
   write(' Welcome to ' .. os.version())
+
   -- luacheck: globals _HOST
   if _HOST ~= nil then write(' (' .. _HOST .. ')\n') end
+  if _CC_VERSION ~= nil then write(' (' .. _CC_VERSION .. ')\n') end
+
   print(' Day ' .. os.day() .. ' ' .. textutils.formatTime(os.time(), false))
   dko.rule()
   print()

@@ -200,8 +200,8 @@ end
 
 (function ()
 
-  -- When used as API, expose dko globally
-  if shell.getRunningProgram() ~= 'bin/dko' then
+  -- When not run as program, expose dko globally as API
+  if string.find(shell.getRunningProgram(), 'bin/dko') == nil then
     _G['dko'] = dko
     return
   end
