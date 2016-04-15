@@ -72,8 +72,6 @@ end
     print('error: Missing /bin/dko')
     return
   end
-  os.unloadAPI('/bin/dko')
-  os.loadAPI('/bin/dko')
 
   term.redirect(term.native())
 
