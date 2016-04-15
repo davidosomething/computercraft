@@ -155,9 +155,6 @@ dko.bootstrap = function ()
   shell.run('mkdir', 'tmp')
   shell.run('mkdir', 'var')
 
-  -- set path
-  shell.setPath(shell.path() .. ':/bin')
-
   -- set aliases
   shell.setAlias('l', 'list')
   shell.setAlias('ll', 'list')
@@ -203,6 +200,9 @@ end
 
   -- When run as program
   if #CLI_ARGS == 0 then return end
+
+  -- set path
+  shell.setPath(shell.path() .. ':/bin')
 
   local command = CLI_ARGS[1]
   if dko[command] == nil then
